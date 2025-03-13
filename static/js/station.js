@@ -1,109 +1,64 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("🚆 station.js 已載入");
+    const stationSelect = document.getElementById("station-select");
+    const googleMap = document.getElementById("google-map");
+    const reviewsContainer = document.querySelector(".reviews-container");
 
-    // 取得 URL 參數
-    const params = new URLSearchParams(window.location.search);
-    const station = params.get("station"); // 取得捷運站名稱
+    // Google Maps API Key
+    const API_KEY = "AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w"; 
 
-    // 確保站名不是 null
-    if (station) {
-        console.log("🔹 目前站名:", station);
+    // 捷運站的座標資料
+    const mrtStations = {
+        "台北車站": { lat: 25.046255, lng: 121.517532, english: "Taipei Main Station" },
+        "忠孝敦化": { lat: 25.041478, lng: 121.551098, english: "Zhongxiao Dunhua" },
+        "西門": { lat: 25.04209, lng: 121.508303, english: "Ximen" }
+        // 你可以加入更多捷運站
+    };
 
-        // 將捷運站名稱更新到標題
-        document.getElementById("station-name").textContent = station;
-        document.getElementById("page-title").textContent = station + " - 捷運站";
-    } else {
-        console.warn("⚠️ 未獲取到 station 參數，顯示預設名稱");
+    function updateStationData(stationName) {
+        if (!(stationName in mrtStations)) {
+            console.warn(`找不到 ${stationName} 的資料`);
+            return;
+        }
+
+        const { lat, lng, english } = mrtStations[stationName];
+
+        // 更新標題
+        document.getElementById("station-name").textContent = stationName;
+        document.getElementById("station-english").textContent = english;
+        document.getElementById("page-title").textContent = stationName;
+
+        // 更新 Google 地圖
+        googleMap.src = `https://www.google.com/maps/embed/v1/place?key=${API_KEY}&q=${lat},${lng}`;
+
+        // 獲取該捷運站的評論
+        fetch(`https://api.example.com/reviews?station=${stationName}`)
+            .then(response => response.json())
+            .then(data => {
+                reviewsContainer.innerHTML = ""; // 清空現有評論
+
+                if (data.reviews && data.reviews.length > 0) {
+                    data.reviews.forEach(review => {
+                        const reviewElement = document.createElement("div");
+                        reviewElement.classList.add("review-card");
+                        reviewElement.textContent = review.text;
+                        reviewsContainer.appendChild(reviewElement);
+                    });
+                } else {
+                    reviewsContainer.innerHTML = "<p>目前沒有評論</p>";
+                }
+            })
+            .catch(error => {
+                console.error("無法加載評論：", error);
+                reviewsContainer.innerHTML = "<p>評論載入失敗</p>";
+            });
     }
+
+    // 監聽下拉式選單的變化
+    stationSelect.addEventListener("change", function () {
+        const selectedStation = stationSelect.value;
+        updateStationData(selectedStation);
+    });
+
+    // 頁面載入時，顯示預設站點（例如：台北車站）
+    updateStationData(stationSelect.value);
 });
-
-
-    // 取得評論
-    loadReviews(station);
-
-// 假設這是一個模擬的 document.addEventListener("DOMContentLoaded", function () {
-    console.log("🚆 station.js 已載入");
-
-    // 取得 URL 參數
-    const params = new URLSearchParams(window.location.search);
-    const station = params.get("station") || "捷運站"; // 預設顯示「捷運站」
-
-    // 更新標題名稱
-    document.getElementById("station-name").textContent = station;
-    document.getElementById("page-title").textContent = station + " - 捷運站";
-    
-    // Google Map 設置 (這邊你可以填上不同捷運站的經緯度)
-    const mapSrc = {
-        "善導寺": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.933385467191!2d121.523!3d25.0442",
-        "西門": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.00000!2d121.508!3d25.0420"
-    };
-
-    document.getElementById("google-map").src = mapSrc[station] || mapSrc["善導寺"];
-
-    // 取得評論
-    loadReviews(station);
-
-// 假設這是一個模擬的 API，等後端有資料後可以換成 fetch
-function loadReviews(station) {
-    const fakeReviews = {
-        "善導寺": [
-            { user: "小明", comment: "這裡的美食很多，推薦排骨飯！", date: "2024-03-10" },
-            { user: "小美", comment: "環境乾淨，出站後附近有很多咖啡店。", date: "2024-03-09" }
-        ],
-        "西門": [
-            { user: "小杰", comment: "西門町超熱鬧，很多年輕人！", date: "2024-03-11" },
-            { user: "阿豪", comment: "有很多服飾店，還有手搖飲很棒。", date: "2024-03-10" }
-        ]
-    };
-
-    const reviews = fakeReviews[station] || [];
-    const reviewList = document.getElementById("review-list");
-    reviewList.innerHTML = "";
-
-    if (reviews.length === 0) {
-        reviewList.innerHTML = "<p>暫無評論</p>";
-    } else {
-        reviews.forEach(review => {
-            const reviewBox = document.createElement("div");
-            reviewBox.classList.add("review-box");
-            reviewBox.innerHTML = `
-                <h3>${review.user}</h3>
-                <p>${review.comment}</p>
-                <span>${review.date}</span>
-            `;
-            reviewList.appendChild(reviewBox);
-        });
-    }
-}
- fetch
-function loadReviews(station) {
-    const fakeReviews = {
-        善導寺: [
-            { user: "小明", comment: "這裡的美食很多，推薦排骨飯！", date: "2024-03-10" },
-            { user: "小美", comment: "環境乾淨，出站後附近有很多咖啡店。", date: "2024-03-09" }
-        ],
-        西門: [
-            { user: "小杰", comment: "西門町超熱鬧，很多年輕人！", date: "2024-03-11" },
-            { user: "阿豪", comment: "有很多服飾店，還有手搖飲很棒。", date: "2024-03-10" }
-        ]
-    };
-
-    const reviews = fakeReviews[station] || [];
-    const reviewList = document.getElementById("review-list");
-    reviewList.innerHTML = "";
-
-    if (reviews.length === 0) {
-        reviewList.innerHTML = "<p>暫無評論</p>";
-    } else {
-        reviews.forEach(review => {
-            const reviewBox = document.createElement("div");
-            reviewBox.classList.add("review-box");
-            reviewBox.innerHTML = `
-                <h3>${review.user}</h3>
-                <p>${review.comment}</p>
-                <span>${review.date}</span>
-            `;
-            reviewList.appendChild(reviewBox);
-        });
-    }
-}
