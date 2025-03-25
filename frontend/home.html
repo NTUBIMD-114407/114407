@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEI食不打烊 - 首頁</title>
+    <link rel="stylesheet" href="css/home.css">
+    <style>
+        .navbar {
+            background-color: #333;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        
+        .nav-item:hover {
+            background-color: #555;
+        }
+        
+        .logout-btn {
+            background-color: #dc3545;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">MEI食不打烊</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item">首頁</a>
+            <a href="#" class="nav-item">菜單</a>
+            <a href="#" class="nav-item">訂單</a>
+            <a href="#" class="nav-item">會員中心</a>
+            <button id="logoutBtn" class="nav-item logout-btn">登出</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <h1>歡迎來到 MEI食不打烊</h1>
+        <div class="welcome-message">
+            <p>您已成功登入系統</p>
+            <p>開始探索我們的美食世界吧！</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h2>最新消息</h2>
+                <p>查看最新的餐廳動態和特別優惠</p>
+            </div>
+            <div class="feature-card">
+                <h2>熱門餐點</h2>
+                <p>發現最受歡迎的美味料理</p>
+            </div>
+            <div class="feature-card">
+                <h2>我的訂單</h2>
+                <p>追蹤您的訂單狀態</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 處理登出
+        async function handleLogout() {
+            try {
+                const response = await fetch('http://140.131.115.97:8000/api/accounts/logout/', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('登出失敗:', error);
+                alert('登出失敗，請稍後再試');
+            }
+        }
+
+        // 頁面加載時執行
+        window.onload = function() {
+            // 設置登出按鈕事件
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', handleLogout);
+            }
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "massive-incline-452710-j8",
+  "private_key_id": "1b51831fc43bb5e20049d6b19265f112555e7f11",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC/P2jomhH3oSKw\n66pkcy6mMubHI8mUC768mSfSSRqmRu0ZGkTNq7g+4uB1UNcN9EvUUuGdbfZIiSRZ\nNH4dgZaxdtr2J/TuOLq8KooiQ9p7Z0N4TksuGgLo1Mo1QaFvMMre8FzBqlef80PH\n6y7LjRwByec6PJHcA98ZFQUDmPmmdfGXGHmegB55yCfPOMM4EeuydpqKRwO4aNh7\nuEd5zj3+T6zx5GvEaMkD5mFbv3o86Tyjm8E904IwV1sLchSCUaZkr0Vg78Urhoa0\nzOZ4a/Pl/4+L3OR2iBlf9jYdJFwVowcf6IRPaVgXC1WQ0yeVJnE9Pogw7tskfOlH\nQBCfTvwLAgMBAAECgf92UwwxwOhc6dUpS8H11fhqTWlCWn5rffU9gb2FFkQDKqXc\nYh0vlI7p58owy1NfXQ2NetZxZfrsV7SJCsaKs81dqauy9gW+7CGALXxJYZVn/TSz\nD73JSDIvTXg/0E0fU5DblxQFaRfNs99mimLpcOS4b3nnf+dpRsMIlwbmsumKBLIK\nTptjTK0043bIiV/nmLxUupEWs6FM1QhxWFQCmxH+Vx4kZUYNIS95HxnjUTzLTrCf\n+36uCxPa/XLH1cNTIEahHh70sYffC73IXUdZcHsInzdPOY3aEzQLZ/UYAcpw/tds\n1zwGeq3xcUSE8Za3x+cxw+ZxgsJHGdoD7Lf2XkUCgYEA6k0jmikuqtA5zdYjl8Im\n69EBAASNI9UHw6W1z0RIzEWZAznmVtOS71n67F/DWBt6GVYQ6n6BtLMlscV/FTlG\nJpWijhkDopRT+n1tEQQakfwruVqz/WLVOb2zpm07cJUoWNBAGd3UhHPw6cdayAqA\nvmwKWY9RQXOZEhwNTb4GzT8CgYEA0PWMBqbx/MQ1ii71ILDHZOzUrh93hemiz245\n+QbYjWWesB9Sn5PJWHcMvW6aU1Yo8gavutQuAheHXx2fgk37tnBmdrDUz4RljDlb\nyKCurtHd2VsZUc6HahS/usm87aaJqwb9dhBZaXKY9TtvZhrL2DYJ6pcS/fjzb1wM\nT5a0AjUCgYEAh8oZHhlMAJcZSSAYFLXjFLxWlgoNOn0WON9rFSp//lM/sMz3n86S\n08EUWbXOYtvZ0aE9wIl85psE95h8ZHKDI42JXk1E/A529S+H7Fqyg3TgalYVBn8n\nEIXO/l9EGaV4crCO1e7oYbNIJlTxWgosPzAid3FGKGa0ifhUBYBiNMUCgYEAlC59\nJT6Afpp5yUtxg8Q5MmYMkIo6DVnYnjbxn5puOR9mQEmGIyn/b9/ExhVIFW8VTETX\nm6raEZuz4Qy10AcTSJY+406VK7Ac/yqx3v2rwseLBpdmxi+qsdyS9pgXhYRDPmiP\nl4kSjwe4VrfWUNcR1XrE33pQ+o/vufnRtSMO9j0CgYEAoKUoBuFE1p2LLL1zofuN\n1uNBWWiAYpuXCMuDX3YId8Fth2MxIZF8Sk+vpd3m3IRn2m0BRmSwz5lyUPqw5xwX\nb00boTcoxUqm8bZmqLz+luT5X2rwU9DwGVpSUE4Rb9430Z+LS6bE4yHDAwKLeK0D\n6GO4pcxQCQmB0LlXRckn3/A=\n-----END PRIVATE KEY-----\n",
+  "client_email": "my-translation-service@massive-incline-452710-j8.iam.gserviceaccount.com",
+  "client_id": "103545912588733310174",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/my-translation-service%40massive-incline-452710-j8.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
