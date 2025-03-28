@@ -1,0 +1,206 @@
+/* 全域設定 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #262245;
+    font-family: Arial, sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* 標題 */
+.title {
+    text-align: right;
+    font-weight: bold;
+    font-size: 30px;         /* 字變大 */
+    margin-top: 30px;        /* 往下移離最上面 */
+    margin-bottom: 5px;
+    padding-right: 10px;     /* 靠右縮排（可調整） */
+}
+
+.subtitle {
+    text-align: right;
+    font-size: 22px;         /* 字稍微大一點 */
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    padding-right: 10px;
+}
+
+
+/* 搜尋列 */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 20px;
+    padding: 5px 12px;
+    margin: 0 10px 20px 10px;
+}
+
+.search-bar img {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+
+/* 推薦美食 */
+.recommend-section {
+    padding: 10px 20px;
+  }
+  
+  .recommend-section h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* 美食卡片容器改為橫向可滑動 */
+  .recommend-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 10px;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .recommend-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+/* 每張卡片樣式 */
+.food-card {
+    flex: 0 0 auto;
+    width: 150px;               /* 加寬一點 */
+    height: 220px;              /* 拉高整體高度 */
+    background: #D9D9D9;
+    border-radius: 10px;
+    padding: 10px;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+  }
+  
+  /* 圖片容器（新增） */
+  .food-card .image-box {
+    width: 100%;
+    height: 80px;               /* 圖片高度 */
+    background: #99A3BA;       /* 預設背景，之後可改成圖片 */
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .food-card p {
+    font-size: 12px;
+    margin: 3px 0;
+    color: black;
+    text-align: center;
+  }
+  
+  .food-card .stars {
+    text-align: center;
+    margin: 5px 0;
+  }
+  
+  .food-card .more-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    margin: 0 auto;
+    display: block;
+  }
+  
+
+/* Google 地圖 */
+.map {
+    width: 100%;
+    height: 200px;
+    background: #99A3BA;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    line-height: 200px;
+    font-weight: bold;
+}
+
+/* 末班車資訊 */
+.late-night h3 {
+    font-size: 14px;
+    margin-left: 20px;   /* 對齊下拉選單 */
+    margin-bottom: 12px;
+  }
+  
+  /* 下拉選單 + 確定 */
+  .station-selector {
+    padding-left: 20px; /* 讓選單與標題對齊 */
+    margin-bottom: 10px;
+  }
+  
+  .station-selector select {
+    width: 90%;               /* 改為 90%，讓它更長 */
+    max-width: 350px;         /* 讓它可以更寬一點 */
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: none;
+    background: #A9BBCB;
+    color: white;
+    font-size: 14px;
+    appearance: none;
+    text-align: left;
+    padding-left: 20px;
+    margin-bottom: 12px;
+    box-sizing: border-box;   /* 確保 padding 不影響寬度 */
+  }
+  
+  .confirm-btn {
+    display: block;
+    margin: 0 auto;
+    padding: 5px 20px;
+    background: #A9BBCB;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+  }
+  
+    
+
+/* 車站資訊 */
+.late-info {
+    padding: 0 20px;
+    margin-top: 20px;
+    margin-bottom: 60px;  /* ✅ 增加底部空間，讓畫面更好滑 */
+    text-align: left;
+  }
+  
+  .late-info p {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .trains {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 40px; /* ✅ 增加水平與垂直間距 */
+    font-size: 14px;
+    justify-content: flex-start;
+  }
+  
+  
