@@ -1,0 +1,244 @@
+/* 全域樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+}
+
+/* 主容器 */
+.container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #1E3A5F;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 60px; /* 確保內容不被 footer 擋住 */
+}
+
+/* 紅色區塊 - 頂部搜尋列 */
+.header {
+    padding: 15px 10px;
+    background-color: #1E3A5F;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+.search-bar {
+    display: flex;
+    justify-content: space-around;
+    background: #A9BBCB;
+    padding: 8px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.search-bar input {
+    width: 40%;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+}
+.search-bar button {
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* 黃色區塊 - 捷運站圖片 */
+.station-image {
+    width: 100%; /* 讓圖片區塊寬度填滿整個容器 */
+    max-width: 100%;
+    height: auto; /* 讓高度自適應 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 防止溢出 */
+    background: #D9D9D9;
+    border-radius: 0; /* 確保沒有圓角 */
+    margin-top: 10px;
+    padding: 0; /* 移除內邊距 */
+}
+
+.station-image img {
+    width: 100%; /* 讓圖片寬度填滿整個區塊 */
+    height: auto; /* 讓高度等比例縮放 */
+    object-fit: cover; /* 讓圖片完整填滿區塊 */
+}
+
+
+/* 綠色區塊 - 功能按鈕 */
+.features {
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    padding: 12px;
+    border-radius: 50px;
+    margin: 10px;
+    align-items: center;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feature-btn {
+    background: #A9BBCB;
+    padding: 12px 20px;
+    border-radius: 50px; /* 讓按鈕保持橢圓形 */
+    border: none;
+    color: white;
+    width: 100px; /* 控制寬度 */
+    height: 66px; /* 控制高度 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /* 讓圖示在上、文字在下 */
+    gap: 5px; /* 圖示與文字的間距 */
+    text-align: center;
+    font-size: 14px; /* 讓文字縮小 */
+    white-space: nowrap; /* 文字不換行 */
+    overflow: hidden;
+}
+
+.feature-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+
+/* 淺藍色區塊 - 可滑動店家 */
+.top-shops {
+    padding: 15px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.shop-list {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* 隱藏滾動條 */
+    -ms-overflow-style: none;
+}
+
+.shop-list::-webkit-scrollbar {
+    display: none; /* 隱藏滾動條 */
+}
+
+.shop-item {
+    flex: 0 0 90%; /* 讓每個店家顯示一個在畫面內 */
+    max-width: 90%;
+    height: 180px;
+    background: #D9D9D9;
+    border-radius: 10px;
+    display: inline-block;
+    scroll-snap-align: center;
+}
+
+
+/* 紫色區塊 - 底部導航列 */
+.footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px;
+    background: #A9BBCB;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.nav-btn img {
+    width: 24px; /* 設定圖片寬度 */
+    height: 24px; /* 設定圖片高度 */
+    margin-bottom: 4px; /* 圖片與文字間距 */
+}
+
+.nav-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+  }
+  
+  .search-bar input {
+    padding: 8px 15px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    width: 150px;
+  }
+  
+  .search-bar button {
+    background-color: #ddd;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .awesomplete ul {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  
+  .awesomplete ul li[data-line="BR"] {
+    background-color: #a05a2c;
+    color: white;
+  }
+  
+  .awesomplete ul li[data-line="R"] {
+    background-color: #be1e2d;
+    color: white;
+  }
+  
+  .awesomplete ul li[data-line="G"] {
+    background-color: #009944;
+    color: white;
+  }
+  
+  .awesomplete ul li[data-line="O"] {
+    background-color: #fbb040;
+    color: white;
+  }
+  
+  .awesomplete ul li[data-line="BL"] {
+    background-color: #0072bc;
+    color: white;
+  }
+
+  

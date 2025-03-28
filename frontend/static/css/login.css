@@ -1,0 +1,89 @@
+/* 全域樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: 'Microsoft JhengHei', sans-serif;
+    background-color: #1E3A5F;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+
+h1 {
+    color: white;
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+}
+
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: #666;
+}
+
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+button[type="submit"]:hover {
+    background-color: #357ABD;
+}
+
+
+a {
+    color: #B4C6D9;
+    text-decoration: none;
+}
+
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+/* 註冊連結樣式 */
+.signup-link {
+    margin-top: 15px;
+    text-align: center;
+    color: #B4C6D9;
+}
+
+

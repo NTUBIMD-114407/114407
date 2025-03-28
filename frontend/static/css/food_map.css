@@ -1,0 +1,354 @@
+/* 全域樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* 主容器 */
+.container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #1E3A5F;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 100vh;
+}
+
+
+/* 頂部標題 */
+/* 頂部標題 */
+.header {
+    padding-top: 100px; /* 增加上方空間 */
+    padding-bottom: 15px; /* 讓標題和下方有適當距離 */
+    background-color: #1E3A5F;
+    text-align: center;
+}
+
+
+.header h1 {
+    font-size: 22px; /* 調整字體大小，讓它更符合完成品 */
+    font-weight: bold;
+    margin-bottom: 5px; /* 增加標題與副標題的間距 */
+}
+
+
+.header h2 {
+    font-size: 18px; /* 副標題稍微小一點 */
+    font-weight: normal;
+}
+
+
+/* 車站選擇 */
+.station-selector {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+
+.custom-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    color: #333;
+    appearance: none;
+    cursor: pointer;
+}
+
+
+/* 下拉箭頭樣式 */
+.select-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    pointer-events: none;
+}
+
+
+/* 捷運線顏色樣式 */
+.brown-line {
+    background-color: #C48C00 !important;
+    color: white !important;
+}
+
+
+.red-line {
+    background-color: #D4211C !important;
+    color: white !important;
+}
+
+
+.green-line {
+    background-color: #007E00 !important;
+    color: white !important;
+}
+
+
+.orange-line {
+    background-color: #FF8000 !important;
+    color: white !important;
+}
+
+
+.blue-line {
+    background-color: #0070BD !important;
+    color: white !important;
+}
+
+
+/* 選項組樣式 */
+.custom-select optgroup {
+    font-weight: bold;
+    padding: 8px;
+}
+
+
+/* 選項樣式 */
+.custom-select option {
+    padding: 8px;
+    font-weight: normal;
+}
+
+
+/* 確認按鈕 */
+.confirm-btn {
+    background-color: #1E3A5F;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+.confirm-btn:hover {
+    background-color: #2B5485;
+}
+
+
+/* 美食 TOP3 店家區塊 */
+.top3-food {
+    margin: 15px 0;
+    overflow: hidden;
+    width: 100%;
+    padding: 0 15px;
+}
+
+
+/* 調整美食TOP3標題的位置 */
+.top3-food h3 {
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 15px;
+    padding-left: 5px;
+}
+
+
+.food-list {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;  /* 隱藏 IE/Edge 的滾動條 */
+    scrollbar-width: none;  /* 隱藏 Firefox 的滾動條 */
+    justify-content: flex-start;
+}
+
+
+/* 隱藏 Chrome / Safari 的滾動條 */
+.food-list::-webkit-scrollbar {
+    display: none;
+}
+
+
+.food-item {
+    width: 90%;
+    min-width: 280px;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+}
+
+
+.restaurant-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.food-item.empty {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    height: 180px;
+}
+
+
+.rank {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1E3A5F;
+    margin-bottom: 10px;
+}
+
+
+.restaurant-info {
+    flex: 1;
+}
+
+
+.restaurant-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #1E3A5F;
+    white-space: normal;
+}
+
+
+.restaurant-info .rating {
+    color: #f59e0b;
+    margin: 0 0 8px 0;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+
+.restaurant-info .address {
+    color: #666;
+    margin: 0;
+    font-size: 14px;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+
+/* 底部導航列 */
+.footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px;
+    background: #A9BBCB;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.nav-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+
+/* 當前選中的頁面 */
+.nav-btn.active {
+    color: #1E3A5F;
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+
+/* 查看更多美食 */
+
+
+.map-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 100px; /* 增加底部間距，確保地圖不會被擋住 */
+}
+
+
+.metro-map {
+    width: 100%;
+    height: auto;
+    display: block;  /* 防止圖片被當成 inline 元素，導致按鈕錯位 */
+    position: relative; /* 新增這一行，讓按鈕參考圖片的位置 */
+}
+
+
+.station {
+    position: absolute;
+    background-color: transparent; /* 背景透明 */
+    color: transparent;            /* 文字透明 */
+    padding: 0.2px;                  /* 保留可點擊區域大小 */
+    border-radius: 5px;
+    font-size: 10px;
+    cursor: pointer;               /* 保留手型指標，提示可點擊 */
+    transition: 0.3s;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    z-index: 10;                   /* 確保按鈕在圖片上方 */
+    border: none;                  /* 移除邊框，完全隱形 */
+}
+
+
+.station:hover {
+    background-color: transparent;  /* 滑鼠移上去不變色 */
+    color: transparent;             /* 保持文字透明 */
+}
+ 
+
+
+
+
