@@ -4,93 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEI食不打烊</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="static/css/login.css">
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <h1>MEI食不打烊</h1>
-            <div class="form-box">
-                <form id="loginForm" class="form active" method="POST" onsubmit="return false;">
-                    <div class="form-group">
-                        <input type="email" id="loginEmail" name="email" placeholder="電子信箱" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="loginPassword" name="password" placeholder="密碼" required>
-                    </div>
-                    <button type="submit" class="submit-btn">登入</button>
-                    <p class="form-footer">
-                        還沒有帳號？<a href="register.html" class="link">立即註冊</a>
-                    </p>
-                </form>
-            </div>
+    <form id="loginForm" onsubmit="return false;">
+        <h1>MEI食不打烊</h1>
+        <input type="email" id="loginEmail" placeholder="電子信箱" required>
+        <input type="password" id="loginPassword" placeholder="密碼" required>
+        <button type="submit">登入</button>
+        <div class="signup-link">
+            還沒有帳號？<a href="register.html">立即註冊</a>
         </div>
-    </div>
+    </form>
+
 
     <script>
-        // 頁面加載時執行
-        window.onload = async function() {
-            console.log('Window loaded');
-            
-            // 獲取表單
-            const loginForm = document.getElementById('loginForm');
-            console.log('Found login form:', loginForm);
+        document.getElementById('loginForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
 
-            if (!loginForm) {
-                console.error('找不到登入表單');
+
+            if (!email || !password) {
+                alert('請填寫所有欄位');
                 return;
             }
 
-            // 處理表單提交
-            loginForm.onsubmit = async function(e) {
-                e.preventDefault();
-                console.log('Form submitted');
 
-                // 獲取輸入值
-                const email = document.getElementById('loginEmail').value.trim();
-                const password = document.getElementById('loginPassword').value.trim();
-                
-                console.log('Inputs found:', {
-                    email: !!email,
-                    password: !!password
+            try {
+                const response = await fetch('http://140.131.115.97:8000/api/accounts/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
                 });
 
-                if (!email || !password) {
-                    alert('請填寫所有欄位');
-                    return;
-                }
 
-                try {
-                    console.log('Sending login request...');
-                    // 使用虛擬機的IP地址
-                    const apiUrl = 'http://140.131.115.97:8000/api/accounts/login/';
-                    console.log('API URL:', apiUrl);
-                    
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({ email, password })
-                    });
-
-                    console.log('Response status:', response.status);
+                if (response.ok) {
+                    window.location.replace('home.html');
+                } else {
                     const data = await response.json();
-                    console.log('Response data:', data);
-
-                    if (response.ok) {
-                        alert('登入成功！');
-                        window.location.href = 'home.html';
-                    } else {
-                        alert(data.error || '登入失敗，請檢查帳號密碼');
-                    }
-                } catch (error) {
-                    console.error('登入錯誤:', error);
-                    alert('登入失敗，請稍後再試');
+                    alert(data.error || '登入失敗，請檢查帳號密碼');
                 }
-            };
+            } catch (error) {
+                console.error('登入時發生錯誤:', error);
+                alert('登入時發生錯誤，請稍後再試');
+            }
         };
+
+
+        // 監聽 Enter 鍵
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').requestSubmit();
+            }
+        });
     </script>
 </body>
-</html> 
+</html>
+
+
