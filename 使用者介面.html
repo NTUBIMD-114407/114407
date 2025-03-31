@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>捷運美食地圖 - 登入</title>
+    <link rel="stylesheet" href="static/css/使用者介面.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>捷運美食地圖</h1>
+            <div class="tabs">
+                <button class="tab active" onclick="showForm('login')">登入</button>
+                <button class="tab" onclick="showForm('register')">註冊</button>
+            </div>
+            
+            <!-- 登入表單 -->
+            <form id="loginForm" class="form">
+                <div class="form-group">
+                    <label for="loginEmail">電子郵件</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密碼</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="submit-btn">登入</button>
+            </form>
+
+            <!-- 註冊表單 -->
+            <form id="registerForm" class="form hidden">
+                <div class="form-group">
+                    <label for="registerEmail">電子郵件</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密碼</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">確認密碼</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <button type="submit" class="submit-btn">註冊</button>
+            </form>
+        </div>
+    </div>
+    <div class="clickable-module" data-target="newpage.html">
+        點擊跳轉
+    </div>
+    
+    <script src="static/js/main.js"></script>
+    <script src="/static/js/clickable.js"></script>
+</body>
+</html> 
