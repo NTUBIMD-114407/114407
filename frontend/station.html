@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">捷運站</title>
+    <link rel="stylesheet" href="static/css/mrtstyle.css">
+    <script src="static/js/station.js" defer></script>
+</head>
+<body>
+
+    <!-- 捷運站標題 -->
+    <header class="station-header">
+        <h1 id="station-name">捷運站</h1>
+        <p id="station-english">Station Name</p>
+    </header>
+
+    <div class="container">
+        <!-- 地圖區域 -->
+        <section id="map">
+            <iframe
+                id="google-map"
+                width="100%" height="350"
+                frameborder="0" style="border:0"
+                allowfullscreen
+                loading="lazy">
+            </iframe>
+        </section>
+
+        <!-- 評論區塊 -->
+        <section id="reviews">
+            <h2>評論</h2>
+            <div class="reviews-container">
+                <!-- JavaScript 會自動填入評論 -->
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

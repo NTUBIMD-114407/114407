@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食地圖</title>
+    <link rel="stylesheet" href="static/css/food_map.css">
+</head>
+<body>
+
+
+    <div class="container">
+        <!-- 頂部標題 -->
+        <header class="header">
+            <h1>捷運美食評論家</h1>
+        </header>
+
+
+        <!-- 車站選擇 -->
+        <div class="station-selector">
+            <div class="select-wrapper">
+                <select id="station-select" class="custom-select">
+                    <option value="" disabled selected>請選擇車站：</option>
+                </select>
+            </div>
+            <button class="confirm-btn">確定</button>
+        </div>
+
+
+        <!-- 美食 TOP3 -->
+        <section class="top3-food">
+            <h3><span id="selected-station">請選擇</span>站美食TOP3</h3>
+            <div class="food-list" id="food-list">
+                <!-- 餐廳資料將由 JavaScript 動態插入 -->
+            </div>
+        </section>
+
+
+        <!-- 查看更多 -->
+        <div class="map-container">
+            <img src="圖片/北捷圖片.jpg" class="metro-map" alt="台北捷運路網圖">
+        </div>
+
+
+        <!-- 固定底部導航列 -->
+        <nav class="footer">
+            <a class="nav-btn" id="home" href="home.html">
+                <img src="圖片/home.png" alt="首頁">
+                <span>首頁</span>
+            </a>
+           
+            <a class="nav-btn active" id="map" href="food_map.html">
+                <img src="圖片/map.png" alt="美食地圖">
+                <span>美食地圖</span>
+            </a>
+            <a class="nav-btn" href="notifications.html">
+                <img src="圖片/bell.png" alt="通知">
+                <span>通知</span>
+            </a>
+            <a class="nav-btn" href="profile.html">
+                <img src="圖片/user.png" alt="會員中心">
+                <span>會員中心</span>
+            </a>
+        </nav>
+    </div>
+
+
+    <script>
+        // 從後端 API 獲取車站資料
+        async function fetchStations() {
+            try {
+                // 先獲取所有捷運線
+                const linesResponse = await fetch('http://140.131.115.97:8000/api/metro/lines/', {
+                    credentials: 'include'
+                });
+               
+                if (!linesResponse.ok) {
+                    throw new Error('獲取捷運線失敗');
+                }
+
+
+                const lines = await linesResponse.json();
+                console.log('獲取到的捷運線:', lines);
+
+
+                // 清空現有選項（保留預設選項）
+                const selectElement = document.getElementById('station-select');
+                selectElement.innerHTML = '<option value="" disabled selected>請選擇車站：</option>';
+
+
+                // 為每條捷運線創建一個 optgroup
+                for (const line of lines) {
+                    // 獲取該線的車站
+                    const stationsResponse = await fetch(`http://140.131.115.97:8000/api/metro/lines/${line.id}/stations/`, {
+                        credentials: 'include'
+                    });
+                   
+                    if (stationsResponse.ok) {
+                        const stations = await stationsResponse.json();
+                       
+                        // 根據捷運線名稱設定對應的 class
+                        let lineClass = '';
+                        switch (line.name) {
+                            case '文湖線':
+                                lineClass = 'brown-line';
+                                break;
+                            case '淡水信義線':
+                                lineClass = 'red-line';
+                                break;
+                            case '松山新店線':
+                                lineClass = 'green-line';
+                                break;
+                            case '中和新蘆線':
+                                lineClass = 'orange-line';
+                                break;
+                            case '板南線':
+                                lineClass = 'blue-line';
+                                break;
+                            default:
+                                lineClass = '';
+                        }
+
+
+                        // 創建 optgroup
+                        const optgroup = document.createElement('optgroup');
+                        optgroup.label = line.name;
+                        optgroup.className = lineClass;
+
+
+                        // 添加該線的所有車站
+                        stations.forEach(station => {
+                            const option = document.createElement('option');
+                            option.value = station.id;
+                            option.textContent = station.name;
+                            option.className = lineClass;
+                            optgroup.appendChild(option);
+                        });
+
+
+                        selectElement.appendChild(optgroup);
+                    }
+                }
+            } catch (error) {
+                console.error('獲取車站資料時發生錯誤:', error);
+            }
+        }
+
+
+        // 獲取特定車站的餐廳資料
+        async function fetchRestaurants(stationId) {
+            try {
+                const response = await fetch(`http://140.131.115.97:8000/api/metro/stations/${stationId}/restaurants/`, {
+                    credentials: 'include'
+                });
+
+
+                if (!response.ok) {
+                    throw new Error('獲取餐廳資料失敗');
+                }
+
+
+                const restaurants = await response.json();
+                console.log('獲取到的餐廳資料:', restaurants);
+                displayRestaurants(restaurants);
+            } catch (error) {
+                console.error('獲取餐廳資料時發生錯誤:', error);
+            }
+        }
+
+
+        // 顯示餐廳資料
+        function displayRestaurants(restaurants) {
+            const foodList = document.getElementById('food-list');
+            foodList.innerHTML = ''; // 清空現有內容
+
+
+            // 根據評分排序餐廳（從高到低）
+            const sortedRestaurants = restaurants.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+
+
+            // 只顯示前3個餐廳
+            const top3Restaurants = sortedRestaurants.slice(0, 3);
+
+
+            top3Restaurants.forEach((restaurant, index) => {
+                const foodItem = document.createElement('div');
+                foodItem.className = 'food-item';
+               
+                // 創建餐廳資訊的 HTML
+                foodItem.innerHTML = `
+                    <div class="restaurant-card">
+                        <div class="rank">#${index + 1}</div>
+                        <div class="restaurant-info">
+                            <h4>${restaurant.name}</h4>
+                            <p class="rating">⭐ ${restaurant.rating || 'N/A'}</p>
+                            <p class="address">${restaurant.address || '地址未提供'}</p>
+                        </div>
+                    </div>
+                `;
+
+
+                foodList.appendChild(foodItem);
+            });
+
+
+            // 如果餐廳數量少於3個，添加空白項目
+            for (let i = top3Restaurants.length; i < 3; i++) {
+                const emptyItem = document.createElement('div');
+                emptyItem.className = 'food-item empty';
+                foodList.appendChild(emptyItem);
+            }
+
+
+            // 初始化觸控滑動
+            initializeSwipe();
+        }
+
+
+        // 初始化觸控滑動功能
+        function initializeSwipe() {
+            const foodList = document.getElementById('food-list');
+            let isMouseDown = false;
+            let startX;
+            let scrollLeft;
+
+
+            // 滑鼠事件
+            foodList.addEventListener('mousedown', (e) => {
+                isMouseDown = true;
+                startX = e.pageX - foodList.offsetLeft;
+                scrollLeft = foodList.scrollLeft;
+                foodList.style.cursor = 'grabbing';
+                e.preventDefault(); // 防止拖曳時選中文字
+            });
+
+
+            foodList.addEventListener('mouseleave', () => {
+                isMouseDown = false;
+                foodList.style.cursor = 'grab';
+            });
+
+
+            foodList.addEventListener('mouseup', () => {
+                isMouseDown = false;
+                foodList.style.cursor = 'grab';
+            });
+
+
+            foodList.addEventListener('mousemove', (e) => {
+                if (!isMouseDown) return;
+                const x = e.pageX - foodList.offsetLeft;
+                const walk = (x - startX) * 2;
+                foodList.scrollLeft = scrollLeft - walk;
+            });
+
+
+            // 觸控事件
+            foodList.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].pageX - foodList.offsetLeft;
+                scrollLeft = foodList.scrollLeft;
+            });
+
+
+            foodList.addEventListener('touchmove', (e) => {
+                if (!startX) return;
+                const x = e.touches[0].pageX - foodList.offsetLeft;
+                const walk = (x - startX) * 2;
+                foodList.scrollLeft = scrollLeft - walk;
+            });
+
+
+            foodList.addEventListener('touchend', () => {
+                startX = null;
+            });
+
+
+            // 設置初始游標樣式
+            foodList.style.cursor = 'grab';
+        }
+
+
+        // 頁面載入時獲取車站資料
+        window.onload = fetchStations;
+
+
+        // 處理車站選擇
+        document.getElementById('station-select').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const stationName = selectedOption.text;
+            document.getElementById('selected-station').textContent = stationName;
+           
+            // 獲取選中車站的餐廳資料
+            if (this.value) {
+                fetchRestaurants(this.value);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
