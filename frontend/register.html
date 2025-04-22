@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEI食不打烊 - 註冊</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>MEI食不打烊</h1>
+            <div class="form-box">
+                <form id="registerForm" class="form active" method="POST" onsubmit="return false;">
+                    <div class="form-group">
+                        <input type="email" id="registerEmail" name="email" placeholder="電子信箱" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="registerPassword" name="password" placeholder="密碼" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="確認密碼" required>
+                    </div>
+                    <button type="submit" class="submit-btn">註冊</button>
+                    <p class="form-footer">
+                        已經有帳號？<a href="index.html" class="link">立即登入</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const registerForm = document.getElementById('registerForm');
+            console.log('Found register form:', registerForm);
+
+            if (!registerForm) {
+                console.error('找不到註冊表單');
+                return;
+            }
+
+            registerForm.onsubmit = async function(e) {
+                e.preventDefault();
+                console.log('Form submitted');
+
+                const email = document.getElementById('registerEmail').value.trim();
+                const password = document.getElementById('registerPassword').value.trim();
+                const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+                console.log('Inputs found:', {
+                    email: !!email,
+                    password: !!password,
+                    confirmPassword: !!confirmPassword
+                });
+
+                if (!email || !password || !confirmPassword) {
+                    alert('請填寫所有欄位');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    alert('密碼與確認密碼不符');
+                    return;
+                }
+
+                try {
+                    console.log('Sending register request...');
+                    const response = await fetch('http://140.131.115.97:8000/api/accounts/register/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    console.log('Response status:', response.status);
+                    const data = await response.json();
+                    console.log('Response data:', data);
+
+                    if (response.ok) {
+                        alert('註冊成功！');
+                        window.location.href = 'index.html';
+                    } else {
+                        alert(data.error || '註冊失敗，請稍後再試');
+                    }
+                } catch (error) {
+                    console.error('註冊錯誤:', error);
+                    alert('註冊失敗，請稍後再試');
+                }
+            };
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,173 @@
+/* 全域樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+}
+
+/* 主容器 */
+.container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #1E3A5F;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* 頂部標題 */
+/* 頂部標題 */
+.header {
+    padding-top: 100px; /* 增加上方空間 */
+    padding-bottom: 15px; /* 讓標題和下方有適當距離 */
+    background-color: #1E3A5F;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 22px; /* 調整字體大小，讓它更符合完成品 */
+    font-weight: bold;
+    margin-bottom: 5px; /* 增加標題與副標題的間距 */
+}
+
+.header h2 {
+    font-size: 18px; /* 副標題稍微小一點 */
+    font-weight: normal;
+}
+
+/* 車站選擇 */
+.station-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+}
+
+.station-selector select {
+    width: 80%;
+    padding: 10px;
+    border-radius: 30px; /* 設定更大的圓角，讓它變成橢圓形 */
+    border: none;
+    background: #A9BBCB;
+    color: white; /* 文字變白色 */
+    font-size: 16px;
+    text-align: left; /* 讓文字靠左 */
+    padding-left: 15px; /* 增加左邊距，讓文字不會貼太邊緣 */
+}
+
+
+.confirm-btn {
+    margin-top: 10px;
+    padding: 8px 20px;
+    background: #D9D9D9;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* 美食 TOP3 店家區塊 */
+.top3-food {
+    margin: 15px 0;
+    overflow: hidden; /* 確保不超出範圍 */
+    width: 100%; /* 讓區塊適應父容器 */
+    padding: 0 15px; /* 增加左右間距 */
+}
+
+/* 調整美食TOP3標題的位置 */
+.top3-food h3 {
+    text-align: left; /* 讓標題靠左 */
+    font-size: 16px;
+    font-weight: bold; /* 讓TOP3的字比較突出 */
+    padding-left: 5px; /* 讓標題稍微偏右 */
+}
+
+
+.food-list {
+    display: flex;
+    overflow-x: auto; /* 啟用橫向滑動 */
+    gap: 10px;
+    padding: 10px;
+    white-space: nowrap; /* 確保不換行 */
+    scroll-snap-type: x mandatory; /* 滑動時自動對齊 */
+    -ms-overflow-style: none;  /* 隱藏 IE/Edge 的滾動條 */
+    scrollbar-width: none;  /* 隱藏 Firefox 的滾動條 */
+    justify-content: flex-start; /* 讓第一個元素靠左對齊 */
+}
+
+/* 隱藏 Chrome / Safari 的滾動條 */
+.food-list::-webkit-scrollbar {
+    display: none;
+}
+
+.food-item {
+    width: 90%; /* 設定與首頁店家相同的大小，確保只顯示一個 */
+    height: 180px;
+    background: #D9D9D9;
+    border-radius: 10px;
+    flex-shrink: 0; /* 避免元素縮小 */
+    scroll-snap-align: center; /* 使元素對齊 */
+}
+
+
+/* 查看更多美食 */
+.more-food {
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 100px; /* 增加底部間距，確保地圖不會被擋住 */
+}
+
+.more-food img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+}
+
+
+/* 底部導航列 */
+.footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px;
+    background: #A9BBCB;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nav-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+/* 當前選中的頁面 */
+.nav-btn.active {
+    color: #1E3A5F;
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+}

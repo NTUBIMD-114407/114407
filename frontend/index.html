@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEI食不打烊</title>
+    <link rel="stylesheet" href="static/css/login.css">
+</head>
+<body>
+    <form id="loginForm" onsubmit="return false;">
+        <h1>MEI食不打烊</h1>
+        <input type="email" id="loginEmail" placeholder="電子信箱" required>
+        <input type="password" id="loginPassword" placeholder="密碼" required>
+        <button type="submit">登入</button>
+        <div class="signup-link">
+            還沒有帳號？<a href="register.html">立即註冊</a>
+        </div>
+    </form>
+
+
+    <script>
+        document.getElementById('loginForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+
+            if (!email || !password) {
+                alert('請填寫所有欄位');
+                return;
+            }
+
+
+            try {
+                const response = await fetch('http://140.131.115.97:8000/api/accounts/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+
+
+                if (response.ok) {
+                    window.location.replace('home.html');
+                } else {
+                    const data = await response.json();
+                    alert(data.error || '登入失敗，請檢查帳號密碼');
+                }
+            } catch (error) {
+                console.error('登入時發生錯誤:', error);
+                alert('登入時發生錯誤，請稍後再試');
+            }
+        };
+
+
+        // 監聽 Enter 鍵
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').requestSubmit();
+            }
+        });
+    </script>
+</body>
+</html>
+
+

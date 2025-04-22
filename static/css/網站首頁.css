@@ -1,0 +1,263 @@
+/* 全域樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0e0e0;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 主容器 */
+.main-container {
+    display: flex;
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    flex-wrap: nowrap;
+    width: 100%;
+    position: relative;
+    background-color: #f8f9fb;  /* 新增: 設定背景色為白色，蓋掉淺咖啡色 */
+}
+
+
+/* 第一區塊 - 頂部區域 */
+.navbar {
+    background-color: #a2b9d1;
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 102;
+    height: 120px;
+    flex-wrap: wrap;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-image {
+    height: 100px;
+    width: auto;
+}
+
+.navbar nav {
+    margin-left: auto;
+}
+
+.navbar nav ul {
+    list-style: none;
+    display: flex;
+    gap: 35px;
+    flex-wrap: wrap;
+}
+
+.navbar nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.navbar nav ul li a:hover {
+    color: #ff9800;
+}
+
+/* 第二區塊 - 左側選單 */
+.sidebar {
+    background-color: #d3d3d3;
+    width: 250px;
+    padding: 30px;
+    position: relative;
+    min-height: calc(100vh - 80px); /* 延伸到底部 */
+    z-index: 101;
+    text-align: center;
+    overflow-y: auto;
+    flex-shrink: 0;
+    transition: all 0.3s ease;  /* 過渡效果 */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    color: #1a73e8;
+}
+
+/* 第三區塊 - 主內容區域 */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8f9fb;
+    z-index: 99;
+    min-height: calc(100vh - 180px);  /* 扣掉頂部與底部的高度 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.metro-map, .starbucks-image {
+    width: 200%;
+    max-width: 800px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+/* 第四區塊 - 底部區域 */
+.footer {
+    background-color: #a2b9d1;
+    height: 80px;
+    width: 100%;
+    text-align: left;
+    padding-left: 30px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 100;
+    margin-top: auto;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* 圖標樣式 */
+.icon-world, .icon-user {
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.icon-world:hover, .icon-user:hover {
+    color: #ff9800;
+}
+
+/* 新增圖片按鈕樣式 */
+.icon-container {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    margin-left: 35px;
+}
+
+.icon-container a {
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+.icon-container img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.icon-container a:hover img {
+    transform: scale(1.1);
+}
+
+/* ============================= */
+/*            RWD 樣式           */
+/* ============================= */
+
+/* 手機垂直模式 (小於 768px) - 隱藏導覽列 */
+@media screen and (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .navbar nav ul {
+        justify-content: center;
+        gap: 10px;
+    }
+    .sidebar {
+        display: none;  /* 隱藏左邊導覽列 */
+    }
+    .main-content {
+        margin-left: 0; /* 移除主內容區的左邊空白 */
+        padding: 10px;
+    }
+    .metro-map, .starbucks-image {
+        max-width: 100%;
+    }
+}
+
+/* 平板模式 (768px - 1024px) - 顯示導覽列 */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .sidebar {
+        width: 200px;
+        display: block;  /* 顯示左邊導覽列 */
+    }
+}
+
+/* 桌機模式 (大於 1024px) - 顯示導覽列 */
+@media screen and (min-width: 1024px) {
+    .sidebar {
+        width: 250px;
+        display: block;  /* 顯示左邊導覽列 */
+    }
+}
+
+.map-container {
+    position: relative;
+    width: 80vw;
+    max-width: 800px;
+    margin: auto;
+}
+
+.metro-map {
+    width: 100%;
+    height: auto;
+    display: block;  /* 防止圖片被當成 inline 元素，導致按鈕錯位 */
+    position: relative; /* 新增這一行，讓按鈕參考圖片的位置 */
+}
+
+.station {
+    position: absolute;
+    background-color: transparent; /* 背景透明 */
+    color: transparent;            /* 文字透明 */
+    padding: 5px;                  /* 保留可點擊區域大小 */
+    border-radius: 5px;
+    font-size: 10px;
+    cursor: pointer;               /* 保留手型指標，提示可點擊 */
+    transition: 0.3s;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    z-index: 10;                   /* 確保按鈕在圖片上方 */
+    border: none;                  /* 移除邊框，完全隱形 */
+}
+
+.station:hover {
+    background-color: transparent;  /* 滑鼠移上去不變色 */
+    color: transparent;             /* 保持文字透明 */
+}
+

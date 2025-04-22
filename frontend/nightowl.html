@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夜貓子專區 - MEI食不打烊</title>
+    <link rel="stylesheet" href="static/css/homepage.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 頂部標題 -->
+        <header class="header">
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button id="logoutBtn" class="logout-btn">登出</button>
+            </div>
+            <h1>夜貓子專區</h1>
+        </header>
+
+        <!-- 內容區域 -->
+        <main class="content">
+            <!-- 這裡之後會加入夜貓子專區的內容 -->
+        </main>
+
+        <!-- 固定底部導航列 -->
+        <nav class="footer">
+            <a class="nav-btn" href="homepage.html">
+                <img src="圖片/home.png" alt="首頁">
+                <span>首頁</span>
+            </a>
+            <a class="nav-btn" href="food_map.html">
+                <img src="圖片/map.png" alt="美食地圖">
+                <span>美食地圖</span>
+            </a>
+            <a class="nav-btn" href="notifications.html">
+                <img src="圖片/bell.png" alt="通知">
+                <span>通知</span>
+            </a>
+            <a class="nav-btn" href="profile.html">
+                <img src="圖片/user.png" alt="會員中心">
+                <span>會員中心</span>
+            </a>
+        </nav>
+    </div>
+    <script>
+        // 檢查登入狀態
+        window.onload = async function() {
+            try {
+                const response = await fetch('http://140.131.115.97:8000/api/accounts/user/', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('userEmail').textContent = data.email;
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('檢查登入狀態失敗:', error);
+                window.location.href = 'index.html';
+            }
+        };
+
+        // 登出功能
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('http://140.131.115.97:8000/api/accounts/logout/', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    window.location.href = 'index.html';
+                } else {
+                    alert('登出失敗，請稍後再試');
+                }
+            } catch (error) {
+                console.error('登出失敗:', error);
+                alert('登出失敗，請稍後再試');
+            }
+        });
+    </script>
+</body>
+</html> 
