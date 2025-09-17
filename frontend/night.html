@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夜貓子專區</title>
+    <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="夜貓/night.css">
+
+</head>
+<body>
+  <a href="homepage.html" class="back-button">
+    <img src="圖片/arrow001.png" alt="返回" />
+  </a>
+  
+  <div class="container">
+      
+    <header class="header">
+        <img src="圖片/logo.png" alt="網站Logo" class="site-logo">
+        <h1 class="title">MEI食不打烊</h1>
+        <h2 class="subtitle">夜貓子專區</h2>
+        <div class="search-bar">
+          <img src="圖片/animal.png" alt="search icon">
+          <input type="text" placeholder="搜尋站名附近美食或輸入關鍵字">
+        </div>
+    </header>
+    <div class="recommend-section">
+      <h2>推薦美食</h2>
+      <div class="recommend-container">
+        <div class="food-card">
+          <div class="image-box">
+            <img src="圖片/store1.png" alt="店家圖片">
+          </div>
+          <p>店家1(名稱)</p>
+          <p>商圈介紹</p>
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <button class="more-btn">MORE</button>
+        </div>
+    
+        <div class="food-card">
+          <div class="image-box">
+            <img src="圖片/store2.png" alt="店家圖片">
+          </div>
+          <p>店家2(名稱)</p>
+          <p>商圈介紹</p>
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <button class="more-btn">MORE</button>
+        </div>
+    
+        <div class="food-card">
+          <div class="image-box">
+            <img src="圖片/store3.png" alt="店家圖片">
+          </div>
+          <p>店家3(名稱)</p>
+          <p>商圈介紹</p>
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <button class="more-btn">MORE</button>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+          
+
+        <div class="map">Google map</div>
+
+        <section class="late-night">
+  <h3>捷運末5班車</h3>
+  <div class="station-selector">
+    <select id="station-select">
+      <option value="">請選擇車站：</option>
+      <!-- JS 動態產生 -->
+    </select>
+    <button class="confirm-btn" id="query-last-train">確定</button>
+  </div>
+  <div class="late-info" id="last-train-result">
+    <!-- JS 塞入末班車結果 -->
+  </div>
+</section>
+
+    </div>
+
+      
+</body>
+<script src="夜貓/night.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsegtCG2ucAQ_Hrbf_YXL3QhUUM_roMtQ&libraries=places&callback=initMap" async defer></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      if (isLoggedIn !== 'true') {
+          alert('請先登入！');
+          window.location.href = 'login.html'; // 跳回登入頁
+      }
+  });
+  </script>
+
+  
+</html>

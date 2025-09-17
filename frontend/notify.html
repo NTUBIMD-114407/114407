@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>通知</title>
+  <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="static/css/notify.css" />
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">通知</h1>
+    <div class="notify-buttons">
+      <button>全部</button>
+      <button>未讀</button>
+      <button>回覆</button>
+    </div>
+
+    <div class="notify-list">
+      <div class="notify-item">
+        <img src="圖片/user.png" alt="使用者" class="avatar" />
+        <div class="notify-text">
+          <p><strong>使用者名稱</strong></p>
+          <p>通知內容</p>
+        </div>
+        <span class="notify-time">now</span>
+      </div>
+      <div class="notify-item">
+        <img src="圖片/user.png" alt="使用者" class="avatar" />
+        <div class="notify-text">
+          <p><strong>使用者名稱</strong></p>
+          <p>通知內容</p>
+        </div>
+        <span class="notify-time">1m ago</span>
+      </div>
+    </div>
+  </div>
+
+<nav class="footer">
+            <a class="nav-btn" id="home" href="homepage.html">
+                <img src="圖片/home.png" alt="首頁">
+                <span>首頁</span>
+            </a>
+            
+            <a class="nav-btn active" id="map" href="food_map.html">
+                <img src="圖片/map.png" alt="美食地圖">
+                <span>美食地圖</span>
+            </a>
+            <a class="nav-btn active" href="notify.html">
+            <img src="圖片/bell.png" alt="通知" />
+            <span>通知</span>
+            </a>
+            <a href="Member_center.html" class="nav-btn">
+            <img src="圖片/user.png" alt="會員中心">
+            <span>會員中心</span>
+            </a>
+
+        </nav>
+</body>
+<script>
+  // 自動為當前網址對應的導覽按鈕加上 active 類別
+  document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-btn');
+    const currentPath = window.location.pathname.split('/').pop(); // 取得目前頁面名稱
+
+    navLinks.forEach(link => {
+      const linkPath = link.getAttribute('href');
+      if (linkPath === currentPath) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  });
+</script>
+
+</html>
