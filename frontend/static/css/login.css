@@ -40,6 +40,9 @@ h1 {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b157e70 (前端1.3)
     font-size: 48px;
     margin-bottom: 30px;
 =======
@@ -50,6 +53,7 @@ h1 {
     font-size: 40px;
     margin-bottom: 10px;
 >>>>>>> f159936 (前端1.3)
+<<<<<<< HEAD
 =======
     font-size: 40px;
     margin-bottom: 10px;
@@ -58,6 +62,8 @@ h1 {
 =======
 >>>>>>> origin/main
 >>>>>>> origin/main
+=======
+>>>>>>> b157e70 (前端1.3)
     text-align: center;
 }
 
@@ -126,10 +132,13 @@ button[type="submit"]:hover,
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> origin/main
 >>>>>>> origin/main
+=======
+>>>>>>> b157e70 (前端1.3)
 }
 
 .tab {
@@ -197,6 +206,7 @@ button[type="submit"]:hover,
     margin-bottom: -2px;
 }
 
+<<<<<<< HEAD
 =======
 }
 
@@ -218,6 +228,8 @@ button[type="submit"]:hover,
 }
 
 >>>>>>> f159936 (前端1.3)
+=======
+>>>>>>> b157e70 (前端1.3)
 /* 註冊連結 */
 .signup-link {
     margin-top: 20px;
@@ -239,8 +251,12 @@ button[type="submit"]:hover,
     display: none;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> f159936 (前端1.3)
 =======
 >>>>>>> f159936 (前端1.3)
 =======
 >>>>>>> origin/main
+=======
+>>>>>>> f159936 (前端1.3)
+>>>>>>> b157e70 (前端1.3)
