@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食地圖</title>
+    <link rel="stylesheet" href="static/css/food_map.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- 頂部標題 -->
+        <header class="header">
+            <h1>捷運美食評論家</h1>
+        </header>
+
+        <!-- 車站選擇 -->
+        <div class="station-selector">
+            <select>
+                <option>請選擇車站：</option>
+                <option value="station1">台北車站</option>
+                <option value="station2">西門站</option>
+                <option value="station3">忠孝復興</option>
+            </select>
+            <button class="confirm-btn">確定</button>
+        </div>
+
+        <!-- 美食 TOP3 -->
+        <section class="top3-food">
+            <h3>00站美食TOP3</h3>
+            <div class="food-list">
+                <div class="food-item"></div>
+                <div class="food-item"></div>
+                <div class="food-item"></div>
+                <div class="food-item"></div>
+                <div class="food-item"></div>
+            </div>
+        </section>
+
+
+
+        <!-- 查看更多 -->
+        <section class="more-food">
+            <h3>查看更多美食</h3>
+            <img src="圖片\metrotaipeimap.jpg" alt="捷運美食地圖">
+        </section>
+
+        <!-- 固定底部導航列 -->
+        <nav class="footer">
+            <button class="nav-btn" id="home">
+                <img src="圖片/home.png" alt="首頁">
+                <span>首頁</span>
+            </button>
+            <button class="nav-btn active" id="map">
+                <img src="圖片/map.png" alt="美食地圖">
+                <span>美食地圖</span>
+            </button>
+            <button class="nav-btn" id="notification">
+                <img src="圖片/bell.png" alt="通知">
+                <span>通知</span>
+            </button>
+            <button class="nav-btn" id="user">
+                <img src="圖片/user.png" alt="會員中心">
+                <span>會員中心</span>
+            </button>
+        </nav>
+    </div>
+
+</body>
+</html>
