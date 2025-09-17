@@ -37,8 +37,13 @@ body {
 /* 標題 */
 h1 {
     color: white;
+<<<<<<< HEAD
+    font-size: 48px;
+    margin-bottom: 30px;
+=======
     font-size: 40px;
     margin-bottom: 10px;
+>>>>>>> f159936 (前端1.3)
     text-align: center;
 }
 
@@ -128,6 +133,9 @@ button[type="submit"]:hover,
     margin-top: 20px;
     text-align: center;
     color: #B4C6D9;
+<<<<<<< HEAD
+}
+=======
 }
 
 .signup-link a {
@@ -143,3 +151,4 @@ button[type="submit"]:hover,
 .hidden {
     display: none;
 }
+>>>>>>> f159936 (前端1.3)
