@@ -39,8 +39,13 @@ h1 {
     color: white;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     font-size: 48px;
     margin-bottom: 30px;
+=======
+    font-size: 40px;
+    margin-bottom: 10px;
+>>>>>>> f159936 (前端1.3)
 =======
     font-size: 40px;
     margin-bottom: 10px;
@@ -115,6 +120,7 @@ button[type="submit"]:hover,
     margin-bottom: 20px;
     border-bottom: 2px solid #e0e0e0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 .tab {
@@ -178,6 +184,27 @@ button[type="submit"]:hover,
     margin-bottom: -2px;
 }
 
+=======
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ccc;
+    text-align: center;
+}
+
+.tab.active {
+    color: #fff;
+    border-bottom: 2px solid #fff;
+    margin-bottom: -2px;
+}
+
+>>>>>>> f159936 (前端1.3)
 /* 註冊連結 */
 .signup-link {
     margin-top: 20px;
@@ -198,4 +225,7 @@ button[type="submit"]:hover,
 .hidden {
     display: none;
 }
+<<<<<<< HEAD
+>>>>>>> f159936 (前端1.3)
+=======
 >>>>>>> f159936 (前端1.3)
