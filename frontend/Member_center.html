@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會員中心</title>
+  <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="static/css/Member_center.css">
+</head>
+<body>
+    <div class="container">
+      <h1 class="member-title">會員中心</h1>
+  
+      <!-- 其他內容 -->
+  
+
+    <!-- 將來可以在這裡加上會員資訊或功能按鈕 -->
+    
+    <!-- 固定底部導航列 -->
+      <nav class="footer">
+      <a class="nav-btn" href="homepage.html">
+        <img src="圖片/home.png" alt="首頁" />
+        <span>首頁</span>
+      </a>
+      <a class="nav-btn" href="food_map.html">
+        <img src="圖片/map.png" alt="美食地圖" />
+        <span>美食地圖</span>
+      </a>
+      <a class="nav-btn" href="notify.html">
+        <img src="圖片/bell.png" alt="通知" />
+        <span>通知</span>
+      </a>
+      <a class="nav-btn" href="Member_center.html">
+        <img src="圖片/user.png" alt="會員中心" />
+        <span>會員中心</span>
+      </a>
+    </nav>
+
+  </div>
+</body>
+<script>
+  // 自動為當前網址對應的導覽按鈕加上 active 類別
+  document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-btn');
+    const currentPath = window.location.pathname.split('/').pop(); // 取得目前頁面名稱
+
+    navLinks.forEach(link => {
+      const linkPath = link.getAttribute('href');
+      if (linkPath === currentPath) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  });
+</script>
+
+</html>

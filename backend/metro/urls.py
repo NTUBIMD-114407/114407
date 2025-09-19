@@ -1,10 +1,40 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     path("lines/", views.get_all_metro_lines, name="metro-lines"),
     path("lines/<int:line_id>/stations/", views.get_stations_by_line, name="stations-by-line"),
     path("stations/<int:station_id>/restaurants/", views.get_nearby_restaurants, name="nearby-restaurants"),
+    path("restaurants/<int:restaurant_id>/", views.get_restaurant_details, name="restaurant-details"),
+    path("restaurants/<int:restaurant_id>/reviews/", views.get_restaurant_reviews, name="restaurant-reviews"),
+    path("track-info/", views.get_track_info, name="track-info"),
+    path("latest-trains/", views.get_latest_train_info, name="latest-trains"),
+    path("accounts/user/", views.get_user_info, name="user-info"),
+    path('api/restaurants/<int:restaurant_id>/reviews/', views.create_restaurant_review, name='create_restaurant_review'),
+    path('api/checkin-reviews/', views.create_checkin_review_api, name='create_checkin_review'),
+    path('api/checkin-reviews/<int:review_id>/', views.update_checkin_review_api, name='update_checkin_review'),
+    path('api/checkin-reviews/list/', views.get_checkin_reviews_api, name='get_checkin_reviews'),
+    path('api/restaurant-reviews/', views.create_restaurant_review, name='create_restaurant_review'),
+    path('api/restaurant-reviews/<int:review_id>/', views.update_restaurant_review, name='update_restaurant_review'),
+    path('api/metro-lines/restaurants/', views.get_all_metro_line_restaurants, name='get_all_metro_line_restaurants'),
+    path('api/restaurants/', views.get_all_restaurants, name='get_all_restaurants'),
+    path('restaurants/search/', views.search_restaurants, name='search-restaurants'),
+    path('reviews/', views.get_reviews, name='reviews'),
+    path('api/top-checkin-restaurants/', views.get_top_checkin_restaurants, name='top_checkin_restaurants'),
+    path('api/restaurants/night/', views.night_restaurants, name='night-restaurants'),
+    path('api/metro-route/', views.get_metro_route, name='get_metro_route'),
+    path('station/<str:station_id>/first-last-trains/', views.get_station_first_last_trains, name='station-first-last-trains'),
+    path('api/station-by-name/<str:station_name>/first-last-trains/', views.get_station_by_name_first_last_trains, name='station-by-name-first-last-trains'),
+    path('api/station-last-five-trains/', views.get_station_last_five_trains, name='station-last-five-trains'),
+
+    # Bars
+    path('bars/', views.BarViewSet.as_view({'get': 'list'}), name='bars-list'),
+    path('bars/<int:pk>/', views.BarViewSet.as_view({'get': 'retrieve'}), name='bars-detail'),
+    path('bars/by-station/', views.get_bars_by_station, name='bars-by-station'),
+    path('bars/by-line/', views.get_bars_by_line, name='bars-by-line'),
+    path('bars/<int:bar_id>/reviews/', views.get_bar_reviews, name='bar-reviews'),
+    path('api/bars/<int:bar_id>/reviews/', views.create_bar_review, name='create_bar_review'),
+    path('api/bar-reviews/<int:review_id>/', views.update_bar_review, name='update_bar_review'),
+    path('api/bars/night/', views.night_bars, name='night-bars'),
 ]
-
-

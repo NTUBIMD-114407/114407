@@ -1,0 +1,145 @@
+/* 全域設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  background-color: #1E3A5F;
+  color: white;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 80px; /* 確保 footer 不擋住內容 */
+}
+
+
+
+/* 標題 */
+.title {
+  font-size: 28px;
+  margin: 15px;
+  text-align: left;
+  padding-left: 16px; /* 新增這行讓它往右一些 */
+}
+
+/* 篩選按鈕區塊 */
+.notify-buttons {
+  display: flex;
+  gap: 12px;
+  margin: 20px;
+  justify-content: flex-start;
+}
+
+.notify-buttons button {
+  padding: 10px 20px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* 通知列表 */
+.notify-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notify-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin: 0px 20px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.notify-text {
+  flex: 1;
+  color: white;
+}
+
+.notify-time {
+  font-size: 12px;
+  color: #ccc;
+  margin-left: 10px;
+}
+
+/* ✅ 底部導覽列 */
+.footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  background: #A9BBCB;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 400px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  text-decoration: none;
+}
+
+.nav-btn img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  transition: none; /* 禁止變大或動畫 */
+}
+
+.nav-btn span {
+  text-decoration: none;
+}
+
+.nav-btn.active {
+  background: white;
+  color: #1E3A5F;
+  text-decoration: none;
+}
+
+
+
+.nav-btn.active img {
+  transform: none !important;
+}

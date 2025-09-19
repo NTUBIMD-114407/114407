@@ -3,38 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">捷運站</title>
+    <title>捷運站美食推薦</title>
+    <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="static/css/mrtstyle.css">
-    <script src="static/js/station.js" defer></script>
 </head>
 <body>
 
     <!-- 捷運站標題 -->
     <header class="station-header">
-        <h1 id="station-name">捷運站</h1>
-        <p id="station-english">Station Name</p>
+        <h1 id="station-name">台北車站</h1>
+        <p id="station-english">Taipei Main Station</p>
+        <div id="weather">⛅ 天氣載入中...</div>
     </header>
 
     <div class="container">
-        <!-- 地圖區域 -->
-        <section id="map">
-            <iframe
-                id="google-map"
-                width="100%" height="350"
-                frameborder="0" style="border:0"
-                allowfullscreen
-                loading="lazy">
-            </iframe>
+        <!-- 選擇捷運線 -->
+        <div class="dropdown">
+            <label for="line-select">🚇 選擇捷運線：</label>
+            <select id="line-select">
+                <option value="all" selected>全部</option>
+                <option value="red">🔴 紅線</option>
+                <option value="blue">🔵 藍線</option>
+            </select>
+
+            <label for="station-select">🚉 選擇捷運站：</label>
+            <select id="station-select"></select>
+        </div>
+
+        <!-- 地圖與商家資訊 -->
+        <section id="map-container">
+            <div id="map"></div>
+            <div id="business-info">
+                <h2>🏢 商家資訊</h2>
+                <div id="business-details">
+                    <p>請點擊地圖上的標記查看商家資訊</p>
+                </div>
+            </div>
         </section>
 
-        <!-- 評論區塊 -->
+        <!-- 美食推薦 -->
+        <section id="food-list">
+            <h2>🍽 附近美食推薦</h2>
+            <div class="food-container">載入中...</div>
+        </section>
+
+        <!-- 評論區 -->
         <section id="reviews">
-            <h2>評論</h2>
+            <h2>📝 使用者評論</h2>
+            <textarea id="review-input" placeholder="輸入你的評論..."></textarea>
+            <button id="submit-review">提交評論</button>
             <div class="reviews-container">
-                <!-- JavaScript 會自動填入評論 -->
+                <p>目前沒有評論</p>
             </div>
         </section>
     </div>
 
+    <!-- JavaScript -->
+    <script src="static/js/station.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w&libraries=places&callback=initMap"></script>
 </body>
 </html>

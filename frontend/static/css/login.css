@@ -1,10 +1,11 @@
+/* login.css - 深色風格登入與註冊頁面 */
+
 /* 全域樣式 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 
 body {
     font-family: '華康秀風體W3', sans-serif;
@@ -16,17 +17,47 @@ body {
     padding: 20px;
 }
 
+/* 容器 */
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.form-container {
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* 標題 */
 h1 {
     color: white;
-    font-size: 48px;
-    margin-bottom: 30px;
+    font-size: 40px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
+/* 表單 */
+.form-group {
+    margin-bottom: 15px;
+}
 
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: white;
+    font-size: 16px;
+}
+
+/* 輸入框樣式 */
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"] {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -36,21 +67,22 @@ input[type="password"] {
     background-color: white;
 }
 
-
 input[type="email"]::placeholder,
-input[type="password"]::placeholder {
+input[type="password"]::placeholder,
+input[type="text"]::placeholder {
     color: #666;
 }
 
-
 input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="text"]:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
-
-button[type="submit"] {
+/* 按鈕 */
+button[type="submit"],
+.submit-btn {
     width: 100%;
     padding: 12px;
     background-color: #4A90E2;
@@ -62,26 +94,52 @@ button[type="submit"] {
     transition: background-color 0.3s;
 }
 
-
-button[type="submit"]:hover {
+button[type="submit"]:hover,
+.submit-btn:hover {
     background-color: #357ABD;
 }
 
-
-a {
-    color: #B4C6D9;
-    text-decoration: none;
+/* 切換標籤（可選） */
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
 }
 
-
-a:hover {
-    text-decoration: underline;
+.tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ccc;
+    text-align: center;
 }
 
+.tab.active {
+    color: #fff;
+    border-bottom: 2px solid #fff;
+    margin-bottom: -2px;
+}
 
-/* 註冊連結樣式 */
+/* 註冊連結 */
 .signup-link {
     margin-top: 20px;
     text-align: center;
     color: #B4C6D9;
+}
+
+.signup-link a {
+    color: #B4C6D9;
+    text-decoration: none;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+/* 隱藏元素 */
+.hidden {
+    display: none;
 }

@@ -1,6 +1,7 @@
 """
 URL configuration for mei_restaurant project.
 
+
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
 Examples:
@@ -16,9 +17,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/accounts/', include('accounts.urls')),
-    path('api/metro/', include('metro.urls')),
-]
+    path('api/', include('metro.urls')),  # metro 應用的 URL
+    path('api/accounts/', include('accounts.urls')),  # accounts 應用的 URL
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+
