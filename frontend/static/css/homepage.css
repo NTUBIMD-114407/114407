@@ -22,8 +22,33 @@ body {
     flex-direction: column;
     position: relative;
     min-height: 100vh;
-    padding-bottom: 60px; /* 確保內容不被 footer 擋住 */
+    padding-bottom: 80px; /* 確保內容不被 footer 擋住 */
 }
+.title-with-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px; /* 圖片與文字的間距 */
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50px
+}
+
+.title-text h1 {
+  font-size: 40px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.title-text span {
+  display: block;
+  font-size: 36px;
+  font-weight: bold;
+}
+
 
 /* 紅色區塊 - 頂部搜尋列 */
 .header {
@@ -55,20 +80,21 @@ body {
     cursor: pointer;
 }
 
-/* 黃色區塊 - 捷運站圖片 */
 .station-image {
-    width: 100%; /* 讓圖片區塊寬度填滿整個容器 */
-    max-width: 100%;
-    height: auto; /* 讓高度自適應 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* 防止溢出 */
-    background: #D9D9D9;
-    border-radius: 0; /* 確保沒有圓角 */
-    margin-top: 10px;
-    padding: 0; /* 移除內邊距 */
+  padding: 1.5rem 1rem 1rem 1rem;
+  background-color: #f8f8f8;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 1rem auto 0 auto;  /* 這裡置中 */
+  max-height: 400px;
+  width: 360px;
+  overflow-y: auto;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 15px;
+  color: #333;
 }
+
+
 
 .station-image img {
     width: 100%; /* 讓圖片寬度填滿整個區塊 */
@@ -150,48 +176,61 @@ body {
 
 /* 紫色區塊 - 底部導航列 */
 .footer {
-    display: flex;
-    justify-content: space-around;
-    padding: 12px;
-    background: #A9BBCB;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    max-width: 400px;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  background: #A9BBCB;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0; /* 改這裡 */
+  transform: none; /* 移除置中偏移 */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
 
+
 .nav-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  text-decoration: none;
 }
 
 .nav-btn img {
-    width: 24px; /* 設定圖片寬度 */
-    height: 24px; /* 設定圖片高度 */
-    margin-bottom: 4px; /* 圖片與文字間距 */
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  transition: none; /* 禁止變大或動畫 */
+}
+
+.nav-btn span {
+  text-decoration: none;
 }
 
 .nav-btn.active {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+  background: white;
+  color: #1E3A5F;
+  text-decoration: none;
 }
+
+
 
 .search-bar {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 360px;
     gap: 8px;
-    margin-top: 15px;
+    margin: 1rem auto 0 auto;  /* 這裡置中 */
+    border-radius: 25px;
   }
   
   .search-bar input {
@@ -199,7 +238,7 @@ body {
     border-radius: 25px;
     border: 1px solid #ccc;
     font-size: 14px;
-    width: 150px;
+    width: 120px;
   }
   
   .search-bar button {
@@ -211,6 +250,27 @@ body {
     font-size: 16px;
     cursor: pointer;
   }
+  #search-btn {
+  padding: 8px 15px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  background-color: #f2f2f2;
+  font-size: 11px;
+  color: #333;
+  cursor: pointer;
+  height: auto;
+  width: auto;
+  /* ✅ 確保是橫排 */
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+}
+
+#search-btn:hover {
+  background-color: #e0e0e0;
+}
+
   .awesomplete ul {
     max-height: 250px;
     overflow-y: auto;
@@ -240,5 +300,242 @@ body {
     background-color: #0072bc;
     color: white;
   }
-
+  .station-image {
+    padding: 0;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-top: 1rem;
+    max-height: 400px;
+    width: 360px;
+    overflow-y: auto;
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 15px;
+    color: #333;
+  }
   
+  .result-section {
+    margin-bottom: 1.5rem;
+    background-color: #ffffff;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .result-section:hover {
+    background-color: #f0f7ff;
+  }
+  
+  .train-info {
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 0.5rem;
+  }
+  
+  .train-info:last-child {
+    border-bottom: none;
+  }
+  
+  .train-info p {
+    margin: 0.3rem 0;
+    line-height: 1.4;
+  }
+  
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #0072bc;
+    font-size: 18px;
+    border-bottom: 2px solid #0072bc;
+    padding-bottom: 0.3rem;
+  }
+  .shop-item {
+    background-color: #2b4d78;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    max-width: 320px;
+    box-sizing: border-box;
+    margin: 10px auto;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .shop-item img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .shop-item p {
+    margin: 4px 0;
+  }
+  a.nav-btn {
+  text-decoration: none;
+}
+  .result-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.result-container h3 {
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.station-info {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+  
+}
+
+.station {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.label {
+    color: #666;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.value {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.station-id {
+    color: #666;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.route-section {
+    margin: 15px 0;
+}
+
+.route-section h4 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.route-path {
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.station-node {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.station-dot {
+    width: 12px;
+    height: 12px;
+    background: #007bff;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.station-node.transfer .station-dot {
+    background: #28a745;
+    width: 16px;
+    height: 16px;
+}
+
+.station-node.last .station-dot {
+    background: #dc3545;
+}
+
+.station-name {
+    font-size: 14px;
+    color: #495057;
+}
+
+.station-line {
+    width: 40px;
+    height: 2px;
+    background: #007bff;
+    margin: 0 5px;
+}
+
+.transfer-path {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    line-height: 1.6;
+}
+
+.time {
+    font-size: 18px;
+    color: #28a745;
+    font-weight: bold;
+}
+.result-section {
+  padding: 1rem 16px;
+}
+
+.train-title {
+  color: #1e3a5f;
+  font-size: 20px;
+  margin-bottom: 15px;
+  
+  padding-left: 12px;
+}
+
+.train-card {
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin: 16px 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  
+}
+
+
+.train-card:hover {
+  transform: scale(1.01);
+}
+
+.train-line {
+  display: none;
+}
+
+.train-content {
+  padding: 8px 12px;
+  color: #333;
+  font-size: 15px;
+  line-height: 1.8;
+  width: 100%;
+}
+
+
+.train-content p {
+  margin: 6px 0;
+}
+

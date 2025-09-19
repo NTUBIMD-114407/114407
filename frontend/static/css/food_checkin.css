@@ -1,0 +1,217 @@
+/* 全域設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #e6f0ea;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+  background-color: white;
+  padding-bottom: 30px;
+}
+
+/* 頂部灰色橫條與返回 */
+.banner {
+  background-color: #c3d9e3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+
+.back-icon {
+  width: 24px;
+  height: auto;
+  margin-left: 10px;
+  border-radius: 50px;
+}
+
+.personal-btn {
+  background-color: white;
+  color: #3a3a3a;
+  font-size: 12px;
+  border-radius: 20px;
+  border: 1px solid #999;
+  padding: 4px 10px;
+}
+
+/* 美食任務介紹區塊（含背景圖） */
+.intro-with-bg {
+  display: flex;
+  align-items: flex-start;     /* ✅ 文字從上對齊 */
+  justify-content: flex-start; /* ✅ 內容靠左 */
+  position: relative;
+  width: 100%;
+  background-image: url("/圖片/food_checkin.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  padding: 20px 20px 20px;
+  box-sizing: border-box;
+}
+
+
+/* 任務內容卡片區塊 */
+.intro-card {
+  background-color: transparent;
+  padding: 0;
+  color: #333;
+  text-align: start;
+  width: fit-content;     /* ✅ 文字區域不占滿寬度 */
+  max-width: 50%;         /* ✅ 控制寬度，不超出背景圖 */
+  margin-left: 0px;      /* ✅ 加一點左側空隙 */
+}
+
+
+.intro-card h1 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #1e2f45;
+}
+
+.intro-card p {
+  font-size: 11px;                /* ✅ 字體變小 */
+  line-height: 1.6;
+  margin-bottom: px;
+}
+
+.tag-wrapper {
+  margin-top: 10px;
+  margin-left: 50px;
+}
+
+.tag {
+  background-color: #fff;
+  color: #ff6f61;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+
+
+/* 任務規則區塊 */
+.rules {
+  background-color: #e0ebef;
+  padding: 20px;
+  border-radius: 20px;
+  margin: 20px;
+}
+
+.rules h2 {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.rules ul {
+  padding-left: 20px;
+  color: #444;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* 表單區 */
+.form {
+  background-color: #b6cfdc;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  width: 90px;
+  font-size: 14px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.form-group input,
+.form-group textarea {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 14px;
+  background-color: white;
+}
+
+textarea {
+  resize: none;
+}
+
+.stars {
+  font-size: 18px;
+  color: gold;
+}
+
+.file-wrapper input[type="file"] {
+  width: 100%;
+  background-color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+}
+
+/* 提交按鈕 */
+.submit-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.submit-btn {
+  background-color: #b6cfdc;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+}
+.awesomplete > ul {
+  max-height: 200px; /* 可調整高度 */
+  overflow-y: auto; /* 垂直滾動條 */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  z-index: 9999; /* 確保蓋過其他元素 */
+}
+
+.awesomplete > ul > li {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.awesomplete > ul > li:hover,
+.awesomplete > ul > li[aria-selected="true"] {
+  background-color: #e6f5f1;
+}

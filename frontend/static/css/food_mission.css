@@ -1,0 +1,114 @@
+/* 全域設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+body {
+  background-color: #e6f0ea;
+  padding: 0 16px 40px;
+}
+
+/* 上方導覽列 */
+.top-bar {
+  background-color: #c3d9e3;
+  padding: 10px 12px;
+}
+
+.back-link {
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.page-title {
+  text-align: center;
+  background-color: #1e2f45;
+  color: white;
+  padding: 12px;
+  margin-top: 20px;
+  border-radius: 30px;
+  font-size: 20px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 卡片區塊 */
+.card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 16px;
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* 圖片區 */
+.img-box {
+  width: 100px;
+  height: 145px;
+  background-color: #ccc;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* 店家資訊區 */
+.info {
+  flex: 1;
+}
+
+.info h2 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.star-label {
+  background-color: #f9c72b;
+  color: white;
+  font-size: 13px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
+
+.count {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 關鍵字標籤 */
+.tags {
+  display: flex;
+  flex-wrap: nowrap;  /* ❗強制不換行 */
+  overflow-x: auto;   /* 加橫向捲軸（如果真的塞不下） */
+  gap: 6px;
+  margin-top: 15px;
+}
+
+
+.tags button {
+padding: 4px 5px;
+font-size: 13px;
+border: 1px solid #ccc;
+border-radius: 12px;
+background-color: white;
+color: #333;
+white-space: nowrap;
+}
+.back-icon {
+  width: 24px;
+  height: auto;
+  margin-left: 10px;
+}
