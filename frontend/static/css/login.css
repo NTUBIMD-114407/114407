@@ -53,7 +53,11 @@ h1 {
 =======
     font-size: 40px;
     margin-bottom: 10px;
+<<<<<<< HEAD
 >>>>>>> f159936 (前端1.3)
+=======
+>>>>>>> origin/main
+>>>>>>> origin/main
     text-align: center;
 }
 
@@ -121,6 +125,11 @@ button[type="submit"]:hover,
     border-bottom: 2px solid #e0e0e0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> origin/main
+>>>>>>> origin/main
 }
 
 .tab {
@@ -146,8 +155,11 @@ button[type="submit"]:hover,
     text-align: center;
     color: #B4C6D9;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
+=======
+>>>>>>> origin/main
 }
 
 .signup-link a {
@@ -163,6 +175,7 @@ button[type="submit"]:hover,
 .hidden {
     display: none;
 }
+<<<<<<< HEAD
 >>>>>>> f159936 (前端1.3)
 =======
 }
@@ -229,3 +242,5 @@ button[type="submit"]:hover,
 >>>>>>> f159936 (前端1.3)
 =======
 >>>>>>> f159936 (前端1.3)
+=======
+>>>>>>> origin/main
