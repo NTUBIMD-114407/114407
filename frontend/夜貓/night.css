@@ -1,328 +1,316 @@
-/* 全域設定 */
+/* ========= 通用 RWD 版心 ========= */
+:root { --app-max: 480px; }              /* 可調 400/440/480… */
+
+.rwd-container {
+  width: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  padding: 0 12px;                       /* 邊界留白避免貼邊 */
+}
+
+/* 平板 */
+@media (min-width: 768px) {
+  :root { --app-max: 720px; }
+  .rwd-container { padding: 0 20px; }
+}
+/* 桌機 */
+@media (min-width: 1024px) {
+  :root { --app-max: 960px; }
+  .rwd-container { padding: 0 24px; }
+}
+/* 大桌機 */
+@media (min-width: 1440px) {
+  :root { --app-max: 1200px; }
+}
+
+/* ========= 全域設定 ========= */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #262245;
-    font-family: Arial, sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
+  background-color: #262245;
+  font-family: Arial, sans-serif;
+  color: white;
+  display: flex;                 /* 置中版心 */
+  justify-content: center;
 }
 
+/* 版心容器（讓絕對定位元素可依版心定位） */
 .container {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
+  position: relative;
+  width: 100%;
+  max-width: var(--app-max);
+  padding: 20px;
+}
+
+/* ====== 返回鍵與 LOGO：以版心為基準定位 ====== */
+.back-button {
+  position: absolute;            /* 以 .container 為基準 */
+  top: 20px;
+  left: 20px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+}
+.back-button:hover { background-color: #e0e0e0; }
+.back-button img { width: 20px; height: 20px; }
+
+.header {                           /* 預留空間給返回鍵與 Logo */
+  position: relative;
+  padding-top: 100px;
+}
+
+.site-logo {
+  position: absolute;               /* 以 .header 為基準 */
+  top: 50px;
+  left: 50px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 10;
 }
 
 /* 標題 */
 .title {
-    text-align: right;
-    font-weight: bold;
-    font-size: 30px;         /* 字變大 */
-    margin-top: 30px;        /* 往下移離最上面 */
-    margin-bottom: 5px;
-    padding-right: 10px;     /* 靠右縮排（可調整） */
+  text-align: right;
+  font-weight: bold;
+  font-size: 30px;
+  margin-top: 30px;
+  margin-bottom: 5px;
+  padding-right: 10px;
 }
-
 .subtitle {
-    text-align: right;
-    font-size: 22px;         /* 字稍微大一點 */
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-    padding-right: 10px;
+  text-align: right;
+  font-size: 22px;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  padding-right: 10px;
 }
-
 
 /* 搜尋列 */
 .search-bar {
-    display: flex;
-    align-items: center;
-    background: white;
-    border-radius: 20px;
-    padding: 5px 12px;
-    margin: 30px 10px 20px 10px;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin: 30px 10px 20px 10px;
 }
-
 .search-bar img {
-    width: 16px;
-    height: 16px;
-    margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
 }
-
 
 /* 推薦美食 */
 .recommend-section {
-    width: 100%;
-    padding: 0; /* 移除多餘內距 */
-    margin: 0;
-  }
-  
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
 
-  
-  /* 美食卡片容器：橫向滑動、整體與地圖等寬 */
-  .recommend-container {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding-bottom: 10px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .recommend-container::-webkit-scrollbar {
-    display: none; /* 隱藏滾動條 */
-  }
-  
-  .food-card {
-    flex: 0 0 auto;
-    width: 160px;              /* 每張卡片固定寬度 */
-    height: 220px;
-    background: #D9D9D9;
-    border-radius: 10px;
-    padding: 10px;
-    scroll-snap-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
+/* 美食卡片容器：橫向滑動、與版心等寬 */
+.recommend-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.recommend-container::-webkit-scrollbar { display: none; }
 
-  
-  /* 圖片容器（新增） */
-  .food-card .image-box {
-    width: 100%;
-    height: 80px;               /* 圖片高度 */
-    background: #99A3BA;       /* 預設背景，之後可改成圖片 */
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .food-card p {
-    font-size: 15px;
-    margin: 3px 0;
-    color: black;
-    text-align: center;
-  }
-  
-  .food-card .stars {
-    text-align: center;
-    margin: 5px 0;
-  }
-  
-  .food-card .more-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 12px;
-    margin: 0 auto;
-    display: block;
-  }
-  
+.food-card {
+  flex: 0 0 auto;
+  width: 160px;
+  height: 220px;
+  background: #D9D9D9;
+  border-radius: 10px;
+  padding: 10px;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 圖片容器 */
+.food-card .image-box {
+  width: 100%;
+  height: 80px;
+  background: #99A3BA;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.food-card .image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.food-card p {
+  font-size: 15px;
+  margin: 3px 0;
+  color: black;
+  text-align: center;
+}
+.food-card .stars {
+  text-align: center;
+  margin: 5px 0;
+}
+.food-card .more-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 0 auto;
+  display: block;
+}
 
 /* Google 地圖 */
 .map {
-    width: 100%;
-    height: 200px;
-    background: #99A3BA;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    text-align: center;
-    line-height: 200px;
-    font-weight: bold;
+  width: 100%;
+  height: 200px;
+  background: #99A3BA;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  line-height: 200px;
+  font-weight: bold;
 }
 
 /* 末班車資訊 */
 .late-night h3 {
-    font-size: 14px;
-    margin-left: 20px;   /* 對齊下拉選單 */
-    margin-bottom: 12px;
-  }
-  
-  /* 下拉選單 + 確定 */
-  .station-selector {
-    padding-left: 20px; /* 讓選單與標題對齊 */
-    margin-bottom: 10px;
-  }
-  
-  .station-selector select {
-    width: 90%;               /* 改為 90%，讓它更長 */
-    max-width: 350px;         /* 讓它可以更寬一點 */
-    padding: 8px 12px;
-    border-radius: 20px;
-    border: none;
-    background: #A9BBCB;
-    color: white;
-    font-size: 14px;
-    appearance: none;
-    text-align: left;
-    padding-left: 20px;
-    margin-bottom: 12px;
-    box-sizing: border-box;   /* 確保 padding 不影響寬度 */
-  }
-  
-  .confirm-btn {
-    display: block;
-    margin: 0 auto;
-    padding: 5px 20px;
-    background: #A9BBCB;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    font-size: 14px;
-  }
-  
-    
+  font-size: 14px;
+  margin-left: 20px;    /* 對齊下拉選單 */
+  margin-bottom: 12px;
+}
+/* 下拉選單 + 確定 */
+.station-selector {
+  padding-left: 20px;   /* 讓選單與標題對齊 */
+  margin-bottom: 10px;
+}
+.station-selector select {
+  width: 90%;
+  max-width: 350px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: none;
+  background: #A9BBCB;
+  color: white;
+  font-size: 14px;
+  appearance: none;
+  text-align: left;
+  padding-left: 20px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+.confirm-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 5px 20px;
+  background: #A9BBCB;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+}
 
 /* 車站資訊 */
 .late-info {
-    padding: 0 20px;
-    margin-top: 20px;
-    margin-bottom: 60px;  /* ✅ 增加底部空間，讓畫面更好滑 */
-    text-align: left;
-  }
-  
-  .late-info p {
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  .trains {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 40px; /* ✅ 增加水平與垂直間距 */
-    font-size: 14px;
-    justify-content: flex-start;
-  }
-  .popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-  }
-  .restaurant-detail {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
-    position: relative;
-  }
-  .close-btn {
-    margin-top: 15px;
-    background-color: #ff5c5c;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  
-  .popup-card {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    width: 220px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    font-family: "微軟正黑體", sans-serif;
-  }
-  
-  .popup-card h3 {
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .popup-content p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #555;
-  }
-  
-  .stars {
-    margin: 10px 0;
-    font-size: 18px;
-  }
-  
-  .icons {
-    margin-top: 10px;
-  }
-  
-  .icons .icon {
-    width: 24px;
-    height: 24px;
-    margin: 0 5px;
-  }
-  
-  .back-btn {
-    margin-top: 15px;
-    padding: 8px 20px;
-    background-color: #2E90FA;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .back-button {
+  padding: 0 20px;
+  margin-top: 20px;
+  margin-bottom: 60px;  /* 底部空間，滑動更順 */
+  text-align: left;
+}
+.late-info p {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.trains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 40px;
+  font-size: 14px;
+  justify-content: flex-start;
+}
+
+/* Popup */
+.popup {
   position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 999;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s;
-}
-
-.back-button:hover {
-  background-color: #e0e0e0;
-}
-
-.back-button img {
-  width: 20px;
-  height: 20px;
-}
-
-.site-logo {
-  position: fixed;
-  top: 40px;
-  left: 65px;
-  width: 100px;         /* 建議寬度 */
-  height: 100px;        /* 建議高度 */
   z-index: 999;
-  border-radius: 50%;  /* 圓形外觀 */
-  object-fit: cover;   /* 保持圖片比例並填滿容器 */
 }
-
+.restaurant-detail {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: var(--app-max);
+  position: relative;
+}
+.close-btn {
+  margin-top: 15px;
+  background-color: #ff5c5c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.popup-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  font-family: "微軟正黑體", sans-serif;
+}
+.popup-card h3 { margin-bottom: 10px; color: #333; }
+.popup-content p { margin: 5px 0; font-size: 14px; color: #555; }
+.stars { margin: 10px 0; font-size: 18px; }
+.icons { margin-top: 10px; }
+.icons .icon { width: 24px; height: 24px; margin: 0 5px; }
+.back-btn {
+  margin-top: 15px;
+  padding: 8px 20px;
+  background-color: #2E90FA;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+}

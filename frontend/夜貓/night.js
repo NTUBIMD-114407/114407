@@ -322,11 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <p>${item.stations ? item.stations.join('、') : '捷運站未知'}</p>
         <p><strong>營業時間：</strong><br>${businessHoursText}</p>
         <div class="stars">${generateStars(item.rating)}</div>
-        <div class="icons">
-          <img src="圖片/map.png" alt="地圖" class="icon">
-          <img src="圖片/ubike.png" alt="Ubike" class="icon">
-          <img src="圖片/walk.png" alt="步行" class="icon">
-        </div>
+      
         <button class="back-btn">BACK</button>
       </div>
     `;

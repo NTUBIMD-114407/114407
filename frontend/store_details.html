@@ -22,45 +22,47 @@
   </style>
 </head>
 <body>
-  <header class="top-bar">
-    <a href="food_mission.html" class="back-link">
-      <span class="back-icon">🔙</span> 返回
-    </a>
-  </header>
+  <div class="rwd-container">
+    <header class="top-bar">
+      <a href="food_mission.html" class="back-link">
+        <span class="back-icon">🔙</span> 返回
+      </a>
+    </header>
 
-  <main class="store-container">
-    <section class="store-info">
-      <div class="store-image"></div>
-      <div class="store-text">
-        <h2 class="store-name">店家</h2>
-        <div class="rating-line">
-          <span class="star-tag">評論星數</span>
-          <span class="review-count">(評論則數)</span>
+    <main class="store-container">
+      <section class="store-info">
+        <div class="store-image"></div>
+        <div class="store-text">
+          <h2 class="store-name">店家</h2>
+          <div class="rating-line">
+            <span class="star-tag">評論星數</span>
+            <span class="review-count">(評論則數)</span>
+          </div>
+          <div class="tags">
+            <button>均消$XX</button>
+            <button>關鍵字1</button>
+            <button>關鍵字2</button>
+            <button>關鍵字3</button>
+          </div>
+          <p class="address">店家地址｜</p>
         </div>
-        <div class="tags">
-          <button>均消$XX</button>
-          <button>關鍵字1</button>
-          <button>關鍵字2</button>
-          <button>關鍵字3</button>
-        </div>
-        <p class="address">店家地址｜</p>
+      </section>
+
+      <div class="action-buttons">
+        <button class="google-btn">🔍 Google評論</button>
+        <button class="book-btn">📅 線上訂位</button>
+        <button class="share-btn">🔗 分享餐廳</button>
       </div>
-    </section>
 
-    <div class="action-buttons">
-      <button class="google-btn">🔍 Google評論</button>
-      <button class="book-btn">📅 線上訂位</button>
-      <button class="share-btn">🔗 分享餐廳</button>
-    </div>
+      <div class="map-box">
+        <div id="map"></div>
+      </div>
 
-    <div class="map-box">
-      <div id="map"></div>
-    </div>
-
-    <section class="review-title">
-      <h3>美食打卡任務版｜評論區</h3>
-    </section>
-  </main>
+      <section class="review-title">
+        <h3>美食打卡任務版｜評論區</h3>
+      </section>
+    </main>
+  </div>
 
   <script src="/static/js/food_mission/detail.js"></script>
   <script>
@@ -77,12 +79,13 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsegtCG2ucAQ_Hrbf_YXL3QhUUM_roMtQ&libraries=places" async defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        if (isLoggedIn !== 'true') {
-            alert('請先登入！');
-            window.location.href = 'login.html'; // 跳回登入頁
-        }
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      if (isLoggedIn !== 'true') {
+        alert('請先登入！');
+        window.location.href = 'login.html';
+      }
     });
-    </script>
+  </script>
 </body>
+
 </html>

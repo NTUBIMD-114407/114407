@@ -1,4 +1,29 @@
-/* 全域設定 */
+/* ========= 通用 RWD 版心 ========= */
+:root { --app-max: 480px; }              /* 可改 400/440/480… */
+
+.rwd-container {
+  width: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  padding: 0 12px;                       /* 邊界留白避免貼邊 */
+}
+
+/* 平板 */
+@media (min-width: 768px) {
+  :root { --app-max: 720px; }
+  .rwd-container { padding: 0 20px; }
+}
+/* 桌機 */
+@media (min-width: 1024px) {
+  :root { --app-max: 960px; }
+  .rwd-container { padding: 0 24px; }
+}
+/* 大桌機 */
+@media (min-width: 1440px) {
+  :root { --app-max: 1200px; }
+}
+
+/* ========= 全域設定 ========= */
 * {
   margin: 0;
   padding: 0;
@@ -8,7 +33,9 @@
 
 body {
   background-color: #e6f0ea;
-  padding: 0 16px 40px;
+  display: flex;                 /* 置中版心 */
+  justify-content: center;
+  padding: 0 0 40px;             /* 保留原本底部 40px */
 }
 
 /* 上方導覽列 */
@@ -24,6 +51,13 @@ body {
   font-weight: bold;
 }
 
+.back-icon {
+  width: 24px;
+  height: auto;
+  margin-left: 10px;
+}
+
+/* 頁面標題 */
 .page-title {
   text-align: center;
   background-color: #1e2f45;
@@ -59,9 +93,7 @@ body {
 }
 
 /* 店家資訊區 */
-.info {
-  flex: 1;
-}
+.info { flex: 1; }
 
 .info h2 {
   font-size: 16px;
@@ -91,24 +123,19 @@ body {
 /* 關鍵字標籤 */
 .tags {
   display: flex;
-  flex-wrap: nowrap;  /* ❗強制不換行 */
-  overflow-x: auto;   /* 加橫向捲軸（如果真的塞不下） */
+  flex-wrap: nowrap;        /* 不換行 */
+  overflow-x: auto;         /* 超出時橫向捲動 */
   gap: 6px;
   margin-top: 15px;
+  -webkit-overflow-scrolling: touch; /* 行動裝置滑動更順 */
 }
-
 
 .tags button {
-padding: 4px 5px;
-font-size: 13px;
-border: 1px solid #ccc;
-border-radius: 12px;
-background-color: white;
-color: #333;
-white-space: nowrap;
-}
-.back-icon {
-  width: 24px;
-  height: auto;
-  margin-left: 10px;
+  padding: 4px 5px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: white;
+  color: #333;
+  white-space: nowrap;
 }

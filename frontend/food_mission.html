@@ -5,22 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>北捷美食任務版</title>
   <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="static\css\food_mission.css">
+  <!-- 修正為正斜線 / -->
+  <link rel="stylesheet" href="static/css/food_mission.css">
 </head>
 <body>
-  <header class="top-bar">
-    <a href="food_checkin.html" class="back-link">
-      <img src="圖片/arrows.jpg" alt="返回" class="back-icon" />
-      <span>返回打卡任務</span>
-    </a>
-  </header>
+  <!-- 新增 rwd-container，統一控寬置中 -->
+  <div class="rwd-container">
+    <header class="top-bar">
+      <a href="food_checkin.html" class="back-link">
+        <img src="圖片/arrows.jpg" alt="返回" class="back-icon" />
+        <span>返回打卡任務</span>
+      </a>
+    </header>
 
-  <h1 class="page-title">北捷美食任務版</h1>
+    <h1 class="page-title">北捷美食任務版</h1>
 
+    <!-- 展示更多店家卡片可繼續補上 -->
+  </div>
 
-  <!-- 展示更多店家卡片可繼續補上 -->
+  <script src="static/js/food_mission/mission.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w&libraries=places" async defer></script>
 </body>
-<script src="static/js/food_mission/mission.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsegtCG2ucAQ_Hrbf_YXL3QhUUM_roMtQ&libraries=places" async defer></script>
-
 </html>

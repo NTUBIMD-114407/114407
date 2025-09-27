@@ -1,0 +1,222 @@
+/* ===== 參數（只改這裡就能微調） ===== */
+.bars-page{
+  --app-max: 420px;   /* 版心寬（手機） */
+  --pad-x: 12px;      /* 左右內距 */
+  --gap-top: 16px;    /* 膠囊與頂部距離 */
+
+  /* 色系（與截圖一致） */
+  --bg: #262245;      /* 深藍底 */
+  --topbar: #c3d9e3;  /* 頂部灰藍 */
+  --pill: #b9d1dd;    /* 膠囊底色 */
+  --text: #ffffff;    /* 主文字 */
+  --muted: #dfe7f2;   /* 次文字 */
+  --yellow: #f9c72b;  /* 黃色 pill */
+  --graypill: #dde5ef;/* 灰 pill */
+  --ink: #1e2f45;     /* 深藍字 */
+
+  --back-size: 36px;  /* 返回圓鈕尺寸 */
+  --back-icon: 20px;  /* 返回箭頭尺寸 */
+
+  --thumb-w: 148px;   /* 左側縮圖寬 */
+  --thumb-h: 148px;   /* 左側縮圖高 */
+}
+
+/* 深色背景強制生效，避免全站 CSS 蓋掉 */
+html, body { background: #262245; }
+body.bars-scope { background-color: #262245 !important; }
+
+/* Reset（只作用在本頁） */
+.bars-page, .bars-page * { box-sizing: border-box; }
+.bars-page img { display: block; max-width: 100%; height: auto; }
+.bars-page a { color: inherit; text-decoration: none; }
+
+/* 版心容器 */
+.rwd-container{
+  width: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  padding: 0 var(--pad-x) 56px var(--pad-x);
+  min-height: 100vh;
+  color: var(--text);
+}
+
+/* 頂部條＋返回 */
+.bp-topbar{
+  height: 56px;
+  background: var(--topbar);
+  position: static !important;
+  top: auto !important;
+  margin: 0 calc(-1 * var(--pad-x)); /* 滿版 */
+  padding: 0 var(--pad-x);
+  display: flex; align-items: center;
+}
+.bp-back{
+  width: var(--back-size); height: var(--back-size);
+  border-radius: 50%;
+  background: rgba(255,255,255,.95);
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+.bp-back img{ width: var(--back-icon); height: var(--back-icon); }
+
+/* 中央膠囊標題 */
+.bp-title-pill{
+  margin: var(--gap-top) auto 18px auto;
+  width: 86%;
+  background: var(--pill);
+  border-radius: 999px;
+  text-align: center;
+  padding: 14px 18px;
+}
+.bp-title-pill h1{
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 10px;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* 列表 */
+.bp-list{ display: flex; flex-direction: column; gap: 26px; }
+
+/* 卡片（左圖右文固定欄寬，不跑版） */
+/* 讓卡片用 Flex，兩欄自然等高 */
+.bp-card{
+  display: flex;          /* 覆蓋原本的 grid */
+  gap: 16px;
+  align-items: stretch;   /* 讓左右兩欄高度一致 */
+}
+
+/* 左側縮圖：固定寬，等高跟著伸展 */
+.bp-thumb{
+  flex: 0 0 var(--thumb-w);
+  width: var(--thumb-w);
+  min-height: var(--thumb-h);
+  height: auto;                 /* 確保可被 stretch */
+  background: #d9d9d9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 右側內容：佔滿剩餘寬度 */
+.bp-info{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 若有放圖片，鋪滿容器 */
+.bp-thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+
+/* 右側文字區 */
+.bp-info{ min-width: 0; } /* 避免長字擠爆 */
+.bp-name{ margin: 0 0 8px; font-size: 18px; font-weight: 700; }
+.bp-reviews{ font-weight: 400; color: var(--muted); }
+.bp-row{ margin: 6px 0 12px; }
+.bp-meta{ margin: 8px 0; font-size: 14px; color: var(--muted); }
+
+/* pill 樣式 */
+.bp-pill{
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.bp-pill-yellow{ background: var(--yellow); color: #333; font-weight: 700; }
+.bp-pill-gray{ background: var(--graypill); color: var(--ink); }
+
+/* 導航 + 距離 */
+.bp-actions{
+  margin-top: 10px;
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+.bp-btn-nav{
+  display: inline-flex; align-items: center;
+  background: #fff; color: var(--ink);
+  padding: 7px 14px 7px 10px;
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  font-weight: 700; font-size: 14px;
+}
+.bp-btn-nav::before{
+  content: "➤";
+  width: 20px; height: 20px; margin-right: 8px;
+  border-radius: 50%; background: var(--ink);
+  color: #fff; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; line-height: 1;
+}
+
+/* 讓「評論星數」與（評論則數）同一行並排 */
+.bp-row-rating{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;          /* pill 與（評論則數）的間距 */
+  margin: 6px 0 10px;
+}
+.bp-row-rating .bp-reviews{
+  color: var(--muted);     /* 和設計稿一樣較淡 */
+  font-weight: 600;        /* 視覺平衡，可調整 */
+  white-space: nowrap;
+}
+
+/* 確保「導航」字色與距離 pill 一樣（= var(--ink)） */
+.bp-btn-nav{
+  color: var(--ink) !important;
+}
+
+/* 若曾被其他樣式擠掉文字，這兩行可確保空間夠用 */
+.bp-btn-nav{
+  min-width: 64px;
+  gap: 8px;
+}
+
+/* ========== Bars card：左右同高 ========== */
+:root{
+  --bar-thumb-w: 150px;     /* 左側縮圖寬度：要更寬就改這裡 */
+  --bar-card-min-h: 180px;  /* 卡片最低高度：依需求調整 */
+}
+
+/* 卡片容器（你的容器 class 若不同，請把 .bar-card 換成你的） */
+.bar-card{
+  display: grid;
+  grid-template-columns: var(--bar-thumb-w) 1fr; /* 左圖固定寬 + 右側自適應 */
+  align-items: stretch;                           /* 讓兩欄「一樣高」 */
+  gap: 16px;
+  padding: 10px 16px 20px;                       /* 可照你原本的 */
+}
+
+/* 左側縮圖容器（你的縮圖 class 若不同，請把 .image-box 換成你的） */
+.bar-card .image-box{
+  height: 100%;                 /* ✅ 關鍵：跟著整張卡片高度 */
+  min-height: var(--bar-card-min-h);
+  border-radius: 10px;
+  background: #d9d9d9;
+  overflow: hidden;
+}
+
+/* 真的放圖片時確保填滿 */
+.bar-card .image-box img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 右側資訊區（可選） */
+.bar-card .info{
+  display: flex;
+  flex-direction: column;
+}
+
+/* 右側的按鈕列如需貼底，可用這個（可選） */
+.bar-card .actions{
+  margin-top: 12px;     /* 或改成 margin-top:auto; 讓按鈕貼底 */
+}
+
+/* 若你的舊樣式曾把 image-box 寫死高度，這裡強制覆蓋 */
+.image-box{ height: 100% !important; }  /* 只加在 bars 的 CSS 裡就好 */

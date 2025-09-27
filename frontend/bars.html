@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>酒吧 & 夜店</title>
+  <link rel="stylesheet" href="static/css/bars.css">
+  <style>
+    .bars-page{--app-max:420px;--pad-x:12px;--gap-top:16px;
+      --bg:#262245;--topbar:#c3d9e3;--pill:#b9d1dd;--text:#fff;
+      --muted:#dfe7f2;--yellow:#f9c72b;--graypill:#dde5ef;--ink:#1e2f45;
+      --back-size:36px;--back-icon:20px;--thumb-w:148px;--thumb-h:148px;}
+    html,body{background:#262245;} body.bars-scope{background-color:#262245!important;}
+    .bars-page,.bars-page *{box-sizing:border-box;}
+    .bars-page img{display:block;max-width:100%;height:auto;}
+    .bars-page a{color:inherit;text-decoration:none;}
+    .rwd-container{width:100%;max-width:var(--app-max);margin:0 auto;
+      padding:0 var(--pad-x) 56px;min-height:100vh;color:var(--text);}
+    .bp-topbar{height:56px;background:var(--topbar);position:sticky;top:0;z-index:5;
+      margin:0 calc(-1*var(--pad-x));padding:0 var(--pad-x);display:flex;align-items:center;}
+    .bp-back{width:var(--back-size);height:var(--back-size);border-radius:50%;
+      background:rgba(255,255,255,.95);display:inline-flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 6px rgba(0,0,0,.2);}
+    .bp-back img{width:var(--back-icon);height:var(--back-icon);}
+    .bp-title-pill{margin:var(--gap-top) auto 12px;width:86%;background:var(--pill);
+      border-radius:999px;text-align:center;padding:14px 18px;}
+    .bp-title-pill h1{margin:0;font-size:28px;letter-spacing:10px;font-weight:800;color:#fff;}
+    /* 下拉選單區 */
+    .bp-controls{width:86%;margin:0 auto 18px auto;}
+    .bp-controls label{display:block;font-size:14px;color:var(--muted);margin:0 0 6px;}
+    .bp-controls select{width:100%;padding:10px 12px;border-radius:12px;border:0;outline:none;}
+    .bp-list{display:flex;flex-direction:column;gap:26px;}
+    .bp-card{display:grid;grid-template-columns:var(--thumb-w) 1fr;gap:16px;
+      align-items:start;min-height:var(--thumb-h);}
+    .bp-thumb{width:var(--thumb-w);height:var(--thumb-h);background:#d9d9d9;
+      border-radius:8px;overflow:hidden;flex-shrink:0;}
+    .bp-thumb img{width:100%;height:100%;object-fit:cover;object-position:center;}
+    .bp-info{min-width:0;}
+    .bp-name{margin:0 0 8px;font-size:18px;font-weight:700;}
+    .bp-reviews{font-weight:400;color:#dfe7f2;margin-left:8px;}
+    .bp-row{margin:6px 0 12px;}
+    .bp-meta{margin:8px 0;font-size:14px;color:#dfe7f2;}
+    .bp-pill{display:inline-block;border-radius:999px;padding:6px 12px;font-size:14px;white-space:nowrap;}
+    .bp-pill-yellow{background:#f9c72b;color:#333;font-weight:700;}
+    .bp-pill-gray{background:#dde5ef;color:#1e2f45;}
+    .bp-actions{margin-top:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+    .bp-btn-nav{display:inline-flex;align-items:center;background:#fff;color:#1e2f45;
+      padding:7px 14px 7px 10px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.15);
+      font-weight:700;font-size:14px;}
+    .bp-btn-nav::before{content:"➤";width:20px;height:20px;margin-right:8px;border-radius:50%;
+      background:#1e2f45;color:#fff;display:inline-flex;align-items:center;justify-content:center;
+      font-size:12px;line-height:1;}
+    .bp-empty{color:#bfc7d9;text-align:center;margin-top:20px;display:none;}
+  </style>
+</head>
+<body class="bars-scope">
+  <div class="bars-page rwd-container">
+    <header class="bp-topbar">
+      <a href="drinks.html" class="bp-back" aria-label="返回">
+        <img src="/frontend/圖片/arrow001.png" alt="返回">
+      </a>
+    </header>
+
+    <div class="bp-title-pill"><h1>酒 店 & 夜 店</h1></div>
+
+    <!-- 下拉選單：選擇捷運站 -->
+    <div class="bp-controls">
+      <label for="station-select">選擇捷運站</label>
+      <select id="station-select"></select>
+    </div>
+
+    <main class="bp-list" id="bar-list"></main>
+    <p class="bp-empty" id="empty-text">尚無資料</p>
+  </div>
+
+  <!-- 隱藏掛載點：讓 PlacesService 依附穩定 DOM -->
+  <div id="places-hook" style="display:none"></div>
+
+  <script>
+    /* =========================
+     *  紅線 / 藍線 全站座標
+     * ========================= */
+    const RED = {
+      "象山": { lat: 25.03283, lng: 121.569576 },
+      "台北101/世貿": { lat: 25.033102, lng: 121.563292 },
+      "信義安和": { lat: 25.033326, lng: 121.553526 },
+      "大安": { lat: 25.032943, lng: 121.543551 },
+      "大安森林公園": { lat: 25.033396, lng: 121.534882 },
+      "東門": { lat: 25.033847, lng: 121.528739 },
+      "中正紀念堂": { lat: 25.032729, lng: 121.51827 },
+      "台大醫院": { lat: 25.041256, lng: 121.51604 },
+      "台北車站": { lat: 25.046255, lng: 121.517532 },
+      "中山": { lat: 25.052685, lng: 121.520392 },
+      "雙連": { lat: 25.057805, lng: 121.520627 },
+      "民權西路": { lat: 25.062905, lng: 121.51932 },
+      "圓山": { lat: 25.071353, lng: 121.520118 },
+      "劍潭": { lat: 25.084873, lng: 121.525078 },
+      "士林": { lat: 25.093535, lng: 121.52623 },
+      "芝山": { lat: 25.10306, lng: 121.522514 },
+      "明德": { lat: 25.109721, lng: 121.518848 },
+      "石牌": { lat: 25.114523, lng: 121.515559 },
+      "唭哩岸": { lat: 25.120872, lng: 121.506252 },
+      "奇岩": { lat: 25.125491, lng: 121.501132 },
+      "北投": { lat: 25.131841, lng: 121.498633 },
+      "新北投": { lat: 25.136933, lng: 121.50253 },
+      "復興崗": { lat: 25.137474, lng: 121.485444 },
+      "忠義": { lat: 25.130969, lng: 121.47341 },
+      "關渡": { lat: 25.125633, lng: 121.467102 },
+      "竹圍": { lat: 25.13694, lng: 121.459479 },
+      "紅樹林": { lat: 25.154042, lng: 121.458872 },
+      "淡水": { lat: 25.167818, lng: 121.445561 }
+    };
+
+    const BLUE = {
+      "頂埔": { lat: 24.96012, lng: 121.4205 },
+      "永寧": { lat: 24.966726, lng: 121.436072 },
+      "土城": { lat: 24.973094, lng: 121.444362 },
+      "海山": { lat: 24.985339, lng: 121.448786 },
+      "亞東醫院": { lat: 24.998037, lng: 121.452514 },
+      "府中": { lat: 25.008619, lng: 121.459409 },
+      "板橋": { lat: 25.013618, lng: 121.462302 },
+      "新埔": { lat: 25.023738, lng: 121.468361 },
+      "江子翠": { lat: 25.03001, lng: 121.47239 },
+      "龍山寺": { lat: 25.03528, lng: 121.499826 },
+      "西門": { lat: 25.04209, lng: 121.508303 },
+      "善導寺": { lat: 25.044823, lng: 121.523208 },
+      "忠孝新生": { lat: 25.042356, lng: 121.532905 },
+      "忠孝復興": { lat: 25.041629, lng: 121.543767 },
+      "忠孝敦化": { lat: 25.041478, lng: 121.551098 },
+      "國父紀念館": { lat: 25.041349, lng: 121.557802 },
+      "市政府": { lat: 25.041171, lng: 121.565228 },
+      "永春": { lat: 25.040859, lng: 121.576293 },
+      "後山埤": { lat: 25.045055, lng: 121.582522 },
+      "昆陽": { lat: 25.050461, lng: 121.593268 },
+      "南港": { lat: 25.052116, lng: 121.606686 }
+    };
+
+    const STATIONS = { ...RED, ...BLUE };
+
+    // 讓選單按路線分組顯示（順序）
+    const ORDERED = {
+      "淡水信義線（紅）": [
+        "象山","台北101/世貿","信義安和","大安","大安森林公園","東門","中正紀念堂",
+        "台大醫院","台北車站","中山","雙連","民權西路","圓山","劍潭","士林","芝山",
+        "明德","石牌","唭哩岸","奇岩","北投","新北投","復興崗","忠義","關渡","竹圍","紅樹林","淡水"
+      ],
+      "板南線（藍）": [
+        "頂埔","永寧","土城","海山","亞東醫院","府中","板橋","新埔","江子翠",
+        "龍山寺","西門","善導寺","忠孝新生","忠孝復興","忠孝敦化","國父紀念館",
+        "市政府","永春","後山埤","昆陽","南港"
+      ]
+    };
+
+    // ===== DOM / 常數 =====
+    const listEl = document.getElementById('bar-list');
+    const emptyEl = document.getElementById('empty-text');
+    const selectEl = document.getElementById('station-select');
+    const API = 'http://140.131.115.112:8000/api/bars/';
+    const RADIUS_M = 1000, WALK_M_PER_MIN = 80;
+
+    // ===== Utils =====
+    const getParam = (k, d=null) => new URL(location.href).searchParams.get(k) ?? d;
+    const toNum = (x) => { const n = Number(x); return Number.isFinite(n) ? n : null; };
+    const haversine = (aLat,aLng,bLat,bLng) => {
+      const R=6371000, rad=d=>d*Math.PI/180;
+      const dLat=rad(bLat-aLat), dLng=rad(bLng-aLng);
+      const s=Math.sin(dLat/2)**2 + Math.cos(rad(aLat))*Math.cos(rad(bLat))*Math.sin(dLng/2)**2;
+      return 2*R*Math.asin(Math.sqrt(s));
+    };
+    const gmapsDir = (lat,lng)=>`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    const fmtRating = (r) => (r==null || r==='') ? '無評分' : `${Number(r).toFixed(1)} ★`;
+
+    // 初始站名：URL ?station= 或預設台北車站
+    function getInitialStation(){
+      const q = getParam('station', null);
+      return (q && STATIONS[q]) ? q : '台北車站';
+    }
+
+    // 產生下拉選單
+    function populateStationSelect(){
+      selectEl.innerHTML = '';
+      for (const [line, arr] of Object.entries(ORDERED)){
+        const og = document.createElement('optgroup');
+        og.label = line;
+        arr.forEach(name=>{
+          if(!STATIONS[name]) return;
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          og.appendChild(opt);
+        });
+        selectEl.appendChild(og);
+      }
+      selectEl.value = getInitialStation();
+      selectEl.addEventListener('change', ()=>{
+        const val = selectEl.value;
+        const url = new URL(location.href);
+        url.searchParams.set('station', val);
+        history.replaceState({}, '', url);
+        initBars(val);
+      });
+    }
+
+    // ===== Places 服務（全域）=====
+    let placesService = null;
+
+    // ===== 卡片 HTML =====
+    function cardHTML(it, stationName, dist){
+      const walkMin = Math.max(1, Math.round(dist / WALK_M_PER_MIN));
+      return `
+        <article class="bp-card" data-id="${it.id}" data-name="${it.name}">
+          <div class="bp-thumb"><img style="display:none;" alt="${it.name}"></div>
+          <div class="bp-info">
+            <h3 class="bp-name">${it.name || '未命名店家'}</h3>
+            <div class="bp-row">
+              <span class="bp-pill bp-pill-yellow">${fmtRating(it.rating)}</span>
+              <span class="bp-reviews"></span>
+            </div>
+            <p class="bp-meta bp-hours">營業時間 ｜ 載入中...</p>
+            <p class="bp-meta">店家地址 ｜ ${it.address ?? ''}</p>
+            <div class="bp-actions">
+              <a class="bp-btn-nav" target="_blank" href="${gmapsDir(it.latitude,it.longitude)}">導航</a>
+              <span class="bp-pill bp-pill-gray">距離${stationName}站步行約${walkMin}分鐘</span>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function showMsg(msg){
+      emptyEl.style.display = 'block';
+      emptyEl.textContent = msg;
+      listEl.innerHTML = '';
+    }
+
+    async function fetchBars(){
+      try{
+        const resp = await fetch(API);
+        if(!resp.ok){ showMsg(`API 狀態 ${resp.status}`); return []; }
+        const data = await resp.json();
+        return Array.isArray(data) ? data : (data.results || []);
+      }catch(e){
+        console.error(e);
+        showMsg("讀取失敗");
+        return [];
+      }
+    }
+
+    // Google Places：找 place_id -> getDetails
+    function enrichCard(card, it){
+      if(!placesService) return;
+
+      const lat = parseFloat(it.latitude), lng = parseFloat(it.longitude);
+      const query = [it.name, it.address].filter(Boolean).join(' ');
+      const biasCircle = { center: { lat, lng }, radius: 800 };
+
+      placesService.findPlaceFromQuery(
+        { query, locationBias: biasCircle, fields: ['place_id','name'] },
+        (results, status) => {
+          if(status === google.maps.places.PlacesServiceStatus.OK && results && results[0]){
+            return getDetails(results[0].place_id);
+          }
+          placesService.textSearch(
+            { query, location: { lat, lng }, radius: 1500 },
+            (r2, s2) => {
+              if(s2 === google.maps.places.PlacesServiceStatus.OK && r2 && r2[0]){
+                return getDetails(r2[0].place_id);
+              }
+              fallbackRender();
+            }
+          );
+        }
+      );
+
+      function getDetails(placeId){
+        placesService.getDetails(
+          { placeId, fields: ['photos','opening_hours','current_opening_hours','user_ratings_total','rating'] },
+          (res, st) => {
+            if(st !== google.maps.places.PlacesServiceStatus.OK || !res){
+              return fallbackRender();
+            }
+            const img = card.querySelector('img');
+            if(img){
+              if(res.photos && res.photos.length){
+                img.src = res.photos[0].getUrl({ maxWidth: 400 });
+              }else{
+                img.src = '/frontend/圖片/no-image.png';
+              }
+              img.style.display = 'block';
+            }
+            const hoursEl = card.querySelector('.bp-hours');
+            const oh = res.opening_hours || res.current_opening_hours || null;
+            const openNow =
+              oh && typeof oh.isOpen === 'function' ? (oh.isOpen() ? '（營業中）' : '（已打烊）') :
+              (oh && 'open_now' in oh ? (oh.open_now ? '（營業中）':'（已打烊）') : '');
+            const weekday = oh && oh.weekday_text ? oh.weekday_text : null;
+            if(hoursEl){
+              hoursEl.innerHTML = '營業時間 ｜ ' + (openNow || '') + (weekday ? '<br>' + weekday.join('<br>') : (openNow ? '' : '無'));
+            }
+            if(typeof res.user_ratings_total === 'number'){
+              const reviewsEl = card.querySelector('.bp-reviews');
+              if(reviewsEl) reviewsEl.textContent = `（${res.user_ratings_total} 則評論）`;
+            }
+            if(typeof res.rating === 'number'){
+              const pill = card.querySelector('.bp-pill-yellow');
+              if(pill) pill.textContent = `${res.rating.toFixed(1)} ★`;
+            }
+          }
+        );
+      }
+
+      function fallbackRender(){
+        const img = card.querySelector('img');
+        if(img){ img.src = '/frontend/圖片/no-image.png'; img.style.display = 'block'; }
+        const hoursEl = card.querySelector('.bp-hours');
+        if(hoursEl){ hoursEl.textContent = '營業時間 ｜ 無'; }
+      }
+    }
+
+    // 主流程：可以傳入站名；不傳就用 URL/預設
+    async function initBars(stationName){
+      const name = stationName || getInitialStation();
+      const station = STATIONS[name];
+      if(!station){ showMsg(`查無站點：「${name}」`); return; }
+
+      // 同步選單值
+      if(selectEl && selectEl.value !== name) selectEl.value = name;
+
+      const all = await fetchBars();
+      const within = all.map(d=>{
+        const lat=toNum(d.latitude), lng=toNum(d.longitude);
+        return (lat!=null && lng!=null)?{...d,_dist:haversine(station.lat,station.lng,lat,lng)}:null;
+      }).filter(Boolean).filter(d=>d._dist<=RADIUS_M).sort((a,b)=>a._dist-b._dist);
+
+      if(!within.length){ showMsg(`「${name}」1 公里內沒有資料`); return; }
+
+      emptyEl.style.display = 'none';
+      listEl.innerHTML = within.map(it=>cardHTML(it,name,it._dist)).join('');
+      within.forEach(it=>{
+        const card = document.querySelector(`.bp-card[data-id="${it.id}"]`);
+        enrichCard(card, it);
+      });
+    }
+
+    // Google SDK callback
+    function initMap(){
+      // 先建選單（不依賴 Places）
+      populateStationSelect();
+
+      const hook = document.getElementById('places-hook');
+      placesService = new google.maps.places.PlacesService(hook);
+
+      // 用 URL 或預設站啟動
+      initBars(getInitialStation());
+    }
+    window.initMap = initMap;
+  </script>
+
+  <!-- Google Maps JS（PlacesService 仍可用；之後若要遷移可改新版 Place API） -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w&libraries=places&language=zh-TW&region=TW&callback=initMap&loading=async"
+    async defer></script>
+</body>
+</html>

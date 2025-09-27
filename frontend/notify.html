@@ -6,72 +6,74 @@
   <title>通知</title>
   <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="static/css/notify.css" />
+<script src="static/js/notify-client.js"></script>
+
 </head>
 <body>
-  <div class="container">
+  <div class="container rwd-container">
     <h1 class="title">通知</h1>
+
     <div class="notify-buttons">
-      <button>全部</button>
-      <button>未讀</button>
-      <button>回覆</button>
+      <button id="btn-all">全部</button>
+      <button id="btn-unread">未讀</button>
+      <button id="btn-mark-all">全部標記已讀</button>
     </div>
 
-    <div class="notify-list">
-      <div class="notify-item">
-        <img src="圖片/user.png" alt="使用者" class="avatar" />
-        <div class="notify-text">
-          <p><strong>使用者名稱</strong></p>
-          <p>通知內容</p>
-        </div>
-        <span class="notify-time">now</span>
-      </div>
-      <div class="notify-item">
-        <img src="圖片/user.png" alt="使用者" class="avatar" />
-        <div class="notify-text">
-          <p><strong>使用者名稱</strong></p>
-          <p>通知內容</p>
-        </div>
-        <span class="notify-time">1m ago</span>
-      </div>
-    </div>
+    <!-- ✅ 新增這個渲染容器，前面的 getNotifications 就是缺這個 -->
+    <div id="notificationsResult"></div>
   </div>
 
-<nav class="footer">
-            <a class="nav-btn" id="home" href="homepage.html">
-                <img src="圖片/home.png" alt="首頁">
-                <span>首頁</span>
-            </a>
-            
-            <a class="nav-btn active" id="map" href="food_map.html">
-                <img src="圖片/map.png" alt="美食地圖">
-                <span>美食地圖</span>
-            </a>
-            <a class="nav-btn active" href="notify.html">
-            <img src="圖片/bell.png" alt="通知" />
-            <span>通知</span>
-            </a>
-            <a href="Member_center.html" class="nav-btn">
-            <img src="圖片/user.png" alt="會員中心">
-            <span>會員中心</span>
-            </a>
+  <nav class="footer">
+    <a class="nav-btn" id="home" href="homepage.html">
+      <img src="圖片/home.png" alt="首頁"><span>首頁</span>
+    </a>
+    <a class="nav-btn" id="map" href="food_map.html">
+      <img src="圖片/map.png" alt="美食地圖"><span>美食地圖</span>
+    </a>
+    <a class="nav-btn" id="notify" href="notify.html">
+      <img src="圖片/bell.png" alt="通知" /><span>通知</span>
+    </a>
+    <a class="nav-btn" href="Member_center.html">
+      <img src="圖片/user.png" alt="會員中心"><span>會員中心</span>
+    </a>
+  </nav>
 
-        </nav>
-</body>
-<script>
-  // 自動為當前網址對應的導覽按鈕加上 active 類別
-  document.addEventListener('DOMContentLoaded', () => {
-    const navLinks = document.querySelectorAll('.nav-btn');
-    const currentPath = window.location.pathname.split('/').pop(); // 取得目前頁面名稱
+  <script src="static/js/notify-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 底部 nav 高亮
+      const navLinks = document.querySelectorAll('.nav-btn');
+      const currentPath = window.location.pathname.split('/').pop();
+      navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === currentPath));
 
-    navLinks.forEach(link => {
-      const linkPath = link.getAttribute('href');
-      if (linkPath === currentPath) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
+      // 啟動通知客戶端（含角標輪詢）
+      window.notify.init();
+
+      // 第一次載入列表
+      const data = await window.notify.list();
+      window.notify.renderInto(data, '#notificationsResult');
+
+      // 篩選（簡易本地篩選：直接重新渲染）
+      document.getElementById('btn-unread').addEventListener('click', () => {
+        const filtered = {
+          unread_count: data.unread_count,
+          unread_notifications: data.unread_notifications,
+          notifications: data.unread_notifications  // 右邊「全部」區也只放未讀，達到快速篩選
+        };
+        window.notify.renderInto(filtered, '#notificationsResult');
+      });
+
+      document.getElementById('btn-all').addEventListener('click', async () => {
+        const fresh = await window.notify.list();
+        window.notify.renderInto(fresh, '#notificationsResult');
+      });
+
+      document.getElementById('btn-mark-all').addEventListener('click', async () => {
+        await window.notify.markAllRead();
+        const fresh = await window.notify.list();
+        window.notify.renderInto(fresh, '#notificationsResult');
+      });
     });
-  });
-</script>
-
+  </script>
+</body>
 </html>

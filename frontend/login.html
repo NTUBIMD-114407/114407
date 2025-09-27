@@ -96,14 +96,16 @@
 
 
                 if (response.ok) {
-                    const data = await response.json();
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userEmail', email);
-                    window.location.href = 'homepage.html';
+                const data = await response.json();
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('accessToken', data.access || data.token);   // ⬅️存起來
+                window.location.href = 'homepage.html';
                 } else {
-                    const error = await response.json();
-                    alert(error.message || '登入失敗，請檢查您的電子郵件和密碼');
+                const error = await response.json();
+                alert(error.message || '登入失敗，請檢查您的電子郵件和密碼');
                 }
+
             } catch (error) {
                // console.error('登入錯誤:', error);
                // alert('登入時發生錯誤，請稍後再試');

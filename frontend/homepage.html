@@ -1,120 +1,112 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首頁</title>
-    <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="static/css/homepage.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>首頁</title>
+  <link rel="icon" href="\圖片\logo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="static/css/homepage.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <div class="title-with-logo">
-                <img src="/圖片/logo.png" alt="Logo" class="logo">
-                <div class="title-text">
-                    <h1>MEI食不打烊</h1>
-                    <span>Taipei Metro</span>
-                </div>
-            </div>
+  <!-- 在原本 .container 上加上 rwd-container -->
+  <div class="container rwd-container">
+    <div class="header">
+      <div class="title-with-logo">
+        <img src="圖片/logo.png" alt="Logo" class="logo" />
+        <div class="title-text">
+          <h1>MEI食不打烊</h1>
+          <span>Taipei Metro</span>
         </div>
-
-
-        <!-- 搜尋列 -->
-        <div class="search-bar">
-            <input id="station-from" class="awesomplete" placeholder="出發站">
-            <button id="swap-btn">🔄</button>
-            <input id="station-to" class="awesomplete" placeholder="目的站">
-            <button id="search-btn">查詢</button>  <!-- ⭐這個要存在！ -->
-          </div>
-
-        <!-- 捷運站圖片 -->
-        <div class="station-image">
-            <img src="圖片/mm.jpg" alt="捷運站圖片">
-            
-        </div>
-        <!-- 查詢結果顯示區 -->
-            <div id="loading" style="display: none; text-align: center; font-weight: bold; margin-top: 1rem;">
-            ⏳ 查詢中...
-            </div>
-            <div id="result" style="margin: 1rem; color: rgb(0, 0, 0);"></div>
-
-
-        <!-- 功能按鈕 -->
-        <div class="features">
-            <div class="feature-btn">
-                <img src="圖片/animal.png" alt="夜貓子" class="icon">
-                <span>夜貓子專區</span>
-            </div>
-            <div class="feature-btn">
-                <img src="圖片/target.png" alt="打卡任務" class="icon">
-                <span>打卡任務</span>
-            </div>
-            <div class="feature-btn">
-                <img src="圖片/timetable.png" alt="捷運時刻表" class="icon">
-                <span>捷運時刻表</span>
-            </div>
-        </div>
-
-        <!-- TOP10店家 -->
-        <section class="top-shops">
-            <h3>當月TOP10店家</h3>
-            <div class="shop-list">
-                <div class="shop-item"></div>
-                <div class="shop-item"></div>
-                <div class="shop-item"></div>
-                <div class="shop-item"></div>
-                <div class="shop-item"></div>
-            </div>
-        </section>
-
-        <!-- 固定底部導航列 -->
-        <nav class="footer">
-        <a class="nav-btn active" id="home" href="homepage.html">
-            <img src="圖片/home.png" alt="首頁">
-            <span>首頁</span>
-        </a>
-        
-        <a class="nav-btn" id="map" href="food_map.html">
-            <img src="圖片/map.png" alt="美食地圖">
-            <span>美食地圖</span>
-        </a>
-        
-        <a class="nav-btn" id="notify" href="notify.html">
-            <img src="圖片/bell.png" alt="通知" />
-            <span>通知</span>
-        </a>
-        
-        <a class="nav-btn" id="member" href="Member_center.html">
-            <img src="圖片/user.png" alt="會員中心">
-            <span>會員中心</span>
-        </a>
-    </nav>
-
-        
+      </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
-    <script src="static/js/home_page/stationdata.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsegtCG2ucAQ_Hrbf_YXL3QhUUM_roMtQ&libraries=places"></script>
-    <script>
-  // 自動為當前網址對應的導覽按鈕加上 active 類別
-  document.addEventListener('DOMContentLoaded', () => {
-    const navLinks = document.querySelectorAll('.nav-btn');
-    const currentPath = window.location.pathname.split('/').pop(); // 取得目前頁面名稱
 
-    navLinks.forEach(link => {
-      const linkPath = link.getAttribute('href');
-      if (linkPath === currentPath) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
+    <!-- 搜尋列 -->
+    <div class="search-bar">
+      <input id="station-from" class="awesomplete" placeholder="出發站" />
+      <button id="swap-btn" aria-label="交換出發與目的">🔄</button>
+      <input id="station-to" class="awesomplete" placeholder="目的站" />
+      <button id="search-btn">查詢</button>
+    </div>
+
+    <!-- 捷運站圖片 -->
+    <div class="station-image">
+      <img src="圖片/mm.jpg" alt="捷運站圖片" />
+    </div>
+
+    <!-- 查詢結果顯示區 -->
+    <div id="loading" style="display:none; text-align:center; font-weight:bold; margin-top:1rem;">
+      ⏳ 查詢中...
+    </div>
+    <div id="result" style="margin:1rem; color:#000;"></div>
+
+    <!-- 功能按鈕 -->
+    <div class="features">
+      <div class="feature-btn">
+        <img src="圖片/animal.png" alt="夜貓子" class="icon" />
+        <span>夜貓子專區</span>
+      </div>
+      <div class="feature-btn">
+        <img src="圖片/target.png" alt="打卡任務" class="icon" />
+        <span>打卡任務</span>
+      </div>
+      <div class="feature-btn">
+        <img src="圖片/timetable.png" alt="捷運時刻表" class="icon" />
+        <span>捷運時刻表</span>
+      </div>
+    </div>
+
+    <!-- TOP10店家 -->
+    <section class="top-shops">
+      <h3>當月TOP10店家</h3>
+      <div class="shop-list">
+        <div class="shop-item"></div>
+        <div class="shop-item"></div>
+        <div class="shop-item"></div>
+        <div class="shop-item"></div>
+        <div class="shop-item"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 固定底部導航列（會用 CSS 限寬置中） -->
+  <nav class="footer" role="navigation" aria-label="底部導覽">
+    <a class="nav-btn active" id="home" href="homepage.html">
+      <img src="圖片/home.png" alt="" />
+      <span>首頁</span>
+    </a>
+    <a class="nav-btn" id="map" href="food_map.html">
+      <img src="圖片/map.png" alt="" />
+      <span>美食地圖</span>
+    </a>
+    <a class="nav-btn" id="notify" href="notify.html">
+      <img src="圖片/bell.png" alt="" />
+      <span>通知</span>
+    </a>
+    <a class="nav-btn" id="member" href="Member_center.html">
+      <img src="圖片/user.png" alt="" />
+      <span>會員中心</span>
+    </a>
+  </nav>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+  <script src="static/js/home_page/stationdata.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w&libraries=places"></script>
+  <script>
+    // 自動為當前網址對應的導覽按鈕加上 active 類別
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-btn');
+      const currentPath = window.location.pathname.split('/').pop();
+      navLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
     });
-  });
-</script>
-
-
+  </script>
 </body>
 </html>
