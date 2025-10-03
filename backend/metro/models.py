@@ -358,6 +358,67 @@ class CheckinReview(models.Model):
         return f'{self.restaurant_name} - {self.reviewer_name}'
 
 
+class CheckinReviewLike(models.Model):
+    """打卡評論喜歡模型"""
+    review = models.ForeignKey(CheckinReview, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='checkin_likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'metro_checkinreviewlike'
+        verbose_name = '打卡評論喜歡'
+        verbose_name_plural = '打卡評論喜歡'
+        unique_together = ('review', 'user')  # 防止重複按讚
+
+    def __str__(self):
+        return f'{self.user.username} 喜歡 {self.review.restaurant_name}'
+
+
+class CheckinReviewFavorite(models.Model):
+    """打卡評論收藏模型"""
+    review = models.ForeignKey(CheckinReview, on_delete=models.CASCADE, related_name='favorites')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='checkin_favorites')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'metro_checkinreviewfavorite'
+        verbose_name = '打卡評論收藏'
+        verbose_name_plural = '打卡評論收藏'
+        unique_together = ('review', 'user')  # 防止重複收藏
+
+    def __str__(self):
+        return f'{self.user.username} 收藏 {self.review.restaurant_name}'
+
+
+class Notification(models.Model):
+    """通知模型"""
+    NOTIFICATION_TYPES = [
+        ('like', '喜歡'),
+        ('favorite', '收藏'),
+        ('comment', '評論'),
+    ]
+    
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_notifications', null=True, blank=True)
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    # 關聯的對象（可選）
+    review = models.ForeignKey(CheckinReview, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
+
+    class Meta:
+        db_table = 'metro_notification'
+        verbose_name = '通知'
+        verbose_name_plural = '通知'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.recipient.username} - {self.title}'
+
 
 class StationID(models.Model):
     """車站ID對照表"""

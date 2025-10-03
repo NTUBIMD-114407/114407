@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
-from .models import Station, Restaurant, MetroLine, TrainInfo, CheckinReview, Review, BusinessHours, StationID, MetroFirstLastTrain, MetroLastFiveTrains, Bar, BarReview
+from .models import Station, Restaurant, MetroLine, TrainInfo, CheckinReview, CheckinReviewLike, CheckinReviewFavorite, Notification, Review, BusinessHours, StationID, MetroFirstLastTrain, MetroLastFiveTrains, Bar, BarReview
 from .serializers import (
     StationSerializer,
     RestaurantSerializer,
@@ -31,10 +31,14 @@ from rest_framework import serializers
 from rest_framework.decorators import action
 
 
+
+
 class MetroLineViewSet(viewsets.ModelViewSet):
     queryset = MetroLine.objects.all()
     serializer_class = MetroLineSerializer
     permission_classes = [AllowAny]
+
+
 
 
 class StationViewSet(viewsets.ModelViewSet):
@@ -43,10 +47,14 @@ class StationViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
 
+
+
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = [AllowAny]
+
+
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -55,16 +63,22 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
 
+
+
 class BarViewSet(viewsets.ModelViewSet):
     queryset = Bar.objects.all()
     serializer_class = BarSerializer
     permission_classes = [AllowAny]
 
 
+
+
 class BarReviewViewSet(viewsets.ModelViewSet):
     queryset = BarReview.objects.all()
     serializer_class = BarReviewSerializer
     permission_classes = [AllowAny]
+
+
 
 
 @api_view(['GET'])
@@ -82,6 +96,8 @@ def get_bars_by_station(request):
         return Response({'error': '找不到指定的站點'}, status=404)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+
+
 
 
 @api_view(['GET'])
@@ -102,12 +118,16 @@ def get_bars_by_line(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_bar_details(request, bar_id):
     bar = get_object_or_404(Bar, id=bar_id)
     serializer = BarSerializer(bar)
     return Response(serializer.data)
+
+
 
 
 @api_view(['GET'])
@@ -117,6 +137,8 @@ def get_bar_reviews(request, bar_id):
     reviews = bar.reviews.all().order_by('-created_at')
     serializer = BarReviewSerializer(reviews, many=True)
     return Response(serializer.data)
+
+
 
 
 @api_view(['POST'])
@@ -134,6 +156,8 @@ def create_bar_review(request, bar_id):
         comment=request.data.get('comment', '')
     )
     return Response({'message': '評論創建成功', 'review_id': review.id}, status=201)
+
+
 
 
 @api_view(['PUT'])
@@ -157,6 +181,8 @@ def update_bar_review(request, review_id):
         review.comment = comment
     review.save()
     return Response({'message': '評論更新成功', 'review_id': review.id})
+
+
 
 
 @api_view(['GET'])
@@ -188,16 +214,22 @@ def night_bars(request):
     return Response({'count': len(results), 'results': results})
 
 
+
+
 class MetroFirstLastTrainViewSet(viewsets.ModelViewSet):
     queryset = MetroFirstLastTrain.objects.all()
     serializer_class = MetroFirstLastTrainSerializer
     permission_classes = [AllowAny]
 
 
+
+
 class MetroLastFiveTrainsViewSet(viewsets.ModelViewSet):
     queryset = MetroLastFiveTrains.objects.all()
     serializer_class = MetroLastFiveTrainsSerializer
     permission_classes = [AllowAny]
+
+
 
 
     @action(detail=False, methods=['get'])
@@ -211,6 +243,8 @@ class MetroLastFiveTrainsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+
+
     @action(detail=False, methods=['get'])
     def by_line(self, request):
         line_no = request.query_params.get('line_no')
@@ -220,6 +254,8 @@ class MetroLastFiveTrainsViewSet(viewsets.ModelViewSet):
         trains = self.queryset.filter(line_no=line_no)
         serializer = self.get_serializer(trains, many=True)
         return Response(serializer.data)
+
+
 
 
     @action(detail=False, methods=['get'])
@@ -236,6 +272,8 @@ class MetroLastFiveTrainsViewSet(viewsets.ModelViewSet):
         trains = self.queryset.filter(station_id=station_id, direction=direction)
         serializer = self.get_serializer(trains, many=True)
         return Response(serializer.data)
+
+
 
 
 @api_view(['GET'])
@@ -276,6 +314,8 @@ def get_track_info(request):
 </soap:Envelope>'''
 
 
+
+
         # 發送請求
         response = requests.post(
             'https://api.metro.taipei/metroapi/TrackInfo.asmx',
@@ -283,6 +323,8 @@ def get_track_info(request):
             data=soap_request.encode('utf-8'),
             verify=True
         )
+
+
 
 
         # 檢查回應
@@ -348,6 +390,8 @@ def get_track_info(request):
         return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_latest_train_info(request):
@@ -392,6 +436,8 @@ def get_latest_train_info(request):
     })
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_user_info(request):
@@ -409,6 +455,8 @@ def get_user_info(request):
         'isAuthenticated': False,
         'user': None
     })
+
+
 
 
 @api_view(['GET'])
@@ -457,6 +505,8 @@ def get_restaurant_reviews(request, restaurant_id):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+
 @api_view(['POST'])
 def create_restaurant_review(request, restaurant_id):
     """創建餐廳評論的 API 端點"""
@@ -489,6 +539,8 @@ def create_restaurant_review(request, restaurant_id):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
 
 
 @api_view(['POST'])
@@ -524,6 +576,8 @@ def create_checkin_review_api(request):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
 
 
 @api_view(['GET'])
@@ -563,6 +617,8 @@ def get_checkin_reviews_api(request):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
 
 
 @api_view(['GET'])
@@ -609,6 +665,8 @@ def get_top_checkin_restaurants(request):
         )
 
 
+
+
 @api_view(['PUT'])
 def update_checkin_review_api(request, review_id):
     """更新打卡版評論的 API 端點"""
@@ -624,6 +682,8 @@ def update_checkin_review_api(request, review_id):
         metro_line = request.data.get('metro_line')
 
 
+
+
         # 驗證評分
         if rating is not None:
             if not isinstance(rating, int) or rating < 1 or rating > 5:
@@ -632,6 +692,8 @@ def update_checkin_review_api(request, review_id):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             review.rating = rating
+
+
 
 
         # 更新其他欄位
@@ -645,8 +707,12 @@ def update_checkin_review_api(request, review_id):
             review.metro_line = metro_line
 
 
+
+
         # 保存更新
         review.save()
+
+
 
 
         return Response({
@@ -659,6 +725,8 @@ def update_checkin_review_api(request, review_id):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
 
 
 @api_view(['PUT'])
@@ -674,6 +742,8 @@ def update_restaurant_review(request, review_id):
         comment = request.data.get('comment')
 
 
+
+
         # 驗證評分
         if rating is not None:
             if not isinstance(rating, int) or rating < 1 or rating > 5:
@@ -684,6 +754,8 @@ def update_restaurant_review(request, review_id):
             review.rating = rating
 
 
+
+
         # 更新其他欄位
         if reviewer_name is not None:
             review.reviewer_name = reviewer_name
@@ -691,8 +763,12 @@ def update_restaurant_review(request, review_id):
             review.comment = comment
 
 
+
+
         # 保存更新
         review.save()
+
+
 
 
         # 更新餐廳的評分
@@ -702,6 +778,8 @@ def update_restaurant_review(request, review_id):
             avg_rating=models.Avg('rating')
         )['avg_rating'] or 0
         review.restaurant.save()
+
+
 
 
         return Response({
@@ -714,6 +792,8 @@ def update_restaurant_review(request, review_id):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
 
 
 @api_view(['GET'])
@@ -759,6 +839,8 @@ def get_all_metro_line_restaurants(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_all_restaurants(request):
@@ -780,6 +862,8 @@ def get_all_restaurants(request):
             'status': 'error',
             'message': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 @api_view(['GET'])
@@ -823,6 +907,8 @@ def search_restaurants(request):
     })
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_reviews(request):
@@ -861,6 +947,8 @@ def get_reviews(request):
             'status': 'error',
             'message': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 @api_view(['GET'])
@@ -911,6 +999,8 @@ def night_restaurants(request):
     })
 
 
+
+
 @api_view(['POST'])
 def get_metro_route(request):
     import os
@@ -921,11 +1011,15 @@ def get_metro_route(request):
         return Response({'error': '請提供起點和終點車站名'}, status=400)
 
 
+
+
     try:
         entry_station = StationID.objects.get(station_name=start_name)
         exit_station = StationID.objects.get(station_name=end_name)
     except StationID.DoesNotExist:
         return Response({'error': '查無車站名稱'}, status=404)
+
+
 
 
     # 從環境變數獲取帳密
@@ -935,6 +1029,8 @@ def get_metro_route(request):
         return Response({'error': '未設置捷運API帳號或密碼'}, status=500)
     username = username.strip()
     password = password.strip()
+
+
 
 
     # SOAP 請求內容
@@ -953,10 +1049,14 @@ def get_metro_route(request):
     </soap:Envelope>'''
 
 
+
+
     headers = {
         'Content-Type': 'text/xml; charset=utf-8',
         'SOAPAction': 'http://tempuri.org/GetRecommandRoute'
     }
+
+
 
 
     try:
@@ -986,6 +1086,8 @@ def get_metro_route(request):
         return Response({'error': f'發生未預期的錯誤: {str(e)}', 'raw': response.text if 'response' in locals() else ''}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_station_first_last_trains(request, station_id):
@@ -994,6 +1096,8 @@ def get_station_first_last_trains(request, station_id):
         return Response({'error': '獲取首末班車資訊失敗'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     serializer = MetroFirstLastTrainSerializer(trains, many=True)
     return Response(serializer.data)
+
+
 
 
 @api_view(['GET'])
@@ -1015,6 +1119,8 @@ def get_station_by_name_first_last_trains(request, station_name):
     return Response({station_name: result})
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_all_metro_lines(request):
@@ -1022,6 +1128,8 @@ def get_all_metro_lines(request):
     lines = MetroLine.objects.all()
     serializer = MetroLineSerializer(lines, many=True)
     return Response(serializer.data)
+
+
 
 
 @api_view(['GET'])
@@ -1034,6 +1142,8 @@ def get_stations_by_line(request, line_id):
     return Response(serializer.data)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_nearby_restaurants(request, station_id):
@@ -1044,6 +1154,8 @@ def get_nearby_restaurants(request, station_id):
     return Response(serializer.data)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurant_details(request, restaurant_id):
@@ -1051,6 +1163,8 @@ def get_restaurant_details(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     serializer = RestaurantSerializer(restaurant)
     return Response(serializer.data)
+
+
 
 
 @api_view(['GET'])
@@ -1067,14 +1181,20 @@ def get_station_last_five_trains(request):
         return Response({'error': '請提供站點名稱'}, status=400)
 
 
+
+
     # 查詢該站點的所有末五班車資訊
     trains = MetroLastFiveTrains.objects.filter(
         station_name=station_name
     ).order_by('line_no', 'trip_head_sign', 'train_sequence')
 
 
+
+
     if not trains.exists():
         return Response({'error': f'找不到站點 {station_name} 的末五班車資訊'}, status=404)
+
+
 
 
     # 整理資料
@@ -1097,7 +1217,11 @@ def get_station_last_five_trains(request):
         })
 
 
+
+
     return Response(list(result.values()))
+
+
 
 
 @api_view(['GET'])
@@ -1107,6 +1231,8 @@ def get_restaurants_by_station(request):
     station_id = request.GET.get('station_id')
     if not station_id:
         return Response({'error': '請提供站點ID'}, status=400)
+
+
 
 
     try:
@@ -1120,6 +1246,8 @@ def get_restaurants_by_station(request):
         return Response({'error': str(e)}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_line(request):
@@ -1127,6 +1255,8 @@ def get_restaurants_by_line(request):
     line_id = request.GET.get('line_id')
     if not line_id:
         return Response({'error': '請提供捷運線編號'}, status=400)
+
+
 
 
     try:
@@ -1145,6 +1275,8 @@ def get_restaurants_by_line(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_and_line(request):
@@ -1154,6 +1286,8 @@ def get_restaurants_by_station_and_line(request):
    
     if not station_id or not line_id:
         return Response({'error': '請提供捷運站編號和捷運線編號'}, status=400)
+
+
 
 
     try:
@@ -1171,6 +1305,8 @@ def get_restaurants_by_station_and_line(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_and_category(request):
@@ -1180,6 +1316,8 @@ def get_restaurants_by_station_and_category(request):
    
     if not station_id or not category:
         return Response({'error': '請提供捷運站編號和餐廳類別'}, status=400)
+
+
 
 
     try:
@@ -1200,6 +1338,8 @@ def get_restaurants_by_station_and_category(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_line_and_category(request):
@@ -1209,6 +1349,8 @@ def get_restaurants_by_line_and_category(request):
    
     if not line_id or not category:
         return Response({'error': '請提供捷運線編號和餐廳類別'}, status=400)
+
+
 
 
     try:
@@ -1230,6 +1372,8 @@ def get_restaurants_by_line_and_category(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_line_and_category(request):
@@ -1240,6 +1384,8 @@ def get_restaurants_by_station_line_and_category(request):
    
     if not station_id or not line_id or not category:
         return Response({'error': '請提供捷運站編號、捷運線編號和餐廳類別'}, status=400)
+
+
 
 
     try:
@@ -1260,6 +1406,8 @@ def get_restaurants_by_station_line_and_category(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_and_price(request):
@@ -1269,6 +1417,8 @@ def get_restaurants_by_station_and_price(request):
    
     if not station_id or not price_level:
         return Response({'error': '請提供捷運站編號和價格範圍'}, status=400)
+
+
 
 
     try:
@@ -1289,6 +1439,8 @@ def get_restaurants_by_station_and_price(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_line_and_price(request):
@@ -1298,6 +1450,8 @@ def get_restaurants_by_line_and_price(request):
    
     if not line_id or not price_level:
         return Response({'error': '請提供捷運線編號和價格範圍'}, status=400)
+
+
 
 
     try:
@@ -1319,6 +1473,8 @@ def get_restaurants_by_line_and_price(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_line_and_price(request):
@@ -1329,6 +1485,8 @@ def get_restaurants_by_station_line_and_price(request):
    
     if not station_id or not line_id or not price_level:
         return Response({'error': '請提供捷運站編號、捷運線編號和價格範圍'}, status=400)
+
+
 
 
     try:
@@ -1349,6 +1507,8 @@ def get_restaurants_by_station_line_and_price(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_and_rating(request):
@@ -1358,6 +1518,8 @@ def get_restaurants_by_station_and_rating(request):
    
     if not station_id or not min_rating:
         return Response({'error': '請提供捷運站編號和最低評分'}, status=400)
+
+
 
 
     try:
@@ -1378,6 +1540,8 @@ def get_restaurants_by_station_and_rating(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_line_and_rating(request):
@@ -1387,6 +1551,8 @@ def get_restaurants_by_line_and_rating(request):
    
     if not line_id or not min_rating:
         return Response({'error': '請提供捷運線編號和最低評分'}, status=400)
+
+
 
 
     try:
@@ -1408,6 +1574,8 @@ def get_restaurants_by_line_and_rating(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_line_and_rating(request):
@@ -1418,6 +1586,8 @@ def get_restaurants_by_station_line_and_rating(request):
    
     if not station_id or not line_id or not min_rating:
         return Response({'error': '請提供捷運站編號、捷運線編號和最低評分'}, status=400)
+
+
 
 
     try:
@@ -1438,6 +1608,8 @@ def get_restaurants_by_station_line_and_rating(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_and_hours(request):
@@ -1448,6 +1620,8 @@ def get_restaurants_by_station_and_hours(request):
    
     if not station_id or not day_of_week or not time_str:
         return Response({'error': '請提供捷運站編號、星期和時間'}, status=400)
+
+
 
 
     try:
@@ -1477,6 +1651,8 @@ def get_restaurants_by_station_and_hours(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_line_and_hours(request):
@@ -1487,6 +1663,8 @@ def get_restaurants_by_line_and_hours(request):
    
     if not line_id or not day_of_week or not time_str:
         return Response({'error': '請提供捷運線編號、星期和時間'}, status=400)
+
+
 
 
     try:
@@ -1517,6 +1695,8 @@ def get_restaurants_by_line_and_hours(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_line_and_hours(request):
@@ -1528,6 +1708,8 @@ def get_restaurants_by_station_line_and_hours(request):
    
     if not station_id or not line_id or not day_of_week or not time_str:
         return Response({'error': '請提供捷運站編號、捷運線編號、星期和時間'}, status=400)
+
+
 
 
     try:
@@ -1557,6 +1739,8 @@ def get_restaurants_by_station_line_and_hours(request):
         return Response({'error': f'發生錯誤：{str(e)}'}, status=500)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_restaurants_by_station_and_category_and_price(request):
@@ -1567,6 +1751,8 @@ def get_restaurants_by_station_and_category_and_price(request):
    
     if not station_id or not category or not price_level:
         return Response({'error': '請提供捷運站編號、餐廳類別和價格範圍'}, status=400)
+
+
 
 
     try:
@@ -1590,21 +1776,365 @@ def get_restaurants_by_station_and_category_and_price(request):
 
 
 
+# =============================
+# 打卡評論喜歡/收藏功能
+# =============================
+
+
+@api_view(['POST'])
+def toggle_checkin_review_like(request, review_id):
+    """切換打卡評論的喜歡狀態"""
+    try:
+        review = get_object_or_404(CheckinReview, id=review_id)
+        user = request.user
+       
+        if not user.is_authenticated:
+            return Response(
+                {'error': '請先登入'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+       
+        # 檢查是否已經按讚
+        like, created = CheckinReviewLike.objects.get_or_create(
+            review=review,
+            user=user
+        )
+       
+        if not created:
+            # 如果已經按讚，則取消按讚
+            like.delete()
+            is_liked = False
+            action = 'unliked'
+        else:
+            # 新按讚
+            is_liked = True
+            action = 'liked'
+           
+            # 創建通知：發送給評論作者（非自己）
+            try:
+                from django.contrib.auth import get_user_model
+                UserModel = get_user_model()
+                recipient_user = (
+                    UserModel.objects.filter(username=review.reviewer_name).first()
+                    or UserModel.objects.filter(email=review.reviewer_name).first()
+                )
+            except Exception:
+                recipient_user = None
+
+
+            if recipient_user and recipient_user != user:
+                Notification.objects.create(
+                    recipient=recipient_user,
+                    sender=user,
+                    notification_type='like',
+                    title=f'有人喜歡你的打卡評論',
+                    content=f'{user.username} 喜歡了你對 {review.restaurant_name} 的打卡評論',
+                    review=review
+                )
+       
+        # 獲取總讚數
+        like_count = CheckinReviewLike.objects.filter(review=review).count()
+       
+        return Response({
+            'action': action,
+            'is_liked': is_liked,
+            'like_count': like_count
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 
 
+@api_view(['POST'])
+def toggle_checkin_review_favorite(request, review_id):
+    """切換打卡評論的收藏狀態"""
+    try:
+        review = get_object_or_404(CheckinReview, id=review_id)
+        user = request.user
+       
+        if not user.is_authenticated:
+            return Response(
+                {'error': '請先登入'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+       
+        # 檢查是否已經收藏
+        favorite, created = CheckinReviewFavorite.objects.get_or_create(
+            review=review,
+            user=user
+        )
+       
+        if not created:
+            # 如果已經收藏，則取消收藏
+            favorite.delete()
+            is_favorited = False
+            action = 'unfavorited'
+        else:
+            # 新收藏
+            is_favorited = True
+            action = 'favorited'
+           
+            # 創建通知：發送給評論作者（非自己）
+            try:
+                from django.contrib.auth import get_user_model
+                UserModel = get_user_model()
+                recipient_user = (
+                    UserModel.objects.filter(username=review.reviewer_name).first()
+                    or UserModel.objects.filter(email=review.reviewer_name).first()
+                )
+            except Exception:
+                recipient_user = None
+
+
+            if recipient_user and recipient_user != user:
+                Notification.objects.create(
+                    recipient=recipient_user,
+                    sender=user,
+                    notification_type='favorite',
+                    title=f'有人收藏你的打卡評論',
+                    content=f'{user.username} 收藏了你對 {review.restaurant_name} 的打卡評論',
+                    review=review
+                )
+       
+        # 獲取總收藏數
+        favorite_count = CheckinReviewFavorite.objects.filter(review=review).count()
+       
+        return Response({
+            'action': action,
+            'is_favorited': is_favorited,
+            'favorite_count': favorite_count
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 
 
+@api_view(['GET'])
+def get_checkin_review_stats(request, review_id):
+    """獲取打卡評論的統計資訊（讚數、收藏數等）"""
+    try:
+        review = get_object_or_404(CheckinReview, id=review_id)
+        user = request.user
+       
+        like_count = CheckinReviewLike.objects.filter(review=review).count()
+        favorite_count = CheckinReviewFavorite.objects.filter(review=review).count()
+       
+        is_liked = False
+        is_favorited = False
+       
+        if user.is_authenticated:
+            is_liked = CheckinReviewLike.objects.filter(review=review, user=user).exists()
+            is_favorited = CheckinReviewFavorite.objects.filter(review=review, user=user).exists()
+       
+        return Response({
+            'like_count': like_count,
+            'favorite_count': favorite_count,
+            'is_liked': is_liked,
+            'is_favorited': is_favorited
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 
 
+# =============================
+# 通知功能
+# =============================
+
+
+@api_view(['GET'])
+def get_user_notifications(request):
+    """獲取用戶的通知列表"""
+    try:
+        user = request.user
+       
+        if not user.is_authenticated:
+            return Response(
+                {'error': '請先登入'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+       
+        # 未讀與全部通知
+        unread_qs = Notification.objects.filter(recipient=user, is_read=False).order_by('-created_at')
+        notifications_qs = Notification.objects.filter(recipient=user).order_by('-created_at')
+        unread_count = unread_qs.count()
+        notifications = notifications_qs[:50]
+        unread_notifications = unread_qs[:50]
+       
+        notifications_data = [{
+            'id': notification.id,
+            'type': notification.notification_type,
+            'title': notification.title,
+            'content': notification.content,
+            'is_read': notification.is_read,
+            'created_at': notification.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'sender': notification.sender.username if notification.sender else '系統',
+            'review_id': notification.review.id if notification.review else None
+        } for notification in notifications]
+       
+        unread_notifications_data = [{
+            'id': n.id,
+            'type': n.notification_type,
+            'title': n.title,
+            'content': n.content,
+            'is_read': n.is_read,
+            'created_at': n.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'sender': n.sender.username if n.sender else '系統',
+            'review_id': n.review.id if n.review else None
+        } for n in unread_notifications]
+
+
+        return Response({
+            'unread_count': unread_count,
+            'notifications': notifications_data,           # 全部（前50）- 向下相容
+            'unread_notifications': unread_notifications_data  # 未讀（前50）
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 
+
+@api_view(['PUT'])
+def mark_notification_read(request, notification_id):
+    """標記通知為已讀"""
+    try:
+        user = request.user
+       
+        if not user.is_authenticated:
+            return Response(
+                {'error': '請先登入'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+       
+        notification = get_object_or_404(Notification, id=notification_id, recipient=user)
+        notification.is_read = True
+        notification.save()
+       
+        return Response({
+            'message': '通知已標記為已讀'
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+
+
+@api_view(['PUT'])
+def mark_all_notifications_read(request):
+    """標記所有通知為已讀"""
+    try:
+        user = request.user
+       
+        if not user.is_authenticated:
+            return Response(
+                {'error': '請先登入'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+       
+        Notification.objects.filter(recipient=user, is_read=False).update(is_read=True)
+       
+        return Response({
+            'message': '所有通知已標記為已讀'
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+
+
+@api_view(['DELETE'])
+def delete_notification(request, notification_id):
+    """刪除通知"""
+    try:
+        user = request.user
+       
+        if not user.is_authenticated:
+            return Response(
+                {'error': '請先登入'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+       
+        notification = get_object_or_404(Notification, id=notification_id, recipient=user)
+        notification.delete()
+       
+        return Response({
+            'message': '通知已刪除'
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+
+
+@api_view(['GET'])
+def get_user_favorites(request):
+    """獲取用戶的收藏列表"""
+    try:
+        user = request.user
+       
+        if not user.is_authenticated:
+            return Response(
+                {'error': '請先登入'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+       
+        favorites = CheckinReviewFavorite.objects.filter(user=user).order_by('-created_at')
+       
+        favorites_data = [{
+            'id': favorite.id,
+            'review': {
+                'id': favorite.review.id,
+                'restaurant_name': favorite.review.restaurant_name,
+                'metro_line': favorite.review.metro_line,
+                'reviewer_name': favorite.review.reviewer_name,
+                'rating': favorite.review.rating,
+                'comment': favorite.review.comment,
+                'created_at': favorite.review.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            },
+            'favorited_at': favorite.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        } for favorite in favorites]
+       
+        return Response({
+            'favorites': favorites_data
+        }, status=status.HTTP_200_OK)
+       
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 

@@ -37,4 +37,18 @@ urlpatterns = [
     path('api/bars/<int:bar_id>/reviews/', views.create_bar_review, name='create_bar_review'),
     path('api/bar-reviews/<int:review_id>/', views.update_bar_review, name='update_bar_review'),
     path('api/bars/night/', views.night_bars, name='night-bars'),
+    
+    # 打卡評論喜歡/收藏功能
+    path('api/checkin-reviews/<int:review_id>/like/', views.toggle_checkin_review_like, name='toggle_checkin_review_like'),
+    path('api/checkin-reviews/<int:review_id>/favorite/', views.toggle_checkin_review_favorite, name='toggle_checkin_review_favorite'),
+    path('api/checkin-reviews/<int:review_id>/stats/', views.get_checkin_review_stats, name='get_checkin_review_stats'),
+    
+    # 通知功能
+    path('api/notifications/', views.get_user_notifications, name='get_user_notifications'),
+    path('api/notifications/<int:notification_id>/read/', views.mark_notification_read, name='mark_notification_read'),
+    path('api/notifications/read-all/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
+    path('api/notifications/<int:notification_id>/delete/', views.delete_notification, name='delete_notification'),
+    
+    # 用戶收藏列表
+    path('api/user/favorites/', views.get_user_favorites, name='get_user_favorites'),
 ]

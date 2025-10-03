@@ -13,7 +13,8 @@ from django.contrib.auth.models import User
 from .models import (
     MetroLine, Station, Restaurant, Review,
     TrainInfo, YouBikeStation, YouBikeHistory,
-    CheckinReview, BusinessHours,User,MetroFirstLastTrain,
+    CheckinReview, CheckinReviewLike, CheckinReviewFavorite, Notification,
+    BusinessHours,User,MetroFirstLastTrain,
     MetroLastFiveTrains,
     BarCategory, Bar, BarReview, BarBusinessHours
 )
@@ -425,6 +426,31 @@ class CheckinReviewAdmin(admin.ModelAdmin):
     list_display = ('restaurant_name', 'metro_line', 'reviewer_name', 'rating', 'created_at')
     list_filter = ('rating', 'created_at', 'metro_line')
     search_fields = ('restaurant_name', 'reviewer_name', 'comment')
+    ordering = ('-created_at',)
+    readonly_fields = ('created_at', 'updated_at')
+
+
+@admin.register(CheckinReviewLike)
+class CheckinReviewLikeAdmin(admin.ModelAdmin):
+    list_display = ('review', 'user', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('review__restaurant_name', 'user__username')
+    ordering = ('-created_at',)
+
+
+@admin.register(CheckinReviewFavorite)
+class CheckinReviewFavoriteAdmin(admin.ModelAdmin):
+    list_display = ('review', 'user', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('review__restaurant_name', 'user__username')
+    ordering = ('-created_at',)
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('recipient', 'sender', 'notification_type', 'title', 'is_read', 'created_at')
+    list_filter = ('notification_type', 'is_read', 'created_at')
+    search_fields = ('recipient__username', 'sender__username', 'title', 'content')
     ordering = ('-created_at',)
     readonly_fields = ('created_at', 'updated_at')
 
