@@ -23,7 +23,7 @@ function initMap() {
 
 function geocodeAddress(address) {
   geocoder.geocode({ address }, (results, status) => {
-    if (status === "OK") {
+    if (status === "OK" && results[0]) {
       const location = results[0].geometry.location;
       map.setCenter(location);
       new google.maps.Marker({ map, position: location });
@@ -37,7 +37,7 @@ function geocodeAddress(address) {
 function geocodeByName(name) {
   const query = `${name} 台灣`;
   geocoder.geocode({ address: query }, (results, status) => {
-    if (status === "OK") {
+    if (status === "OK" && results[0]) {
       const location = results[0].geometry.location;
       map.setCenter(location);
       new google.maps.Marker({ map, position: location });
@@ -49,11 +49,7 @@ function geocodeByName(name) {
 }
 
 function searchPlaceDetails(location) {
-  const request = {
-    location,
-    radius: 200,
-    keyword: fallbackName
-  };
+  const request = { location, radius: 200, keyword: fallbackName };
 
   placesService.nearbySearch(request, (results, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK && results[0]) {
@@ -61,10 +57,18 @@ function searchPlaceDetails(location) {
       placesService.getDetails(
         {
           placeId,
-          fields: ["name", "rating", "user_ratings_total", "opening_hours", "photos", "url", "formatted_address"]
+          fields: [
+            "name",
+            "rating",
+            "user_ratings_total",
+            "opening_hours",
+            "photos",
+            "url",
+            "formatted_address"
+          ]
         },
-        (place, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
+        (place, st) => {
+          if (st === google.maps.places.PlacesServiceStatus.OK) {
             updatePlaceUI(place);
           }
         }
@@ -78,6 +82,13 @@ function searchPlaceDetails(location) {
 function updatePlaceUI(place) {
   const info = document.querySelector(".store-text");
 
+  // 名稱補上（如果還是預設值或空）
+  const nameEl = document.querySelector(".store-name");
+  if (!nameEl.textContent || nameEl.textContent === "店家") {
+    nameEl.textContent = place.name || nameEl.textContent;
+  }
+
+  // 評分
   if (place.rating && place.user_ratings_total) {
     const ratingText = `⭐ ${place.rating.toFixed(1)}（${place.user_ratings_total} 則 Google 評論）`;
     const star = document.createElement("p");
@@ -87,19 +98,19 @@ function updatePlaceUI(place) {
     info.appendChild(star);
   }
 
-  // 🕒 顯示今日營業時間
+  // 🕒 今日營業時間
   if (place.opening_hours?.weekday_text) {
     const days = place.opening_hours.weekday_text;
-    const today = new Date().getDay(); // Sunday = 0
-    const index = today === 0 ? 6 : today - 1; // 轉換成 Monday = 0
-    const todayText = days[index];
+    const today = new Date().getDay();         // Sun=0
+    const index = today === 0 ? 6 : today - 1; // Mon=0
     const hoursText = document.createElement("p");
-    hoursText.textContent = `🕒 ${todayText}`;
+    hoursText.textContent = `🕒 ${days[index]}`;
     hoursText.style.fontSize = "14px";
     info.appendChild(hoursText);
   }
 
-  if (place.photos && place.photos.length > 0) {
+  // 照片
+  if (place.photos?.length) {
     const imageUrl = place.photos[0].getUrl();
     const imageDiv = document.querySelector(".store-image");
     imageDiv.style.backgroundImage = `url(${imageUrl})`;
@@ -107,18 +118,24 @@ function updatePlaceUI(place) {
     imageDiv.style.backgroundPosition = "center";
   }
 
-  if (place.url) {
-    const btn = document.querySelector(".google-btn");
-    btn.addEventListener("click", () => {
-      window.open(place.url, "_blank");
-    });
+  // 地址（如果之前沒有）
+  if (!restaurantAddress && place.formatted_address) {
+    restaurantAddress = place.formatted_address;
+    const addrEl = document.querySelector(".address");
+    addrEl.textContent = `店家地址｜${restaurantAddress}`;
+  }
+
+  // Google 按鈕
+  const btn = document.querySelector(".google-btn");
+  if (btn && place.url) {
+    btn.onclick = () => window.open(place.url, "_blank");
   }
 }
 
 async function fetchRestaurantAddress(name) {
   const res = await fetch("http://140.131.115.112:8000/api/api/top-checkin-restaurants/");
   const json = await res.json();
-  const match = json.restaurants.find(r => r.restaurant_name === name);
+  const match = (json.restaurants || []).find(r => r.restaurant_name === name);
   return match?.address || null;
 }
 
@@ -131,52 +148,67 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // ✅ 先把店名寫上（無論後續是否有評論）
+  document.querySelector(".store-name").textContent = restaurantName;
+
+  // 評分區先給預設
+  document.querySelector(".star-tag").textContent = "⭐ 平均星數：—";
+  document.querySelector(".review-count").textContent = "(0 則評論)";
+
   fallbackName = restaurantName;
 
   try {
-    const res = await fetch(`http://140.131.115.112:8000/api/api/checkin-reviews/list/?restaurant_name=${encodeURIComponent(restaurantName)}`);
+    const res = await fetch(
+      `http://140.131.115.112:8000/api/api/checkin-reviews/list/?restaurant_name=${encodeURIComponent(restaurantName)}`
+    );
     const json = await res.json();
-    const reviews = json.reviews;
+    const reviews = json.reviews || [];
 
-    if (!Array.isArray(reviews) || reviews.length === 0) {
+    // 有評論再更新平均星數與數量
+    if (reviews.length > 0) {
+      document.querySelector(".star-tag").textContent = `⭐ 平均星數：${reviews[0].rating}`;
+      document.querySelector(".review-count").textContent = `(${reviews.length} 則評論)`;
+    } else {
       document.querySelector(".review-title").innerHTML += "<p>⚠️ 尚無評論</p>";
-      return;
     }
 
-    document.querySelector(".store-name").textContent = restaurantName;
-    document.querySelector(".star-tag").textContent = `⭐ 平均星數：${reviews[0].rating}`;
-    document.querySelector(".review-count").textContent = `(${reviews.length} 則評論)`;
+    // 地址：評論內有就用，否則打排行榜 API 補
+    restaurantAddress =
+      (reviews[0] && reviews[0].address) || (await fetchRestaurantAddress(restaurantName));
+    document.querySelector(".address").textContent =
+      `店家地址｜${restaurantAddress || "未提供"}`;
 
-    restaurantAddress = reviews[0].address || await fetchRestaurantAddress(restaurantName);
-    document.querySelector(".address").textContent = `店家地址｜${restaurantAddress || "未提供"}`;
-
+    // 關鍵字（只在有評論時跑）
     const container = document.querySelector("main.store-container");
     document.querySelectorAll("section.review").forEach(e => e.remove());
 
-    const allComments = reviews.map(r => r.comment).join(" ");
-    const keywords = extractKeywords(allComments);
-    const tagButtons = document.querySelector(".tags").querySelectorAll("button");
-    tagButtons.forEach((btn, i) => {
-      if (i === 0) return; // 第一顆保留均消價格
-      btn.textContent = keywords[i - 1] || `關鍵字${i}`;
-    });
+    if (reviews.length > 0) {
+      const allComments = reviews.map(r => r.comment || "").join(" ");
+      const keywords = extractKeywords(allComments);
+      const tagButtons = document.querySelector(".tags").querySelectorAll("button");
+      tagButtons.forEach((btn, i) => {
+        if (i === 0) return; // 第一顆保留均消
+        btn.textContent = keywords[i - 1] || `關鍵字${i}`;
+      });
 
-    for (const r of reviews) {
-      const section = document.createElement("section");
-      section.className = "review";
-      section.innerHTML = `
-        <div class="user-pic">👤</div>
-        <div class="review-meta">
-          <p>${r.reviewer_name}</p>
-          <p>${new Date(r.created_at).toLocaleDateString()}</p>
-        </div>
-        <div class="review-box">${r.comment}</div>
-      `;
-      container.appendChild(section);
+      for (const r of reviews) {
+        const section = document.createElement("section");
+        section.className = "review";
+        section.innerHTML = `
+          <div class="user-pic">👤</div>
+          <div class="review-meta">
+            <p>${r.reviewer_name || "匿名"}</p>
+            <p>${r.created_at ? new Date(r.created_at).toLocaleDateString() : ""}</p>
+          </div>
+          <div class="review-box">${r.comment || ""}</div>
+        `;
+        container.appendChild(section);
+      }
     }
 
+    // 等地圖 API 來後就初始化（無論有沒有評論/地址都會跑）
     const wait = setInterval(() => {
-      if (typeof google !== 'undefined' && google.maps && google.maps.Map) {
+      if (window.google?.maps?.Map) {
         clearInterval(wait);
         initMap();
       }
@@ -184,36 +216,47 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     console.error("🚨 載入評論失敗：", err);
     alert("❌ 無法載入評論資料");
+
+    // 即使失敗也嘗試只用名稱開地圖
+    const wait = setInterval(() => {
+      if (window.google?.maps?.Map) {
+        clearInterval(wait);
+        initMap();
+      }
+    }, 200);
+  }
+
+  // 放到 DOMContentLoaded 裡，確保 fallbackName 已設定
+  const bookBtn = document.querySelector('.book-btn');
+  if (bookBtn) {
+    bookBtn.addEventListener('click', () => {
+      const q = encodeURIComponent(fallbackName || "餐廳");
+      window.open(`https://www.google.com/search?q=${q}+線上訂位`, '_blank');
+    });
+  }
+
+  const shareBtn = document.querySelector('.share-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+      const title = document.querySelector('.store-name').textContent || fallbackName || "餐廳";
+      const url = window.location.href;
+      const text = `推薦這家餐廳給你：${title}`;
+      if (navigator.share) {
+        try { await navigator.share({ title, text, url }); } 
+        catch (err) { console.error('❌ 分享失敗：', err); }
+      } else {
+        alert('❗ 此裝置不支援分享功能，請手動複製網址');
+      }
+    });
   }
 });
 
 function extractKeywords(text) {
-  const common = ['的', '了', '和', '是', '在', '我', '有', '也', '很', '吃', '好', '覺得', '超'];
-  const words = text.replace(/[^一-龥]/g, '').split("");
+  const common = ['的','了','和','是','在','我','有','也','很','吃','好','覺得','超'];
+  const words = (text || "").replace(/[^一-龥]/g, '').split("");
   const count = {};
-  for (const word of words) {
-    if (word.length > 0 && !common.includes(word)) {
-      count[word] = (count[word] || 0) + 1;
-    }
+  for (const w of words) {
+    if (w && !common.includes(w)) count[w] = (count[w] || 0) + 1;
   }
-  return Object.entries(count).sort((a, b) => b[1] - a[1]).map(w => w[0]).slice(0, 3);
+  return Object.entries(count).sort((a,b)=>b[1]-a[1]).map(w=>w[0]).slice(0,3);
 }
-document.querySelector('.book-btn').addEventListener('click', function () {
-  const query = encodeURIComponent(fallbackName || "餐廳");
-  window.open(`https://www.google.com/search?q=${query}+線上訂位`, '_blank');
-});
-document.querySelector('.share-btn').addEventListener('click', async () => {
-  const title = document.querySelector('.store-name').textContent;
-  const url = window.location.href;
-  const text = `推薦這家餐廳給你：${title}`;
-
-  if (navigator.share) {
-    try {
-      await navigator.share({ title, text, url });
-    } catch (err) {
-      console.error('❌ 分享失敗：', err);
-    }
-  } else {
-    alert('❗ 此裝置不支援分享功能，請手動複製網址');
-  }
-});

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 功能測試頁面</title>
+    <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+       
+        .warning {
+            background-color: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc02;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .notification-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .unread {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        .read {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 API 功能測試頁面</h1>
+    <p>測試打卡評論的喜歡、收藏和通知功能</p>
+
+
+    <!-- 連接測試 -->
+    <div class="container">
+        <h2>🔗 連接測試</h2>
+        <button onclick="testConnection()">測試服務器連接</button>
+        <div id="connectionResult"></div>
+    </div>
+
+
+    <!-- 用戶登入區域 -->
+    <div class="container">
+        <h2>🔐 用戶登入</h2>
+        <p><strong>注意:</strong> 這裡使用後端 Session 登入（/api/accounts/）。請輸入 Email 與密碼。</p>
+        <div class="warning">
+            <strong>⚠️ 重要提示:</strong><br>
+            1. 可先用下方「註冊」建立帳號，或用 Django Admin 建立用戶<br>
+            2. 登入成功後，瀏覽器會儲存 Session Cookie，之後呼叫需帶 <code>credentials: 'include'</code><br>
+            3. 未登入呼叫受保護 API 會返回 401
+        </div>
+        <div class="form-group">
+            <label for="username">Email:</label>
+            <input type="text" id="username" value="test@example.com" placeholder="輸入 Email">
+        </div>
+        <div class="form-group">
+            <label for="password">密碼:</label>
+            <input type="password" id="password" value="testpass" placeholder="輸入密碼">
+        </div>
+        <button onclick="registerUser()">註冊</button>
+        <button onclick="login()">登入</button>
+        <button onclick="logout()">登出</button>
+        <button onclick="checkAuth()">檢查登入狀態</button>
+        <div id="loginStatus"></div>
+    </div>
+
+
+    <!-- 打卡評論測試 -->
+    <div class="container">
+        <h2>📝 打卡評論測試</h2>
+        <p><strong>提示:</strong> 請先創建一個測試評論，然後使用返回的評論 ID 來測試其他功能。</p>
+        <div class="form-group">
+            <label for="reviewId">評論 ID:</label>
+            <input type="number" id="reviewId" value="" placeholder="先創建評論獲取 ID">
+            <button onclick="createTestReview()">創建測試評論</button>
+        </div>
+        <button onclick="getReviewStats()">獲取評論統計</button>
+        <button onclick="toggleLike()">切換喜歡</button>
+        <button onclick="toggleFavorite()">切換收藏</button>
+        <div id="reviewResult"></div>
+    </div>
+
+
+    <!-- 通知測試 -->
+    <div class="container">
+        <h2>🔔 通知測試</h2>
+        <button onclick="getNotifications()">獲取通知列表</button>
+        <button onclick="markAllRead()">標記全部已讀</button>
+        <div id="notificationsResult"></div>
+    </div>
+
+
+    <!-- 收藏列表測試 -->
+    <div class="container">
+        <h2>⭐ 收藏列表測試</h2>
+        <button onclick="getFavorites()">獲取我的收藏</button>
+        <div id="favoritesResult"></div>
+    </div>
+
+
+    <!-- 會員資料測試 -->
+    <div class="container">
+        <h2>👤 會員資料測試</h2>
+        <div class="form-group">
+            <label for="profileEmail">Email</label>
+            <input type="email" id="profileEmail" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+            <label for="displayName">姓名</label>
+            <input type="text" id="displayName" placeholder="顯示名稱">
+        </div>
+        <div class="form-group">
+            <label for="gender">性別</label>
+            <select id="gender">
+                <option value="">未設定</option>
+                <option value="male">男</option>
+                <option value="female">女</option>
+                <option value="other">其他</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="birthday">生日</label>
+            <input type="date" id="birthday">
+        </div>
+        <div class="form-group">
+            <label for="phoneNumber">手機號碼</label>
+            <input type="text" id="phoneNumber" placeholder="09xxxxxxxx">
+        </div>
+        <button onclick="loadProfile()">讀取會員資料</button>
+        <button onclick="updateProfile()">更新會員資料</button>
+        <div class="form-group" style="margin-top:10px;">
+            <label for="avatarFile">大頭貼</label>
+            <input type="file" id="avatarFile" accept="image/*">
+            <button onclick="uploadAvatar()">上傳大頭貼</button>
+        </div>
+        <div id="avatarPreview" style="margin-top:10px;"></div>
+        <div id="profileResult"></div>
+    </div>
+
+
+    <!-- 創建測試評論 -->
+    <div class="container">
+        <h2>➕ 創建測試評論</h2>
+        <div class="form-group">
+            <label for="restaurantName">餐廳名稱:</label>
+            <input type="text" id="restaurantName" value="測試餐廳" placeholder="餐廳名稱">
+        </div>
+        <div class="form-group">
+            <label for="metroLine">捷運線:</label>
+            <input type="text" id="metroLine" value="淡水信義線" placeholder="捷運線">
+        </div>
+        <div class="form-group">
+            <label for="rating">評分:</label>
+            <select id="rating">
+                <option value="1">1星</option>
+                <option value="2">2星</option>
+                <option value="3">3星</option>
+                <option value="4">4星</option>
+                <option value="5" selected>5星</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="comment">評論內容:</label>
+            <textarea id="comment" rows="3" placeholder="評論內容">這是一個測試評論</textarea>
+        </div>
+        <button onclick="createReview()">創建評論</button>
+        <div id="createResult"></div>
+    </div>
+
+
+    <script>
+        const API_BASE = 'http://140.131.115.112:8000';
+        let authToken = localStorage.getItem('authToken') || null; // 若日後改 JWT 可沿用
+        let currentUser = localStorage.getItem('currentUser') || null;
+
+
+        // 測試服務器連接
+        async function testConnection() {
+            // 先測試基本連接
+            try {
+                const response = await fetch(`${API_BASE}/api/api/top-checkin-restaurants/`, {
+                    credentials: 'include'
+                });
+                const text = await response.text();
+               
+                if (response.ok) {
+                    showResult('connectionResult', `✅ 服務器連接成功!\n狀態: ${response.status}\n響應: ${text.substring(0, 100)}...`, 'success');
+                } else {
+                    showResult('connectionResult', `⚠️ 服務器響應異常\n狀態: ${response.status}\n響應: ${text.substring(0, 200)}...`, 'error');
+                }
+            } catch (error) {
+                showResult('connectionResult', `❌ 連接失敗: ${error.message}\n\n可能的原因:\n1. Django 服務器未啟動\n2. 端口 8000 未開放\n3. CORS 問題\n4. 網絡連接問題\n\n請檢查:\n- 在虛擬機上運行: python manage.py runserver 0.0.0.0:8000\n- 確保防火牆允許端口 8000`, 'error');
+            }
+        }
+
+
+        // 更新登入狀態顯示
+        function updateLoginStatus() {
+            const statusDiv = document.getElementById('loginStatus');
+            if (authToken && currentUser) {
+                statusDiv.innerHTML = `<div class="success">✅ 已登入: ${currentUser}<br>Token: ${authToken.substring(0, 20)}...</div>`;
+            } else {
+                statusDiv.innerHTML = `<div class="error">❌ 未登入<br>Token: ${authToken || 'null'}<br>User: ${currentUser || 'null'}</div>`;
+            }
+        }
+
+
+        // 獲取 CSRF Token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+        // 檢查登入狀態（基於本地標記）
+        function checkLogin() {
+            if (!currentUser) {
+                alert('❌ 請先登入！');
+                return false;
+            }
+            return true;
+        }
+
+
+        // 註冊
+        async function registerUser() {
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (!email || !password) {
+                showResult('loginStatus', '請輸入 Email 與密碼', 'error');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/accounts/register/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    currentUser = data.user?.username || email;
+                    localStorage.setItem('currentUser', currentUser);
+                    updateLoginStatus();
+                    showResult('loginStatus', `✅ 註冊並自動登入成功: ${currentUser}`, 'success');
+                } else {
+                    showResult('loginStatus', `❌ 註冊失敗:\n${JSON.stringify(data)}`, 'error');
+                }
+            } catch (e) {
+                showResult('loginStatus', `❌ 註冊錯誤: ${e.message}`, 'error');
+            }
+        }
+
+
+        // 登入
+        async function login() {
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (!email || !password) {
+                showResult('loginStatus', '請輸入 Email 與密碼', 'error');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/api/accounts/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    currentUser = data.user?.username || email;
+                    localStorage.setItem('currentUser', currentUser);
+                    // 若未使用 JWT，可不設置 authToken
+                    updateLoginStatus();
+                    showResult('loginStatus', `✅ 登入成功: ${currentUser}`, 'success');
+                } else {
+                    showResult('loginStatus', `❌ 登入失敗:\n${JSON.stringify(data)}`, 'error');
+                }
+            } catch (e) {
+                showResult('loginStatus', `❌ 登入錯誤: ${e.message}`, 'error');
+            }
+        }
+
+
+        // 登出
+        async function logout() {
+            try {
+                await fetch(`${API_BASE}/api/accounts/logout/`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+            } catch (_) {}
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            updateLoginStatus();
+            showResult('loginStatus', '✅ 已登出', 'success');
+        }
+
+
+        // 後端檢查登入狀態
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_BASE}/api/accounts/user/`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (response.ok && data.isAuthenticated) {
+                    currentUser = data.user?.username || data.user?.email || currentUser;
+                    localStorage.setItem('currentUser', currentUser);
+                    updateLoginStatus();
+                    showResult('loginStatus', `✅ 已登入 (伺服器回應): ${currentUser}`, 'success');
+                } else {
+                    showResult('loginStatus', `❌ 未登入 (伺服器回應)`, 'error');
+                }
+            } catch (e) {
+                showResult('loginStatus', `❌ 檢查登入錯誤: ${e.message}`, 'error');
+            }
+        }
+
+
+        // 創建測試評論
+        async function createTestReview() {
+            if (!checkLogin()) return;
+
+
+            const reviewData = {
+                restaurant_name: '測試餐廳_' + Date.now(),
+                metro_line: '淡水信義線',
+                reviewer_name: currentUser || '測試用戶',
+                rating: 5,
+                comment: '這是一個自動創建的測試評論，用於測試喜歡和收藏功能。'
+            };
+
+
+            try {
+                const response = await fetch(`${API_BASE}/api/api/checkin-reviews/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(reviewData)
+                });
+               
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    showResult('reviewResult', `API 返回非 JSON 格式:\n狀態: ${response.status}\n內容: ${text.substring(0, 200)}...`, 'error');
+                    return;
+                }
+               
+                const data = await response.json();
+                if (response.ok) {
+                    // 自動填入評論 ID
+                    document.getElementById('reviewId').value = data.review_id;
+                    showResult('reviewResult', `✅ 測試評論創建成功!\n評論 ID: ${data.review_id}\n餐廳: ${reviewData.restaurant_name}\n現在可以使用這個 ID 測試其他功能`, 'success');
+                } else {
+                    showResult('reviewResult', `❌ 創建評論失敗:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('reviewResult', `❌ 創建評論錯誤: ${error.message}`, 'error');
+            }
+        }
+
+
+        // 獲取評論統計
+        async function getReviewStats() {
+            const reviewId = document.getElementById('reviewId').value;
+            if (!reviewId) {
+                showResult('reviewResult', '請輸入評論 ID', 'error');
+                return;
+            }
+
+
+            try {
+                const response = await fetch(`${API_BASE}/api/api/checkin-reviews/${reviewId}/stats/`, {
+                    credentials: 'include'
+                });
+               
+                // 檢查響應內容類型
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    showResult('reviewResult', `API 返回非 JSON 格式:\n狀態: ${response.status}\n內容: ${text.substring(0, 200)}...`, 'error');
+                    return;
+                }
+               
+                const data = await response.json();
+                showResult('reviewResult', JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('reviewResult', '錯誤: ' + error.message, 'error');
+            }
+        }
+
+
+        // 切換喜歡
+        async function toggleLike() {
+            if (!checkLogin()) return;
+
+
+            const reviewId = document.getElementById('reviewId').value;
+            if (!reviewId) {
+                showResult('reviewResult', '請輸入評論 ID', 'error');
+                return;
+            }
+       
+            try {
+                const response = await fetch(`${API_BASE}/api/api/checkin-reviews/${reviewId}/like/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include'
+                });
+               
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    showResult('reviewResult', `API 返回非 JSON 格式:\n狀態: ${response.status}\n內容: ${text.substring(0, 200)}...`, 'error');
+                    return;
+                }
+               
+                const data = await response.json();
+                showResult('reviewResult', JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('reviewResult', '錯誤: ' + error.message, 'error');
+            }
+        }
+
+
+        // 切換收藏
+        async function toggleFavorite() {
+            if (!checkLogin()) return;
+
+
+            const reviewId = document.getElementById('reviewId').value;
+            if (!reviewId) {
+                showResult('reviewResult', '請輸入評論 ID', 'error');
+                return;
+            }
+
+
+            try {
+                const response = await fetch(`${API_BASE}/api/api/checkin-reviews/${reviewId}/favorite/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResult('reviewResult', JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('reviewResult', '錯誤: ' + error.message, 'error');
+            }
+        }
+
+
+        // 獲取通知
+        async function getNotifications() {
+            if (!checkLogin()) return;
+           
+            try {
+                const response = await fetch(`${API_BASE}/api/api/notifications/`, {
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+               
+                if (response.ok) {
+                    let html = '';
+                    // 未讀清單
+                    html += `<h3>未讀通知 (${data.unread_count})</h3>`;
+                    const unreadList = Array.isArray(data.unread_notifications) ? data.unread_notifications : [];
+                    if (unreadList.length === 0) {
+                        html += `<div class="notification-item read">目前沒有未讀通知</div>`;
+                    } else {
+                        unreadList.forEach(notification => {
+                            html += `
+                                <div class="notification-item unread">
+                                    <strong>${notification.title}</strong><br>
+                                    ${notification.content}<br>
+                                    <small>時間: ${notification.created_at} | 發送者: ${notification.sender}</small>
+                                    <button onclick="markAsRead(${notification.id})">標記已讀</button>
+                                    <button onclick="deleteNotification(${notification.id})">刪除</button>
+                                </div>
+                            `;
+                        });
+                    }
+
+
+                    // 全部清單
+                    html += `<h3 style="margin-top:12px;">全部通知</h3>`;
+                    const allList = Array.isArray(data.notifications) ? data.notifications : [];
+                    if (allList.length === 0) {
+                        html += `<div class="notification-item read">目前沒有通知</div>`;
+                    } else {
+                        allList.forEach(notification => {
+                            const className = notification.is_read ? 'read' : 'unread';
+                            html += `
+                                <div class="notification-item ${className}">
+                                    <strong>${notification.title}</strong><br>
+                                    ${notification.content}<br>
+                                    <small>時間: ${notification.created_at} | 發送者: ${notification.sender}</small>
+                                    <button onclick="markAsRead(${notification.id})">標記已讀</button>
+                                    <button onclick="deleteNotification(${notification.id})">刪除</button>
+                                </div>
+                            `;
+                        });
+                    }
+
+
+                    document.getElementById('notificationsResult').innerHTML = html;
+                } else {
+                    showResult('notificationsResult', JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                showResult('notificationsResult', '錯誤: ' + error.message, 'error');
+            }
+        }
+
+
+        // 標記全部已讀
+        async function markAllRead() {
+            if (!checkLogin()) return;
+           
+            try {
+                const response = await fetch(`${API_BASE}/api/api/notifications/read-all/`, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    // 更新列表顯示
+                    await getNotifications();
+                } else {
+                    showResult('notificationsResult', JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                showResult('notificationsResult', '錯誤: ' + error.message, 'error');
+            }
+        }
+
+
+        // 標記單個通知為已讀
+        async function markAsRead(notificationId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/api/notifications/${notificationId}/read/`, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    getNotifications(); // 重新載入通知列表
+                }
+            } catch (error) {
+                console.error('標記已讀失敗:', error);
+            }
+        }
+
+
+        // 刪除通知
+        async function deleteNotification(notificationId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/api/notifications/${notificationId}/delete/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    getNotifications(); // 重新載入通知列表
+                }
+            } catch (error) {
+                console.error('刪除通知失敗:', error);
+            }
+        }
+
+
+        // 獲取收藏列表
+        async function getFavorites() {
+            try {
+                const response = await fetch(`${API_BASE}/api/api/user/favorites/`, {
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+               
+                if (response.ok) {
+                    let html = '<h3>我的收藏列表</h3>';
+                    data.favorites.forEach(favorite => {
+                        html += `
+                            <div class="notification-item">
+                                <strong>${favorite.review.restaurant_name}</strong> (${favorite.review.metro_line})<br>
+                                評分: ${favorite.review.rating}星<br>
+                                評論: ${favorite.review.comment}<br>
+                                <small>收藏時間: ${favorite.favorited_at}</small>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('favoritesResult').innerHTML = html;
+                } else {
+                    showResult('favoritesResult', JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                showResult('favoritesResult', '錯誤: ' + error.message, 'error');
+            }
+        }
+
+
+        // 創建測試評論
+        async function createReview() {
+            const reviewData = {
+                restaurant_name: document.getElementById('restaurantName').value,
+                metro_line: document.getElementById('metroLine').value,
+                reviewer_name: currentUser || '測試用戶',
+                rating: parseInt(document.getElementById('rating').value),
+                comment: document.getElementById('comment').value
+            };
+
+
+            try {
+                const response = await fetch(`${API_BASE}/api/api/checkin-reviews/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(reviewData)
+                });
+                const data = await response.json();
+                showResult('createResult', JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('createResult', '錯誤: ' + error.message, 'error');
+            }
+        }
+
+
+        // 讀取會員資料 (GET /api/accounts/profile/)
+        async function loadProfile() {
+            if (!checkLogin()) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/accounts/profile/`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showResult('profileResult', JSON.stringify(data, null, 2), 'error');
+                    return;
+                }
+                // 填入表單
+                document.getElementById('profileEmail').value = data.email || '';
+                document.getElementById('displayName').value = data.display_name || '';
+                document.getElementById('gender').value = data.gender || '';
+                document.getElementById('birthday').value = data.birthday || '';
+                document.getElementById('phoneNumber').value = data.phone_number || '';
+                if (data.avatar_url) {
+                    document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar_url}" alt="avatar" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    document.getElementById('avatarPreview').innerHTML = '';
+                }
+                showResult('profileResult', '✅ 已載入會員資料', 'success');
+            } catch (e) {
+                showResult('profileResult', `錯誤: ${e.message}`, 'error');
+            }
+        }
+
+
+        // 更新會員資料 (PUT /api/accounts/profile/)
+        async function updateProfile() {
+            if (!checkLogin()) return;
+            const payload = {
+                email: document.getElementById('profileEmail').value || undefined,
+                display_name: document.getElementById('displayName').value || '',
+                gender: document.getElementById('gender').value || '',
+                birthday: document.getElementById('birthday').value || '',
+                phone_number: document.getElementById('phoneNumber').value || ''
+            };
+            try {
+                const res = await fetch(`${API_BASE}/api/accounts/profile/`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showResult('profileResult', '✅ 更新成功', 'success');
+                    // 更新登入狀態顯示（若 email 變更）
+                    await checkAuth();
+                    await loadProfile();
+                } else {
+                    showResult('profileResult', JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (e) {
+                showResult('profileResult', `錯誤: ${e.message}`, 'error');
+            }
+        }
+
+
+        // 上傳大頭貼 (POST /api/accounts/profile/avatar/)
+        async function uploadAvatar() {
+            if (!checkLogin()) return;
+            const fileInput = document.getElementById('avatarFile');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showResult('profileResult', '請選擇圖片檔案', 'error');
+                return;
+            }
+            const form = new FormData();
+            form.append('avatar', fileInput.files[0]);
+            try {
+                const res = await fetch(`${API_BASE}/api/accounts/profile/avatar/`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') || '' },
+                    body: form
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showResult('profileResult', '✅ 大頭貼上傳成功', 'success');
+                    document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar_url}" alt="avatar" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    showResult('profileResult', JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (e) {
+                showResult('profileResult', `錯誤: ${e.message}`, 'error');
+            }
+        }
+
+
+        // 顯示結果
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+
+        // 頁面載入時同步伺服器登入狀態
+        window.onload = function() {
+            updateLoginStatus(); // 先顯示本地狀態
+            checkAuth();         // 再以伺服器為準同步狀態
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+

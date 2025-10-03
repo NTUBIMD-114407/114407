@@ -71,11 +71,13 @@ body {
 }
 
 .site-logo {
+  display: flex;
+  align-items: center;
+  left: 60px;
+  gap: 16px;
   position: absolute;               /* 以 .header 為基準 */
-  top: 50px;
-  left: 50px;
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
   z-index: 10;
@@ -88,14 +90,14 @@ body {
   font-size: 30px;
   margin-top: 30px;
   margin-bottom: 5px;
-  padding-right: 10px;
+  padding-right: 15px;
 }
 .subtitle {
   text-align: right;
   font-size: 22px;
   margin-bottom: 20px;
   letter-spacing: 2px;
-  padding-right: 10px;
+  padding-right: 15px;
 }
 
 /* 搜尋列 */
@@ -116,8 +118,9 @@ body {
 /* 推薦美食 */
 .recommend-section {
   width: 100%;
-  padding: 0;
-  margin: 0;
+  line-height: 2.5;
+  padding: 0 ;
+  margin: 10px 0;
 }
 
 /* 美食卡片容器：橫向滑動、與版心等寬 */
@@ -134,7 +137,7 @@ body {
 .food-card {
   flex: 0 0 auto;
   width: 160px;
-  height: 220px;
+  height: auto;
   background: #D9D9D9;
   border-radius: 10px;
   padding: 10px;
@@ -313,4 +316,43 @@ body {
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer;
+}
+
+/* ===== 右上角「喝酒專區」膠囊按鈕 ===== */
+.pill-link {
+  position: absolute;          /* 以 .container 為定位基準 */
+  top: 16px;
+  right: 16px;
+  z-index: 25;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,0.9);
+  color: #fff;
+  background: transparent;     /* 深藍背景上看起來像白邊膠囊 */
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  line-height: 1;
+  backdrop-filter: saturate(120%) blur(0.5px); /* 輕微透感，非必要可刪 */
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+
+.pill-link:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: #fff;
+  color: #fff;
+}
+
+/* 小螢幕微縮；大螢幕放大一點 */
+@media (max-width: 360px){
+  .pill-link { padding: 7px 12px; font-size: 13px; }
+}
+@media (min-width: 768px){
+  .pill-link { top: 18px; right: 18px; padding: 9px 16px; font-size: 15px; }
 }

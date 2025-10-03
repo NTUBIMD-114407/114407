@@ -7,19 +7,15 @@
   <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="夜貓/night.css">
 </head>
-<!-- 在所有頁面的 </body> 前載入 -->
-<script src="static/js/notify-client.js"></script>
-<script>
-  // 可選：若你的 API 與前端不同網域，先指定
-  // window.API_BASE = "https://your-domain.com";
-  window.notify.init(); // 啟用角標同步 + 全站 toast
-</script>
+
 
 <body>
   <div class="container rwd-container">
     <!-- 返回鍵：改放進 container，之後用 absolute 相對版心定位 -->
     <a href="homepage.html" class="back-button">
       <img src="圖片/arrow001.png" alt="返回" />
+    <!-- 右上角：喝酒專區 -->
+    <a href="drinks.html" class="pill-link drinks-link" aria-label="喝酒專區">喝酒專區</a>
     </a>
 
     <header class="header">

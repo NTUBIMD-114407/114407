@@ -6,29 +6,48 @@
   <title>會員中心</title>
   <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="static/css/Member_center.css">
+  <style>
+    /* 簡易彈窗樣式（可移到 CSS） */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:9999;}
+    .modal{width:min(520px,92vw);background:#fff;border-radius:16px;padding:18px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .modal h3{margin:0 0 12px;font-size:20px}
+    .modal .row{display:flex;gap:8px;align-items:center;margin:8px 0}
+    .modal label{width:92px;color:#555}
+    .modal input,.modal select{flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px}
+    .modal .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .modal .btns button{border:none;border-radius:8px;padding:8px 14px;cursor:pointer}
+    .btn-primary{background:#1E3A5F;color:#fff}
+    .btn-ghost{background:#e5e7eb}
+    #profileResult{margin-top:10px;font-size:14px}
+    #profileResult.success{color:#0a7a28}
+    #profileResult.error{color:#b00020}
+  </style>
 </head>
 <body>
   <div class="container rwd-container">
-    <!-- 標題 -->
     <h1 class="member-title">會員中心</h1>
 
     <!-- 個人資料卡 -->
     <section class="profile-card">
       <div class="avatar-wrap">
-        <img src="圖片/user.png" alt="頭像" class="avatar">
-        <button class="avatar-edit" title="編輯頭像">✎</button>
+        <img src="圖片/user.png" alt="頭像" class="avatar" id="avatarImg">
+        <button class="avatar-edit" title="編輯頭像" id="avatarEditBtn">
+          <img src="圖片/camera.png" alt="更換頭像">
+        </button>
+        <input type="file" id="avatarFile" accept="image/*" hidden>
       </div>
 
       <div class="profile-info">
         <div class="name-row">
-          <span class="name">admin</span>
-          <a href="javascript:void(0)" class="edit-link">編輯資訊</a>
+          <span class="name" id="displayNameText">admin</span>
+          <a href="javascript:void(0)" class="edit-link" id="openEdit">編輯資訊</a>
         </div>
 
         <ul class="meta">
-          <li><span>Birthday：</span>XXXX/XX/XX</li>
-          <li><span>Phone NUM.：</span>09XX***XXX</li>
-          <li><span>Email：</span>OOOOOO@gmail.com</li>
+          <li><span>Email：</span><span id="emailText">OOOOOO@gmail.com</span></li>
+          <li><span>Birthday：</span><span id="birthdayText">XXXX/XX/XX</span></li>
+          <li><span>Phone NUM.：</span><span id="phoneText">09XX***XXX</span></li>
+          <li><span>Gender：</span><span id="genderText">—</span></li>
         </ul>
       </div>
     </section>
@@ -36,149 +55,203 @@
     <!-- 功能清單 -->
     <nav class="menu">
       <a class="menu-item" href="favorites_food.html">收 藏 美 食</a>
-      <a class="menu-item" href="favorites_station.html">收 藏 站 牌</a>
-      <a class="menu-item" href="timetable.html">捷 運 時 刻 表</a>
+      <a class="menu-item" href="https://ericyu.org/TaipeiMetroTime/" target="_blank" rel="noopener">捷 運 時 刻 表</a>
       <a class="menu-item" href="night.html">捷 運 末 5 班</a>
-      <button class="menu-item logout-btn" type="button">登 　　 出</button>
+      <button class="menu-item logout-btn" type="button" id="logoutBtn">登 　　 出</button>
     </nav>
 
     <!-- 底部導覽列 -->
     <nav class="footer">
-      <a class="nav-btn" href="homepage.html">
-        <img src="圖片/home.png" alt="首頁"><span>首頁</span>
-      </a>
-      <a class="nav-btn" href="food_map.html">
-        <img src="圖片/map.png" alt="美食地圖"><span>美食地圖</span>
-      </a>
-      <a class="nav-btn" href="notify.html">
-        <img src="圖片/bell.png" alt="通知"><span>通知</span>
-      </a>
-      <a class="nav-btn active" href="Member_center.html">
-        <img src="圖片/user.png" alt="會員中心"><span>會員中心</span>
-      </a>
+      <a class="nav-btn" href="homepage.html"><img src="圖片/home.png" alt="首頁"><span>首頁</span></a>
+      <a class="nav-btn" href="food_map.html"><img src="圖片/map.png" alt="美食地圖"><span>美食地圖</span></a>
+      <a class="nav-btn" href="notify.html"><img src="圖片/bell.png" alt="通知"><span>通知</span></a>
+      <a class="nav-btn active" href="Member_center.html"><img src="圖片/user.png" alt="會員中心"><span>會員中心</span></a>
     </nav>
   </div>
 
-<script>
-// ====== 基本設定與小工具 ======
-window.API_BASE = (location.host.startsWith('127.0.0.1:5500') || location.host.startsWith('localhost:5500'))
-  ? 'http://140.131.115.112:8000'
-  : '';
-   // 同源
+  <!-- 編輯資料彈窗 -->
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <h3 id="editTitle">編輯個人資料</h3>
+      <div class="row">
+        <label for="profileEmail">Email</label>
+        <input type="email" id="profileEmail" placeholder="name@example.com">
+      </div>
+      <div class="row">
+        <label for="displayName">姓名</label>
+        <input type="text" id="displayName" placeholder="暱稱 / 姓名">
+      </div>
+      <div class="row">
+        <label for="gender">性別</label>
+        <select id="gender">
+          <option value="">—</option>
+          <option value="male">男</option>
+          <option value="female">女</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="birthday">生日</label>
+        <input type="date" id="birthday">
+      </div>
+      <div class="row">
+        <label for="phoneNumber">電話</label>
+        <input type="tel" id="phoneNumber" placeholder="09xxxxxxxx">
+      </div>
+      <div class="btns">
+        <button class="btn-ghost" id="cancelEdit">取消</button>
+        <button class="btn-primary" id="saveEdit">儲存</button>
+      </div>
+      <div id="profileResult"></div>
+    </div>
+  </div>
 
+ <script>
+"use strict";
 
-function getCookie(name){
-  const v = `; ${document.cookie}`;
-  const p = v.split(`; ${name}=`);
-  if (p.length === 2) return p.pop().split(';').shift();
-  return '';
+const API_BASE = "http://140.131.115.112:8000";
+
+// 取得 CSRF
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return "";
 }
-function checkLogin(){
-  // 有後端 session 才算數；這裡僅先看前端旗標，避免未登入時一直打 API
-  return localStorage.getItem('isLoggedIn') === 'true';
-}
-function showResult(targetId, msg, type='info'){
-  const el = document.getElementById(targetId);
-  if (!el) { console.log(`[${type}]`, msg); return; }
-  const color = type==='error' ? '#dc2626' : type==='success' ? '#16a34a' : '#334155';
-  el.style.cssText = 'white-space:pre-wrap;border:1px solid #e5e7eb;border-radius:8px;padding:8px;margin-top:8px;background:#fff';
-  el.innerText = typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2);
-  el.style.color = color;
-}
-async function parseJsonSafe(res){
-  const ct = res.headers.get('content-type') || '';
-  if (!ct.includes('application/json')) {
-    const t = await res.text().catch(()=> '');
-    throw new Error(`非 JSON 回應（${res.status}）：${t.slice(0,120)}`);
+
+// 頂部提示條（未登入時）
+function showAuthBanner(msg = "尚未登入（可能 Cookie 沒帶到）") {
+  let bar = document.getElementById("authBanner");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "authBanner";
+    bar.style.cssText = "margin:10px 0;padding:10px 12px;border-radius:8px;background:#FFF3CD;color:#664D03;font-size:14px;";
+    const container = document.querySelector(".container") || document.body;
+    container.prepend(bar);
   }
-  return res.json();
+  bar.innerHTML = `${msg}　<a href="login.html" style="color:#0B5ED7;text-decoration:underline;">前往登入</a>`;
+  bar.style.display = "block";
+}
+function hideAuthBanner() {
+  const bar = document.getElementById("authBanner");
+  if (bar) bar.style.display = "none";
 }
 
-// ====== 載入個資 ======
+// 訊息顯示（彈窗內用）
+function showResult(id, msg, type="success"){
+  const box = document.getElementById(id);
+  if(!box) return;
+  box.className = type;
+  box.textContent = msg;
+}
+
+// 登入檢查（不再 alert/跳轉；回傳布林並印除錯）
+async function checkLogin() {
+  try {
+    const res = await fetch(`${API_BASE}/api/accounts/user/`, {
+      credentials: 'include',
+      headers: { 'Accept':'application/json' }
+    });
+    let data = {};
+    try { data = await res.json(); } catch {}
+    console.log("[checkLogin]", res.status, data);
+
+    if (res.ok && data?.isAuthenticated) {
+      hideAuthBanner();
+      return true;
+    }
+    // 非 200 或 isAuthenticated=false
+    showAuthBanner("尚未登入或登入已過期");
+    return false;
+  } catch(e){
+    console.error("[checkLogin] error:", e);
+    showAuthBanner("無法連線到登入服務（可能 CORS 或網路問題）");
+    return false;
+  }
+}
+
+// 載入個資
 async function loadProfile() {
-  if (!checkLogin()) return; // 未登入就不打，避免多餘 401
+  const ok = await checkLogin();
+  if (!ok) {
+    // 不跳轉：顯示提示即可
+    showResult('profileResult', '尚未登入（請點上方連結重新登入）', 'error');
+    return;
+  }
   try {
     const res = await fetch(`${API_BASE}/api/accounts/profile/`, {
       method: 'GET',
       credentials: 'include'
     });
-    if (res.status === 401) {
-      showResult('profileResult', '尚未登入（或跨網域 Cookie 未帶上）。', 'error');
-      // 想自動導回登入就解除註解：
-      // location.href = 'login.html';
-      return;
-    }
-    if (!res.ok) {
-      const t = await res.text().catch(()=> '');
-      showResult('profileResult', `讀取失敗：${res.status}\n${t.slice(0,200)}`, 'error');
-      return;
-    }
-    const data = await parseJsonSafe(res);
+    const data = await res.json();
+    if (!res.ok) { showResult('profileResult', JSON.stringify(data,null,2), 'error'); return; }
 
-    // 填入表單/畫面
-    setVal('profileEmail',   data.email || '');
-    setVal('displayName',    data.display_name || '');
-    setVal('gender',         data.gender || '');
-    setVal('birthday',       data.birthday || '');
-    setVal('phoneNumber',    data.phone_number || '');
+    // 卡片顯示
+    document.getElementById('displayNameText').textContent = data.display_name || '—';
+    document.getElementById('emailText').textContent       = data.email || '—';
+    document.getElementById('birthdayText').textContent    = data.birthday || '—';
+    document.getElementById('phoneText').textContent       = data.phone_number || '—';
+    document.getElementById('genderText').textContent      =
+      data.gender === 'male' ? '男' : data.gender === 'female' ? '女' :
+      data.gender ? data.gender : '—';
+    if (data.avatar_url) document.getElementById('avatarImg').src = data.avatar_url;
 
-    const preview = document.getElementById('avatarPreview');
-    if (preview) {
-      preview.innerHTML = data.avatar_url
-        ? `<img src="${data.avatar_url}" alt="avatar" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">`
-        : '';
-    }
+    // 表單預填
+    document.getElementById('profileEmail').value = data.email || '';
+    document.getElementById('displayName').value  = data.display_name || '';
+    document.getElementById('gender').value       = data.gender || '';
+    document.getElementById('birthday').value     = data.birthday || '';
+    document.getElementById('phoneNumber').value  = data.phone_number || '';
+
     showResult('profileResult', '✅ 已載入會員資料', 'success');
   } catch (e) {
     showResult('profileResult', `錯誤: ${e.message}`, 'error');
   }
 }
-function setVal(id, v){ const el = document.getElementById(id); if (el) el.value = v; }
 
-// ====== 更新個資 ======
+// 更新個資
 async function updateProfile() {
-  if (!checkLogin()) return;
+  const ok = await checkLogin();
+  if (!ok) { showResult('profileResult', '尚未登入，無法更新資料', 'error'); return; }
+
   const payload = {
-    email:        document.getElementById('profileEmail')?.value || undefined,
-    display_name: document.getElementById('displayName')?.value || '',
-    gender:       document.getElementById('gender')?.value || '',
-    birthday:     document.getElementById('birthday')?.value || '',
-    phone_number: document.getElementById('phoneNumber')?.value || ''
+    email: document.getElementById('profileEmail').value || undefined,
+    display_name: document.getElementById('displayName').value || '',
+    gender: document.getElementById('gender').value || '',
+    birthday: document.getElementById('birthday').value || '',
+    phone_number: document.getElementById('phoneNumber').value || ''
   };
   try {
     const res = await fetch(`${API_BASE}/api/accounts/profile/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        // 跨網域通常讀不到 CSRF Cookie；後端若要求 CSRF，需設置跨站 CSRF 策略
         'X-CSRFToken': getCookie('csrftoken') || ''
       },
       credentials: 'include',
       body: JSON.stringify(payload)
     });
-    if (!res.ok) {
-      const msg = await res.text().catch(()=> '');
-      showResult('profileResult', `更新失敗：${res.status}\n${msg.slice(0,200)}`, 'error');
-      return;
+    const data = await res.json();
+    if (res.ok) {
+      showResult('profileResult', '✅ 更新成功', 'success');
+      await loadProfile();
+      closeModal();
+    } else {
+      showResult('profileResult', JSON.stringify(data, null, 2), 'error');
     }
-    const data = await parseJsonSafe(res);
-    showResult('profileResult', '✅ 更新成功', 'success');
-    // 可選：刷新畫面上的欄位
-    await loadProfile();
   } catch (e) {
     showResult('profileResult', `錯誤: ${e.message}`, 'error');
   }
 }
 
-// ====== 上傳大頭貼 ======
-async function uploadAvatar() {
-  if (!checkLogin()) return;
-  const fileInput = document.getElementById('avatarFile');
-  if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-    showResult('profileResult', '請選擇圖片檔案', 'error');
-    return;
-  }
+// 上傳頭像
+async function uploadAvatar(file) {
+  const ok = await checkLogin();
+  if (!ok) { showResult('profileResult', '尚未登入，無法上傳頭像', 'error'); return; }
+
   const form = new FormData();
-  form.append('avatar', fileInput.files[0]);
+  form.append('avatar', file);
   try {
     const res = await fetch(`${API_BASE}/api/accounts/profile/avatar/`, {
       method: 'POST',
@@ -186,53 +259,56 @@ async function uploadAvatar() {
       headers: { 'X-CSRFToken': getCookie('csrftoken') || '' },
       body: form
     });
-    if (!res.ok) {
-      const msg = await res.text().catch(()=> '');
-      showResult('profileResult', `上傳失敗：${res.status}\n${msg.slice(0,200)}`, 'error');
-      return;
+    const data = await res.json();
+    if (res.ok) {
+      showResult('profileResult', '✅ 大頭貼上傳成功', 'success');
+      if (data.avatar_url) document.getElementById('avatarImg').src = data.avatar_url;
+    } else {
+      showResult('profileResult', JSON.stringify(data, null, 2), 'error');
     }
-    const data = await parseJsonSafe(res);
-    const preview = document.getElementById('avatarPreview');
-    if (preview) {
-      preview.innerHTML = `<img src="${data.avatar_url}" alt="avatar" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">`;
-    }
-    showResult('profileResult', '✅ 大頭貼上傳成功', 'success');
   } catch (e) {
     showResult('profileResult', `錯誤: ${e.message}`, 'error');
   }
 }
 
-// ====== 綁定 ======
-document.addEventListener('DOMContentLoaded', () => {
-  // 導覽列 active（保留你的做法）
-  document.querySelectorAll('.nav-btn').forEach(a => {
-    a.classList.toggle('active', a.getAttribute('href') === location.pathname.split('/').pop());
+// Modal 控制
+const modal = document.getElementById('editModal');
+function openModal(){ modal.style.display = 'flex'; }
+function closeModal(){ modal.style.display = 'none'; }
+
+// 綁定事件
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProfile();
+
+  document.getElementById('openEdit').addEventListener('click', openModal);
+  document.getElementById('cancelEdit').addEventListener('click', closeModal);
+  document.getElementById('saveEdit').addEventListener('click', updateProfile);
+
+  // 點彈窗外側關閉（可選）
+  modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+
+  // 頭像按鈕
+  document.getElementById('avatarEditBtn').addEventListener('click', ()=> {
+    document.getElementById('avatarFile').click();
+  });
+  document.getElementById('avatarFile').addEventListener('change', (e)=>{
+    const f = e.target.files && e.target.files[0];
+    if (f) uploadAvatar(f);
   });
 
-  // 初次讀取
-  loadProfile();
-
-  // 假設你有「儲存」按鈕與「上傳頭貼」按鈕，幫你綁定
-  document.getElementById('btnSaveProfile')?.addEventListener('click', updateProfile);
-  document.getElementById('btnUploadAvatar')?.addEventListener('click', uploadAvatar);
-
-  // 你原本的登出也可保留；若要打後端 logout：
-  const logout = document.querySelector('.logout-btn');
-  if (logout) {
-    logout.addEventListener('click', async () => {
-      try {
-        await fetch(`${API_BASE}/api/accounts/logout/`, {
-          method:'POST', credentials:'include',
-          headers:{ 'X-CSRFToken': getCookie('csrftoken') || '' }
-        });
-      } catch {}
-      localStorage.removeItem('isLoggedIn');
-      location.href = 'login.html';
-    });
-  }
+  // 登出
+  document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+    try {
+      await fetch(`${API_BASE}/api/accounts/logout/`, {
+        method:'POST',
+        credentials:'include',
+        headers:{'X-CSRFToken': getCookie('csrftoken') || '' }
+      });
+    } catch(e){}
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('username');
+    window.location.href = 'login.html';
+  });
 });
 </script>
-
-
-</body>
-</html>

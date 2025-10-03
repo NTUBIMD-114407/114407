@@ -115,14 +115,18 @@ body{
 }
 .menu-item{
   display:block; width:100%; text-align:left;
-  padding:var(--mc-menu-item-vpad) 0;   /* ✅ 每列更高 */
+  padding:var(--mc-menu-item-vpad) 0;
   color:#fff; background:transparent; border:none;
-  font-size:16px; letter-spacing:2px;   /* ✅ 字距更開 */
+  font-size:16px; letter-spacing:2px;
   cursor:pointer;
   border-bottom:1.6px solid rgba(255,255,255,.6);
+  text-decoration: none;          /* ← 把底線關掉 */
 }
-.menu-item:last-child{ border-bottom:1.6px solid rgba(255,255,255,.9); }
-.menu-item:hover{ opacity:.95; }
+/* 保險起見，也可加上這三行確保各狀態都無底線 */
+.menu-item:link,
+.menu-item:visited,
+.menu-item:hover { text-decoration: none; }
+
 
 /* 底部導覽列（與版心同寬） */
 .footer{
@@ -145,3 +149,109 @@ body{
 @media (max-width: 360px){
   .member-title{ font-size:30px; }
 }
+/* 可調整的尺寸變數 */
+:root{
+  --avatar-edit-size: 44px;      /* 相機按鈕外框大小 */
+  --avatar-edit-icon: 24px;      /* 相機圖示大小 */
+  --avatar-edit-offset: -8px;    /* 讓按鈕往外溢出一點（越負越靠外） */
+}
+
+/* 相機按鈕（覆蓋原本的 ✎ 樣式） */
+.avatar-edit{
+  position: absolute;
+  right: var(--avatar-edit-offset);
+  bottom: var(--avatar-edit-offset);
+  width: var(--avatar-edit-size);
+  height: var(--avatar-edit-size);
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+/* 相機圖示大小 */
+.avatar-edit img{
+  width: var(--avatar-edit-icon);
+  height: var(--avatar-edit-icon);
+  display: block;
+}
+
+/* 視窗較小時，按鈕跟著縮一點（可留可拿掉） */
+@media (max-width: 360px){
+  :root{
+    --avatar-edit-size: 38px;
+    --avatar-edit-icon: 20px;
+    --avatar-edit-offset: -6px;
+  }
+}
+/* 如果你前面有自訂變數，可以順便加這兩個變數方便微調 */
+:root{
+  --camera-size: 44px;      /* 相機按鈕本體大小 */
+  --camera-offset: -12px;   /* 往外推的距離（負值=溢出到外面） */
+}
+
+/* 讓相機能「跑到外面」：把 hidden 改 visible */
+/* 圓形頭像容器（允許按鈕跑到外圍） */
+.avatar-wrap{
+  position: relative;
+  width: var(--mc-avatar);
+  height: var(--mc-avatar);
+  flex-shrink: 0;
+
+  /* 圓形視覺：外框+底色 */
+  border-radius: 50%;
+  background: #e1e1e1;
+
+  /* 讓相機按鈕可以超出圓外 */
+  overflow: visible;                  /* 原本 hidden → visible */
+  margin-top: var(--mc-avatar-shift);
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.2);
+}
+
+/* 讓圖片本體就是圓形，並等比填滿 */
+.avatar{
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;                 /* 關鍵：裁成圓形 */
+  object-fit: cover;                  /* 填滿不變形，超出裁掉 */
+}
+
+/* 相機按鈕：右下、圓形，微微懸浮在外側 */
+.avatar-edit{
+  position: absolute;
+  right: var(--camera-offset);
+  bottom: var(--camera-offset);
+  width: var(--camera-size);
+  height: var(--camera-size);
+  border: none;
+  border-radius: 12px;          /* ← 保持方形的圓角，不是 50% */
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,.25);
+  transform: none;              /* ← 移除推出去的位移（需要再外推再加） */
+}
+
+/* 相機圖示大小 */
+.avatar-edit img{
+  width: calc(var(--camera-size) * 0.5);
+  height: calc(var(--camera-size) * 0.5);
+  object-fit: contain;
+}
+
+
+/* 若你在很小裝置想縮一點，可以加個微調（可選） */
+@media (max-width: 360px){
+  :root{
+    --camera-size: 38px;
+    --camera-offset: -10px;
+  }
+}
+

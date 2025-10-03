@@ -1,5 +1,56 @@
+"use strict";
+
 let placesService;
 let allRestaurants = [];
+
+/* =============== 通知共用（收藏用） =============== */
+const NOTIFY_KEY = "notifications_v1";
+function loadNoti(){ try{return JSON.parse(localStorage.getItem(NOTIFY_KEY))||[];}catch{return[];} }
+function saveNoti(list){ localStorage.setItem(NOTIFY_KEY, JSON.stringify(list)); }
+function makeId(){ return (crypto.randomUUID && crypto.randomUUID()) || (Date.now()+Math.random().toString(36).slice(2)); }
+// 名稱保底
+function safeName(o){
+  return (o && (o.name || o.restaurant_name || o.restaurantName || o.store_name || o.title)) || "未命名餐廳";
+}
+function pushFavoriteNotify(item, action="add"){
+  const name = safeName(item);
+  const noti = {
+    id: makeId(),
+    type: "favorite",
+    title: action==="add" ? "已收藏美食" : "取消收藏",
+    message: action==="add" ? `將「${name}」加入收藏` : `已取消「${name}」收藏`,
+    time: new Date().toISOString(),
+    read: false,
+    item: { name, address: item.address || "", place_id: item.place_id || null }
+  };
+  const list = loadNoti();
+  list.unshift(noti);
+  saveNoti(list);
+}
+/* ================================================== */
+
+/* ================= 收藏共用 ================= */
+const FAV_KEY = "fav_restaurants_v1";
+function loadFavs(){ try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } }
+function saveFavs(list){ localStorage.setItem(FAV_KEY, JSON.stringify(list)); }
+// 以 place_id 為優先；沒有就用 name@address
+const favKey = d => (d.place_id ? `pid:${d.place_id}` : `${(d.name||"")}@${(d.address||"")}`);
+function isFav(item){
+  const k = favKey(item);
+  return loadFavs().some(x => favKey(x) === k);
+}
+function toggleFav(item){
+  const list = loadFavs();
+  const k = favKey(item);
+  const i = list.findIndex(x => favKey(x) === k);
+  if (i === -1) { list.push(item); saveFavs(list); return true; }  // 加入 → 已收藏
+  list.splice(i,1); saveFavs(list); return false;                  // 移除 → 未收藏
+}
+function setFavState(btn, saved){
+  btn.textContent = saved ? "已收藏" : "收藏";
+  btn.classList.toggle("active", saved); // 需要的話在 CSS 設計 .btn-group .fav-btn.active
+}
+/* ========================================= */
 
 window.addEventListener('load', async () => {
   const stationSelect = document.getElementById('station-select');
@@ -50,15 +101,11 @@ window.addEventListener('load', async () => {
     }
    
     const user = await userRes.json();
-    console.log('當前使用者資訊：', user);
-   
     if (user.isAuthenticated && user.user) {
-      console.log('已登入，使用者名稱：', user.user.username);
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userEmail', user.user.email);
       localStorage.setItem('username', user.user.username);
     } else {
-      console.log('未登入或認證失敗');
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('userEmail');
       localStorage.removeItem('username');
@@ -69,10 +116,6 @@ window.addEventListener('load', async () => {
     localStorage.removeItem('userEmail');
     localStorage.removeItem('username');
   }
-
-
-
-
 
   confirmBtn.addEventListener('click', async () => {
     const selectedCode = stationSelect.value;
@@ -141,21 +184,48 @@ function renderRestaurantCards(list) {
   list.forEach(item => {
     const card = document.createElement('div');
     card.className = 'food-item';
+
+    // 收藏要存的 payload（與其他頁一致）— 名稱保底
+    const payload = {
+      name: item.name || item.restaurant_name || "未命名餐廳",
+      address: item.address || "",
+      rating: item.rating ?? null,
+      review_count: item.user_ratings_total ?? null,
+      opening_text: "",                  // 此頁暫無營業時間來源
+      price_text: item.price_text || "", // 若有可帶進來
+      lat: item.latitude ?? null,
+      lng: item.longitude ?? null,
+      website: item.website || "",
+      image: item.photoUrl || "",
+      place_id: item.place_id || null
+    };
+
     card.innerHTML = `
       <h4 class="section-title">🏢 商家資訊</h4>
-      <img src="${item.photoUrl}" alt="${item.name}" class="restaurant-img" loading="lazy">
+      <img src="${item.photoUrl}" alt="${safeName(item)}" class="restaurant-img" loading="lazy">
       <h4 class="restaurant-name" style="font-size: 18px; color: #2c3e50; font-weight: bold; margin-top: 8px;">
         <a href="#" onclick='goToStationPage(${JSON.stringify(item).replace(/'/g, "\\'")})' style="text-decoration: none; color: #2c3e50;">
-          ${item.name}
+          ${safeName(item)}
         </a>
       </h4>
       <p class="rating">⭐ 評分：${item.rating || '無評分'}</p>
       <p class="address">${item.address || '地址未知'}</p>
       <div class="btn-group">
-        <button class="review-btn" onclick="fetchReviews('${item.id}', '${item.name}')">查看評論</button>
+        <button class="review-btn" onclick="fetchReviews('${item.id}', '${safeName(item)}')">查看評論</button>
+        <button class="fav-btn">收藏</button>
         <button class="close-btn" onclick="this.closest('.food-item').remove()">關閉</button>
       </div>
     `;
+
+    // 綁定收藏鈕 + 初始化狀態（⚠️ 不要重新宣告 payload）
+    const favBtn = card.querySelector('.fav-btn');
+    setFavState(favBtn, isFav(payload));
+    favBtn.addEventListener('click', () => {
+      const saved = toggleFav(payload);
+      setFavState(favBtn, saved);
+      pushFavoriteNotify(payload, saved ? "add" : "remove");
+    });
+
     foodList.appendChild(card);
   });
 }

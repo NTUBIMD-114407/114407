@@ -10,8 +10,8 @@
   --hero-radius: 16px;
 
   /* 兩顆白卡片外觀 */
-  --tile-min-h: 140px;       /* 想更長就加大 */
-  --tile-icon:  40px;
+  --tile-min-h: 80px;       /* 想更長就加大 */
+  --tile-icon:  30px;
 
   /* 返回鍵大小（這顆不會跟著內容下移） */
   --back-btn:   36px;
@@ -70,11 +70,11 @@ body{
 .tiles{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap: 6px;
 }
 .tile{
   background:#fff; color:#1e2f45; border-radius:16px;
-  padding:20px 14px;
+  padding: 20px 14px;
   min-height:var(--tile-min-h);
   box-shadow:0 2px 8px rgba(0,0,0,.15);
   display:flex; flex-direction:column; align-items:center; text-align:center;

@@ -64,28 +64,22 @@
     </main>
   </div>
 
-  <script src="/static/js/food_mission/detail.js"></script>
+  <!-- 放在 </body> 前 -->
+  <script src="static/js/food_mission/detail.js" defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w&libraries=places&loading=async&callback=initMap" async></script>
+
   <script>
-    // 等待地圖 API 載入完成後手動初始化
-    function waitForGoogleMaps(callback) {
-      const interval = setInterval(() => {
-        if (typeof google !== 'undefined' && google.maps && google.maps.Map) {
-          clearInterval(interval);
-          callback();
-        }
-      }, 200);
-    }
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsegtCG2ucAQ_Hrbf_YXL3QhUUM_roMtQ&libraries=places" async defer></script>
-  <script>
+    // 簡單登入檢查（保留）
     document.addEventListener('DOMContentLoaded', function() {
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
-      if (isLoggedIn !== 'true') {
+      if (localStorage.getItem('isLoggedIn') !== 'true') {
         alert('請先登入！');
         window.location.href = 'login.html';
       }
     });
   </script>
+</body>
+</html>
+
 </body>
 
 </html>

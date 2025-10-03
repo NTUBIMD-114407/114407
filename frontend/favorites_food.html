@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>收藏美食</title>
+  <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="static/css/favorites_food.css">
+</head>
+<body>
+  <div class="container rwd-container">
+    <!-- 返回 -->
+    <a href="javascript:history.back()" class="back-btn" aria-label="返回">
+      <img src="圖片/arrow001.png" alt="">
+    </a>
+
+    <!-- 頁面標題 -->
+    <header class="header fav-header">
+      <h1 class="title">MEI食不打烊</h1>
+      <h2 class="subtitle">收藏美食</h2>
+    </header>
+
+    <!-- 清單（動態渲染） -->
+    <main class="list" id="fav-list"></main>
+  </div>
+
+  <script>
+  "use strict";
+
+  const FAV_KEY = "fav_restaurants_v1";
+
+  function loadFavs(){ try{ return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }catch{ return []; } }
+  function saveFavs(list){ localStorage.setItem(FAV_KEY, JSON.stringify(list)); }
+  const uniqKey = d => ((d.name||"") + "@" + (d.address||""));
+
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  };
+
+  function openMapByData(d){
+    if (Number.isFinite(d.lat) && Number.isFinite(d.lng)) {
+      const q = encodeURIComponent(d.name || "");
+      window.open(`https://www.google.com/maps/search/?api=1&query=${d.lat},${d.lng}(${q})`, "_blank");
+    } else if (d.address) {
+      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.address)}`, "_blank");
+    }
+  }
+
+  function buildCard(d){
+    const card   = el("article","card");
+    const thumb  = el("div","thumb");
+    if (d.image){
+      thumb.style.backgroundImage = `url('${d.image}')`;
+      thumb.style.backgroundSize = "cover";
+      thumb.style.backgroundPosition = "center";
+    }
+
+    const content = el("div","content");
+
+    const titleRow = el("div","row title-row");
+    titleRow.append(
+      el("h3","store", d.name || "未命名"),
+      el("span","review-count", d.review_count ? `(${d.review_count} 則評論)` : "")
+    );
+
+    const ratingRow = el("div","row rating-row");
+    ratingRow.append(el("span","badge", d.rating ? `⭐ ${d.rating}` : "⭐ -"));
+
+    const meta1 = el("div","row meta");
+    meta1.innerHTML = `<span>營業時間｜${d.opening_text || "—"}</span>`;
+
+    const meta2 = el("div","row meta");
+    meta2.innerHTML = `<span>店家地址｜${d.address || "—"}</span>`;
+
+    const actions = el("div","row actions");
+    const navBtn  = el("button","pill nav-pill","導航");
+    navBtn.addEventListener("click", () => openMapByData(d));
+
+    // 三顆小標籤：第一顆放均消
+    const chip1 = el("button","pill tag", d.price_text ? `均消 ${d.price_text}` : "均消 —");
+   
+
+    actions.append(navBtn, chip1);
+
+    content.append(titleRow, ratingRow, meta1, meta2, actions);
+
+    const collectBtn = el("button","collect-btn");
+    collectBtn.title = "取消收藏";
+    collectBtn.innerHTML = `<img src="圖片/collect.png" alt="收藏">`;
+    collectBtn.addEventListener("click", () => {
+      const list = loadFavs().filter(x => uniqKey(x) !== uniqKey(d));
+      saveFavs(list);
+      card.remove();
+      if (!list.length) document.getElementById("fav-list").innerHTML = '<p class="empty">目前沒有收藏的餐廳</p>';
+    });
+
+    card.append(thumb, content, collectBtn);
+    return card;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("fav-list");
+    const data = loadFavs();
+
+    if (!data.length){
+      container.innerHTML = '<p class="empty">目前沒有收藏的餐廳</p>';
+      return;
+    }
+
+    for (const d of data){
+      container.appendChild(buildCard(d));
+    }
+  });
+  </script>
+</body>
+</html>

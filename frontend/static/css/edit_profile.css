@@ -1,0 +1,142 @@
+/* ===== 可調整參數 ===== */
+:root{
+  --app-max: 480px;         /* 版心寬度：手機 */
+  --page-bg: #2b4d63;       /* 背景色 */
+  --title-size: 22px;       /* 標題字級 */
+  --avatar-size: 112px;     /* 頭像大小 */
+  --avatar-gap-top: 22px;   /* 頭像與標題距離 */
+  --camera-size: 42px;      /* 相機 icon 外框大小 */
+  --field-label-size: 16px; /* 標籤字級 */
+  --field-height: 44px;     /* 輸入框高度 */
+  --field-radius: 22px;     /* 輸入框圓角 */
+}
+
+/* 平板/桌機放寬版心 */
+@media (min-width: 768px){ :root{ --app-max: 720px; } }
+@media (min-width: 1024px){ :root{ --app-max: 960px; } }
+
+/* ===== 全域 ===== */
+*{ box-sizing:border-box; margin:0; padding:0; }
+html, body{ height:100%; }
+body{
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  background: var(--page-bg);
+  color:#fff;
+  display:flex; justify-content:center;
+}
+.container{
+  width:100%;
+  max-width:var(--app-max);
+  min-height:100vh;
+  padding:16px 18px 40px;
+  position:relative;
+}
+
+/* 標題列 */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 4px;
+}
+.back-btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(255,255,255,.16);
+  transition:background .2s ease;
+}
+.back-btn:hover{ background:rgba(255,255,255,.22); }
+.back-btn img{ width:22px; height:22px; display:block; }
+
+.title{
+  flex:1; text-align:center; font-weight:800;
+  font-size: var(--title-size); letter-spacing:2px;
+}
+.save-btn{
+  background:transparent; color:#fff; border:none;
+  font-size:16px; font-weight:700; padding:6px 8px; cursor:pointer;
+}
+
+/* 頭像 + 相機（相機在外面） */
+.avatar-area{
+  margin-top: var(--avatar-gap-top);
+  display:flex; justify-content:center;
+  position:relative;
+}
+.avatar-wrap{
+  position:relative;
+  width:var(--avatar-size); height:var(--avatar-size);
+  border-radius:50%; overflow:hidden; background:#ddd;
+  display:flex; align-items:center; justify-content:center;
+}
+.avatar-wrap img{
+  width:100%; height:100%; object-fit:cover;
+}
+
+/* 相機按鈕固定在頭像外側右下角 */
+.camera-btn{
+  position:absolute;
+  right: calc((var(--camera-size) * -0.28));
+  bottom: calc((var(--camera-size) * -0.28));
+  width: var(--camera-size); height: var(--camera-size);
+  border-radius:12px; border:none; cursor:pointer;
+  background:#fff; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+.camera-btn img{ width:70%; height:70%; object-fit:contain; }
+
+/* 隱藏實際的 input[type=file] */
+#avatarFile{ display:none; }
+
+/* 表單 */
+.form{
+  margin-top: 22px;
+  display:flex; flex-direction:column; gap:18px;
+}
+.field{
+  display:flex; align-items:center; gap:14px;
+}
+.label{
+  width:82px; flex:0 0 82px;
+  text-align:left; font-size: var(--field-label-size); letter-spacing:1px;
+}
+.control{ flex:1; }
+.input{
+  width:100%; height:var(--field-height);
+  background:#dfe4e7; color:#111;
+  border:none; outline:none; border-radius: var(--field-radius);
+  padding: 0 16px; font-size:15px;
+}
+.input::placeholder{ color:#74808a; }
+/* 讓相機以這個容器為定位基準，大小=頭像大小 */
+.avatar-holder{
+  position: relative;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+}
+
+.avatar-wrap{
+  position: absolute;        /* 填滿 holder */
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ddd;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* 相機壓在右下角（在圓外一點點） */
+.camera-btn{
+  position: absolute;
+  right: -10px;              /* 想更外就調數字 */
+  bottom: -10px;
+  width: var(--camera-size);
+  height: var(--camera-size);
+  border-radius: 12px;
+  border: none;
+  background: #fff;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  cursor: pointer;
+}
+
+.camera-btn img{
+  width: 70%; height: 70%; object-fit: contain;
+}

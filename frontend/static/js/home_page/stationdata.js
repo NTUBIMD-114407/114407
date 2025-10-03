@@ -132,241 +132,242 @@ const stationData = {
     ]
   };
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const fromInput = document.getElementById('station-from');
-    const toInput = document.getElementById('station-to');
-    const swapBtn = document.getElementById('swap-btn');
-    const searchBtn = document.getElementById('search-btn');
-    const featureBtns = document.querySelectorAll('.feature-btn');
-    const stationImageDiv = document.querySelector('.station-image');
-    const loadingDiv = document.getElementById('loading');
-    const resultDiv = document.getElementById('result');
-  
-    let map, placesService;
-  
-    function initMapForTop10() {
-      map = new google.maps.Map(document.createElement("div"));
-      placesService = new google.maps.places.PlacesService(map);
-    }
-  
-    function searchRestaurantPhotoAndRender(shop, container) {
-      const request = {
-        location: new google.maps.LatLng(parseFloat(shop.latitude), parseFloat(shop.longitude)),
-        radius: 1000,
-        query: shop.name
-      };
-  
-      placesService.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-          const place = results[0];
-          const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 300 }) || "預設圖片.png";
-          container.innerHTML = `
+  // 不含 stationData，其他程式照舊
+
+document.addEventListener('DOMContentLoaded', function () {
+  const fromInput = document.getElementById('station-from');
+  const toInput = document.getElementById('station-to');
+  const swapBtn = document.getElementById('swap-btn');
+  const searchBtn = document.getElementById('search-btn');
+  const featureBtns = document.querySelectorAll('.feature-btn');
+  const stationImageDiv = document.querySelector('.station-image');
+  const loadingDiv = document.getElementById('loading');
+  const resultDiv = document.getElementById('result');
+
+  let map, placesService;
+
+  function initMapForTop10() {
+    map = new google.maps.Map(document.createElement("div"));
+    placesService = new google.maps.places.PlacesService(map);
+  }
+
+  function searchRestaurantPhotoAndRender(shop, container) {
+    const request = {
+      location: new google.maps.LatLng(parseFloat(shop.latitude), parseFloat(shop.longitude)),
+      radius: 1000,
+      query: shop.name
+    };
+
+    placesService.textSearch(request, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+        const place = results[0];
+        const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 300 }) || "預設圖片.png";
+        container.innerHTML = `
           <img src="${photoUrl}" alt="${shop.name}" 
                style="width:100%; height:auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius:10px;">
           <p><strong>${shop.name}</strong></p>
           <p>⭐ 評分：${shop.rating}</p>
-          
         `;
-        
-        } else {
-          container.innerHTML = `
-            <img src="預設圖片.png" alt="無圖片" style="width:100%; border-radius:10px;">
-            <p><strong>${shop.name}</strong></p>
-            <p>⭐ 評分：${shop.rating}</p>
-            <p>📍 ${shop.address}</p>
-          `;
-        }
-      });
-    }
-  
-    function loadTop10Restaurants() {
-      fetch('http://140.131.115.112:8000/api/api/restaurants/')
-        .then(response => response.json())
-        .then(data => {
-          const restaurantList = Array.isArray(data) ? data : data.data;
-          if (!Array.isArray(restaurantList)) {
-            console.error("Top10 餐廳資料錯誤格式：", data);
-            return;
-          }
-  
-          const top10 = restaurantList
-            .filter(r => !isNaN(parseFloat(r.rating)))
-            .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating))
-            .slice(0, 10);
-  
-          const shopList = document.querySelector('.shop-list');
-          shopList.innerHTML = '';
-  
-          top10.forEach(shop => {
-            const div = document.createElement('div');
-            div.className = 'shop-item';
-            shopList.appendChild(div);
-            searchRestaurantPhotoAndRender(shop, div);
-          });
-        })
-        .catch(err => {
-          console.error("Top10 餐廳載入失敗：", err);
-          const shopList = document.querySelector('.shop-list');
-          shopList.innerHTML = '<p style="color:white">載入失敗，請稍後再試。</p>';
-        });
-    }
-  
-    const allStations = [];
-    for (let line in stationData) {
-      stationData[line].forEach(station => {
-        allStations.push({
-          label: `${station.name} (${station.value})`,
-          value: station.name,
-          code: station.value
-        });
-      });
-    }
-  
-    const lineColors = {
-      BR: "#a05a2c",
-      R: "#be1e2d",
-      G: "#009944",
-      O: "#fbb040",
-      BL: "#0072bc"
-    };
-  
-    const createAwesomplete = (inputEl) => {
-      const list = allStations.map(s => s.label);
-      const awesomplete = new Awesomplete(inputEl, {
-        list,
-        minChars: 0,
-        maxItems: 100,
-        autoFirst: true,
-        sort: false
-      });
-  
-      inputEl.addEventListener("focus", () => {
-        awesomplete.evaluate();
-      });
-  
-      inputEl.addEventListener("input", updateBackgroundAndSearch);
-      inputEl.addEventListener("awesomplete-selectcomplete", updateBackgroundAndSearch);
-  
-      function updateBackgroundAndSearch() {
-        const matched = allStations.find(
-          (s) => inputEl.value.includes(s.value) || inputEl.value.includes(s.name)
-        );
-        if (matched) {
-          const codePrefix = matched.code.match(/^[A-Z]+/)[0];
-          const color = lineColors[codePrefix] || "#ccc";
-          inputEl.style.backgroundColor = color;
-          inputEl.style.color = "#fff";
-        } else {
-          inputEl.style.backgroundColor = "white";
-          inputEl.style.color = "black";
-        }
+      } else {
+        container.innerHTML = `
+          <img src="預設圖片.png" alt="無圖片" style="width:100%; border-radius:10px;">
+          <p><strong>${shop.name}</strong></p>
+          <p>⭐ 評分：${shop.rating}</p>
+          <p>📍 ${shop.address}</p>
+        `;
       }
-  
-      awesomplete.item = function (text, input) {
-        const item = document.createElement("li");
-        item.innerHTML = text;
-        const match = text.match(/\(([A-Z]+)/);
-        const lineCode = match ? match[1].match(/^[A-Z]+/)[0] : null;
-        if (lineCode) item.setAttribute("data-line", lineCode);
-        return item;
-      };
-    };
-  
-    createAwesomplete(fromInput);
-    createAwesomplete(toInput);
-  
-    swapBtn.addEventListener('click', () => {
-      const temp = fromInput.value;
-      fromInput.value = toInput.value;
-      toInput.value = temp;
-      fromInput.dispatchEvent(new Event('input'));
-      toInput.dispatchEvent(new Event('input'));
     });
-  
-    if (featureBtns.length > 0) {
-      featureBtns[0].addEventListener('click', function () {
-        window.location.href = "night.html";
-      });
-    }
-    if (featureBtns.length > 1) {
-      featureBtns[1].addEventListener('click', function () {
-        window.location.href = "food_checkin.html";
-      });
-    }
-    if (featureBtns.length > 2) {
-      featureBtns[2].addEventListener('click', function () {
-        window.location.href = "timetable.html";
-      });
-    }
-  
-    function getDirection(destination) {
-      if (destination.includes("南港")) return "東向";
-      if (destination.includes("淡水")) return "北向";
-      if (destination.includes("新店")) return "南向";
-      if (destination.includes("迴龍") || destination.includes("蘆洲")) return "西向";
-      return "未知";
-    }
-  
-    function displayTrains(trains, title) {
-      let html = `<h3 class="train-title">${title}</h3>`;
-      trains.forEach(train => {
-        const direction = getDirection(train.destinationName);
-        html += `
-          <div class="train-card">
-            <div class="train-line"></div>
-            <div class="train-content">
-              <p>🚉 <strong>出發站：</strong>${train.stationName}</p>
-              <p>📍 <strong>目的地：</strong>${train.destinationName}</p>
-              <p>🧭 <strong>方向：</strong>${direction}</p>
-              <p>⏱️ <strong>到站倒數：</strong>${train.countDown}</p>
-              <p>📅 <strong>更新時間：</strong>${train.nowDateTime}</p>
-            </div>
-          </div>
-        `;
-      });
-      const resultDiv = document.createElement('div');
-      resultDiv.classList.add('result-section');
-      resultDiv.innerHTML = html;
-      stationImageDiv.innerHTML = '';
-      stationImageDiv.appendChild(resultDiv);
-    }
+  }
 
+  function loadTop10Restaurants() {
+    fetch('http://140.131.115.112:8000/api/api/restaurants/')
+      .then(response => response.json())
+      .then(data => {
+        const restaurantList = Array.isArray(data) ? data : data.data;
+        if (!Array.isArray(restaurantList)) {
+          console.error("Top10 餐廳資料錯誤格式：", data);
+          return;
+        }
 
-  
-    function loadDefaultStationInfo() {
-      const defaultStation = "台北車站";
-      stationImageDiv.innerHTML = `<p>載入中...</p>`;
-      fetch('http://140.131.115.112:8000/api/track-info/')
-        .then(response => response.json())
-        .then(result => {
-          if (result.status !== "success") {
-            stationImageDiv.innerHTML = `<p>預設站查詢失敗</p>`;
-            return;
-          }
-          const allLines = result.data;
-          let matchedTrains = [];
-          for (const lineName in allLines) {
-            const trains = allLines[lineName];
-            trains.forEach(train => {
-              if (train.stationName.includes(defaultStation)) {
-                matchedTrains.push(train);
-              }
-            });
-          }
-          if (matchedTrains.length === 0) {
-            stationImageDiv.innerHTML = `<p>目前 ${defaultStation} 無列車即時資訊</p>`;
-          } else {
-            displayTrains(matchedTrains, `熱門站「${defaultStation}」即時資訊`);
-          }
+        const top10 = restaurantList
+          .filter(r => !isNaN(parseFloat(r.rating)))
+          .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating))
+          .slice(0, 10);
+
+        const shopList = document.querySelector('.shop-list');
+        shopList.innerHTML = '';
+
+        top10.forEach(shop => {
+          const div = document.createElement('div');
+          div.className = 'shop-item';
+          shopList.appendChild(div);
+          searchRestaurantPhotoAndRender(shop, div);
         });
+      })
+      .catch(err => {
+        console.error("Top10 餐廳載入失敗：", err);
+        const shopList = document.querySelector('.shop-list');
+        shopList.innerHTML = '<p style="color:white">載入失敗，請稍後再試。</p>';
+      });
+  }
+
+  // 由 stationData 建立清單
+  const allStations = [];
+  for (let line in stationData) {
+    stationData[line].forEach(station => {
+      allStations.push({
+        label: `${station.name} (${station.value})`,
+        value: station.name,
+        code: station.value
+      });
+    });
+  }
+
+  const lineColors = {
+    BR: "#a05a2c",
+    R: "#be1e2d",
+    G: "#009944",
+    O: "#fbb040",
+    BL: "#0072bc"
+  };
+
+  const createAwesomplete = (inputEl) => {
+    const list = allStations.map(s => s.label);
+    const awesomplete = new Awesomplete(inputEl, {
+      list,
+      minChars: 0,
+      maxItems: 100,
+      autoFirst: true,
+      sort: false
+    });
+
+    inputEl.addEventListener("focus", () => {
+      awesomplete.evaluate();
+    });
+
+    inputEl.addEventListener("input", updateBackgroundAndSearch);
+    inputEl.addEventListener("awesomplete-selectcomplete", updateBackgroundAndSearch);
+
+    function updateBackgroundAndSearch() {
+      const matched = allStations.find(
+        (s) => inputEl.value.includes(s.value) || inputEl.value.includes(s.name) // 保持你原本寫法
+      );
+      if (matched) {
+        const codePrefix = matched.code.match(/^[A-Z]+/)[0];
+        const color = lineColors[codePrefix] || "#ccc";
+        inputEl.style.backgroundColor = color;
+        inputEl.style.color = "#fff";
+      } else {
+        inputEl.style.backgroundColor = "white";
+        inputEl.style.color = "black";
+      }
     }
-  
-    initMapForTop10();
-    loadDefaultStationInfo();
-    loadTop10Restaurants();
-  
 
+    awesomplete.item = function (text, input) {
+      const item = document.createElement("li");
+      item.innerHTML = text;
+      const match = text.match(/\(([A-Z]+)/);
+      const lineCode = match ? match[1].match(/^[A-Z]+/)[0] : null;
+      if (lineCode) item.setAttribute("data-line", lineCode);
+      return item;
+    };
+  };
 
+  createAwesomplete(fromInput);
+  createAwesomplete(toInput);
+
+  swapBtn.addEventListener('click', () => {
+    const temp = fromInput.value;
+    fromInput.value = toInput.value;
+    toInput.value = temp;
+    fromInput.dispatchEvent(new Event('input'));
+    toInput.dispatchEvent(new Event('input'));
+  });
+
+  if (featureBtns.length > 0) {
+    featureBtns[0].addEventListener('click', function () {
+      window.location.href = "night.html";
+    });
+  }
+  if (featureBtns.length > 1) {
+    featureBtns[1].addEventListener('click', function () {
+      window.location.href = "food_checkin.html";
+    });
+  }
+  // 第三顆 → 開外部網站（新分頁）
+  if (featureBtns.length > 2) {
+    featureBtns[2].addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.open("https://ericyu.org/TaipeiMetroTime/", "_blank", "noopener");
+    });
+  }
+
+  function getDirection(destination) {
+    if (destination.includes("南港")) return "東向";
+    if (destination.includes("淡水")) return "北向";
+    if (destination.includes("新店")) return "南向";
+    if (destination.includes("迴龍") || destination.includes("蘆洲")) return "西向";
+    return "未知";
+  }
+
+  function displayTrains(trains, title) {
+    let html = `<h3 class="train-title">${title}</h3>`;
+    trains.forEach(train => {
+      const direction = getDirection(train.destinationName);
+      html += `
+        <div class="train-card">
+          <div class="train-line"></div>
+          <div class="train-content">
+            <p>🚉 <strong>出發站：</strong>${train.stationName}</p>
+            <p>📍 <strong>目的地：</strong>${train.destinationName}</p>
+            <p>🧭 <strong>方向：</strong>${direction}</p>
+            <p>⏱️ <strong>到站倒數：</strong>${train.countDown}</p>
+            <p>📅 <strong>更新時間：</strong>${train.nowDateTime}</p>
+          </div>
+        </div>
+      `;
+    });
+    const resultDiv = document.createElement('div');
+    resultDiv.classList.add('result-section');
+    resultDiv.innerHTML = html;
+    stationImageDiv.innerHTML = '';
+    stationImageDiv.appendChild(resultDiv);
+  }
+
+  function loadDefaultStationInfo() {
+    const defaultStation = "台北車站";
+    stationImageDiv.innerHTML = `<p>載入中...</p>`;
+    fetch('http://140.131.115.112:8000/api/track-info/')
+      .then(response => response.json())
+      .then(result => {
+        if (result.status !== "success") {
+          stationImageDiv.innerHTML = `<p>預設站查詢失敗</p>`;
+          return;
+        }
+        const allLines = result.data;
+        let matchedTrains = [];
+        for (const lineName in allLines) {
+          const trains = allLines[lineName];
+          trains.forEach(train => {
+            if (train.stationName.includes(defaultStation)) {
+              matchedTrains.push(train);
+            }
+          });
+        }
+        if (matchedTrains.length === 0) {
+          stationImageDiv.innerHTML = `<p>目前 ${defaultStation} 無列車即時資訊</p>`;
+        } else {
+          displayTrains(matchedTrains, `熱門站「${defaultStation}」即時資訊`);
+        }
+      });
+  }
+
+  initMapForTop10();
+  loadDefaultStationInfo();
+  loadTop10Restaurants();
+
+  // ===== 查詢路線（這裡加入 dir 的計算）=====
   async function searchRoute() {
     const startStation = fromInput.value.trim();
     const endStation = toInput.value.trim();
@@ -408,53 +409,64 @@ const stationData = {
       const result = await response.json();
       console.log('✅ API 響應:', result);
 
+      // ✅ 補上方向字串
+      const dir = getDirection(processedEndStation);
+
       resultDiv.style.display = 'block';
       resultDiv.innerHTML = `
-  <div class="result-container">
-    <h3>查詢結果</h3>
-    <div class="station-info">
-      <div>起點站：<span class="value">${processedStartStation}</span> (${result.EntryStationID || '無資料'})</div>
-      <div>終點站：<span class="value">${processedEndStation}</span> (${result.ExitStationID || '無資料'})</div>
-    </div>
+        <div class="result-container" style="background:#fff;border-radius:10px;padding:12px 14px;line-height:1.7;">
+          <h3>查詢結果</h3>
 
-    <div class="route-section">
-      <h4>建議路線</h4>
-      <div class="route-path">
-        ${
-          result.Path ? result.Path.split('-').filter(s => s).map((station, index, array) => {
-            const isTransfer = result.TransferStations?.includes(station);
-            const isLast = index === array.length - 1;
-            const dotColor = isTransfer ? '#28a745' : '#007bff';
-            return `
+          <div class="station-info">
+            <div>起點站：<span class="value">${processedStartStation}</span> (${result.EntryStationID || '無資料'})</div>
+            <div>終點站：<span class="value">${processedEndStation}</span> (${result.ExitStationID || '無資料'})</div>
+            <div>方向：<span class="value">${dir}</span></div>
+          </div>
+
+          <div class="route-section">
+            <h4>建議路線</h4>
+            <div class="route-path">
+              ${
+                result.Path
+                  ? result.Path
+                      .split('-')
+                      .filter(Boolean)
+                      .map((station, idx, arr) => {
+                        const isTransfer = result.TransferStations?.includes(station);
+                        const isLast = idx === arr.length - 1;
+                        const dotColor = isTransfer ? '#28a745' : '#007bff';
+                        return `
               <div class="station-node">
                 <div class="station-dot" style="background:${dotColor}"></div>
                 <div class="station-name">${station}</div>
                 ${!isLast ? '<div class="station-line"></div>' : ''}
               </div>
             `;
-          }).join('') : '無資料'
-        }
-      </div>
-    </div>
+                      })
+                      .join('')
+                  : '無資料'
+              }
+            </div>
+          </div>
 
-    <div class="route-section">
-      <h4>轉乘站</h4>
-      <div class="transfer-path">
-        ${result.TransferStations ? result.TransferStations.replace(/[-→\s]+$/, '').split('-').filter(Boolean).join(' → ')
-                                  : '無需轉乘'}
+          <div class="route-section">
+            <h4>轉乘站</h4>
+            <div class="transfer-path">
+              ${
+                result.TransferStations
+                  ? result.TransferStations.replace(/[-→\s]+$/, '')
+                      .split('-').filter(Boolean).join(' → ')
+                  : '無需轉乘'
+              }
+            </div>
+          </div>
 
-      </div>
-    </div>
-
-
-    <div class="route-section">
-      <h4>預估時間</h4>
-      <div class="time">
-        ${result.Time ? result.Time + ' 分鐘' : '無資料'}
-      </div>
-    </div>
-  </div>
-`;
+          <div class="route-section">
+            <h4>預估時間</h4>
+            <div class="time">${result.Time ? result.Time + ' 分鐘' : '無資料'}</div>
+          </div>
+        </div>
+      `;
 
     } catch (error) {
       loadingDiv.style.display = 'none';
@@ -474,6 +486,7 @@ const stationData = {
   // 綁定查詢事件
   searchBtn.addEventListener('click', searchRoute);
 });
+
 
 
 

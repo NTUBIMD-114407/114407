@@ -1,5 +1,8 @@
 /* ========= 通用 RWD 版心 ========= */
-:root { --app-max: 480px; }              /* 可改 400/440/480… */
+:root{
+  --hero-h: 260px;           /* Hero 區最小高度 */
+  --hero-img-ratio: 1.70;    /* 圖片寬高比(寬/高)，1.65~1.75 視你的圖微調 */
+}             /* 可改 400/440/480… */
 
 .rwd-container {
   width: 100%;
@@ -36,7 +39,7 @@ body {
 .container {
   width: 100%;
   max-width: var(--app-max);             /* 與 rwd-container 同步 */
-  background-color: white;
+  background-color: #fff;
   padding-bottom: 30px;
 }
 
@@ -55,7 +58,7 @@ body {
   border-radius: 50px;
 }
 .personal-btn {
-  background-color: white;
+  background-color: #fff;
   color: #3a3a3a;
   font-size: 12px;
   border-radius: 20px;
@@ -63,57 +66,94 @@ body {
   padding: 4px 10px;
 }
 
-/* 美食任務介紹區塊（含背景圖） */
-.intro-with-bg {
-  display: flex;
-  align-items: flex-start;               /* 文字從上對齊 */
-  justify-content: flex-start;           /* 內容靠左 */
+/* =============================
+   左文右圖 Hero：兩欄（圖不裁切）
+   ============================= */
+/* =============================
+   左文右圖 Hero：整塊用背景圖（checkin.png）
+   ============================= */
+:root { --hero-h: 260px; }
+
+.intro-hero{
+  display:flex;
+  flex-direction: column;                 /* 手機先上下堆疊 */
+  align-items: stretch;
+  gap:0;
+  margin:16px 12px 0;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+  min-height: var(--hero-h);
+
+  /* 使用整塊背景圖 */
   position: relative;
-  width: 100%;
-  background-image: url("圖片/food_checkin.png");
-  background-size: 100% 100%;
+  background-image: url("/圖片/food_checkin.png");
   background-repeat: no-repeat;
-  background-position: right bottom;
-  padding: 20px 20px 20px;
-  box-sizing: border-box;
+  background-size: cover;                 /* 填滿整塊 */
+  background-position: center;            /* 需要可改 60% center */
+}
+.intro-hero::before{ content:none !important; }
+
+/* 左側文字（可讀性：加一點半透明白底；要純文字浮在圖上就把 background 移除） */
+.intro-card{
+  flex:1 1 54%;
+  padding:22px 22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  color:#1e2f45;
+
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(2px);
+  border-radius: 16px;
+  margin: 16px;                           /* 與外框留距 */
+}
+.intro-card h1{
+  font-size:22px;
+  font-weight:800;
+  margin:0 0 8px;
+}
+.intro-card p{
+  font-size:14px;
+  line-height:1.7;
+  margin:0;
+  color:#2f3b52;
+  opacity:.95;
+}
+.tag-wrapper{ margin-top:14px; }
+.tag{
+  background:#fff;
+  color:#ff6f61;
+  border:none;
+  padding:8px 16px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:700;
+  box-shadow:0 2px 4px rgba(0,0,0,.08);
+  cursor:pointer;
 }
 
-/* 任務內容卡片區塊 */
-.intro-card {
-  background-color: transparent;
-  padding: 0;
-  color: #333;
-  text-align: start;
-  width: fit-content;                    /* 文字區域不占滿寬度 */
-  max-width: 50%;                        /* 控制寬度，不超出背景圖 */
-  margin-left: 0;
+/* 原本右側圖片區停用，避免重複背景 */
+.hero-img{ display:none !important; }
+.hero-img::before{ content:none !important; }
+
+/* 平板以上：維持左右視覺重心（其實背景圖已涵蓋整塊） */
+@media (min-width: 768px){
+  .intro-hero{ flex-direction: row; }
+  .intro-card{ flex: 1 1 50%; padding: 28px; margin: 24px; }
 }
 
-.intro-card h1 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #1e2f45;
-}
-.intro-card p {
-  font-size: 11px;
-  line-height: 1.6;
-  margin-bottom: 0;
-}
-.tag-wrapper { margin-top: 10px; margin-left: 50px; }
-.tag {
-  background-color: #fff;
-  color: #ff6f61;
-  border: none;
-  padding: 6px 15px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* 手機：高度略降即可 */
+@media (max-width: 767.98px){
+  .intro-hero{ flex-direction: column; }
+  .intro-card{ margin: 16px; }
 }
 
-/* 任務規則區塊 */
+
+
+/* =============================
+   任務規則區塊
+   ============================= */
 .rules {
   background-color: #e0ebef;
   padding: 20px;
@@ -132,7 +172,9 @@ body {
   line-height: 1.8;
 }
 
-/* 表單區 */
+/* =============================
+   表單區
+   ============================= */
 .form {
   background-color: #b6cfdc;
   margin: 20px;
@@ -147,7 +189,7 @@ body {
 .form-group label {
   width: 90px;
   font-size: 14px;
-  color: white;
+  color: #fff;
   flex-shrink: 0;
 }
 .form-group input,
@@ -157,13 +199,13 @@ body {
   border-radius: 10px;
   padding: 8px;
   font-size: 14px;
-  background-color: white;
+  background-color: #fff;
 }
 textarea { resize: none; }
 .stars { font-size: 18px; color: gold; }
 .file-wrapper input[type="file"] {
   width: 100%;
-  background-color: white;
+  background-color: #fff;
   border: none;
   border-radius: 10px;
   padding: 8px;
@@ -184,7 +226,7 @@ textarea { resize: none; }
   padding: 8px 25px;
   border-radius: 20px;
   font-size: 14px;
-  color: white;
+  color: #fff;
   cursor: pointer;
 }
 
@@ -195,7 +237,7 @@ textarea { resize: none; }
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  background-color: white;
+  background-color: #fff;
   padding: 0;
   margin: 0;
   z-index: 9999;
@@ -210,8 +252,38 @@ textarea { resize: none; }
   background-color: #e6f5f1;
 }
 
-/* 可選的小斷點微調：讓 intro-card 在很窄螢幕時更好讀 */
+/* 很窄的螢幕微調 */
 @media (max-width: 360px) {
   .intro-card { max-width: 60%; }
   .tag-wrapper { margin-left: 20px; }
+}
+
+/* 舊版背景圖做法的相容設定（若有用到 .intro-with-bg） */
+@media (max-width: 400px){
+  .intro-with-bg{
+    background-size: 240px auto;
+    min-height: 200px;
+  }
+}
+/* 讓 intro-card 靠左（桌機） */
+@media (min-width: 768px){
+  .intro-hero{
+    flex-direction: row;            /* 左右排 */
+  }
+  .intro-card{
+    /* 左邊留白，右側自動推開 → 靠左 */
+    margin: 24px auto 24px 24px;    /* 上 右 下 左 */
+    max-width: 560px;               /* 卡片最大寬，可調 */
+    align-self: center;             /* 垂直置中 */
+    text-align: left;               /* 確保文字靠左 */
+  }
+}
+
+/* 手機維持滿版 */
+@media (max-width: 767.98px){
+  .intro-hero{ flex-direction: column; }
+  .intro-card{
+    margin: 16px;                   /* 手機四周留白 */
+    max-width: none;
+  }
 }

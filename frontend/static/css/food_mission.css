@@ -1,141 +1,148 @@
 /* ========= 通用 RWD 版心 ========= */
-:root { --app-max: 480px; }              /* 可改 400/440/480… */
+:root { --app-max: 480px; }
 
-.rwd-container {
-  width: 100%;
-  max-width: var(--app-max);
-  margin: 0 auto;
-  padding: 0 12px;                       /* 邊界留白避免貼邊 */
+.rwd-container{
+  width:100%;
+  max-width:var(--app-max);
+  margin:0 auto;
+  padding:0 12px;
 }
 
 /* 平板 */
-@media (min-width: 768px) {
-  :root { --app-max: 720px; }
-  .rwd-container { padding: 0 20px; }
+@media (min-width:768px){
+  :root{ --app-max: 720px; }
+  .rwd-container{ padding:0 20px; }
 }
 /* 桌機 */
-@media (min-width: 1024px) {
-  :root { --app-max: 960px; }
-  .rwd-container { padding: 0 24px; }
+@media (min-width:1024px){
+  :root{ --app-max: 960px; }
+  .rwd-container{ padding:0 24px; }
 }
 /* 大桌機 */
-@media (min-width: 1440px) {
-  :root { --app-max: 1200px; }
+@media (min-width:1440px){
+  :root{ --app-max: 1200px; }
 }
 
-/* ========= 全域設定 ========= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Arial", sans-serif;
+/* ========= 全域 ========= */
+*{ margin:0; padding:0; box-sizing:border-box; font-family:"Arial",sans-serif; }
+
+body{
+  background:#e6f0ea;
+  display:flex; justify-content:center;
+  padding-bottom:40px;
+  color:#2c2c2c;
 }
 
-body {
-  background-color: #e6f0ea;
-  display: flex;                 /* 置中版心 */
-  justify-content: center;
-  padding: 0 0 40px;             /* 保留原本底部 40px */
+/* ========= 頂部列 ========= */
+.top-bar{
+  background:#c3d9e3;
+  padding:10px 12px;
+  border-radius:0 0 6px 6px;
 }
 
-/* 上方導覽列 */
-.top-bar {
-  background-color: #c3d9e3;
-  padding: 10px 12px;
+.back-link{
+  text-decoration:none; color:#333; font-weight:bold; display:flex; align-items:center; gap:8px;
+}
+.back-icon{ width:24px; height:24px; object-fit:contain; }
+.crumb{ font-size:16px; }
+
+/* ========= 頁面標題（深藍膠囊） ========= */
+.page-title{
+  margin:18px auto 14px;
+  background:#1e2f45;
+  color:#fff;
+  padding:12px 26px;
+  border-radius:28px;
+  width:fit-content;
+  font-size:22px;
+  letter-spacing:2px;
+  font-weight:800;
 }
 
-.back-link {
-  color: #333;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: bold;
+/* ========= 卡片清單 ========= */
+.cards{ margin-top:10px; }
+
+/* 卡片本體 */
+.card{
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+  padding:16px;
+  margin-top:16px;
+  display:flex; gap:12px; align-items:flex-start;
 }
 
-.back-icon {
-  width: 24px;
-  height: auto;
-  margin-left: 10px;
+/* 左側圖片 */
+.img-box{
+  width:108px; height:108px;
+  background:#d9d9d9;
+  border-radius:6px;
+  flex-shrink:0;
 }
 
-/* 頁面標題 */
-.page-title {
-  text-align: center;
-  background-color: #1e2f45;
-  color: white;
-  padding: 12px;
-  margin-top: 20px;
-  border-radius: 30px;
-  font-size: 20px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+/* 右側資訊 */
+.info{ flex:1; min-width:0; }
+.shop-name{ font-size:16px; color:#555; margin-bottom:6px; }
+
+.rating{
+  display:flex; align-items:center; gap:10px;
+  margin:6px 0 10px;
+}
+.star-label{
+  background:#f9c72b; color:#fff; font-size:13px; padding:4px 10px; border-radius:999px; line-height:1;
+}
+.count{ font-size:13px; color:#7a7a7a; }
+
+/* 行內資料列 */
+.meta-row{
+  display:flex; align-items:center; gap:8px;
+  color:#666; font-size:13px;
+  margin:6px 0;
+}
+.meta-label{ color:#666; }
+.divider{ color:#b9b9b9; }
+
+/* 動作按鈕（導航 / 距離） */
+.actions{ display:flex; gap:10px; margin:10px 0 8px; }
+
+.pill{
+  border:none; border-radius:999px; padding:8px 14px;
+  font-size:14px; cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
+  white-space:nowrap;
+}
+.pill-ic{ font-weight:700; }
+
+/* 導航按鈕色：白底深字（與完成圖接近） */
+.pill--primary{
+  background:#f4f7fb;      /* 淡藍灰 */
+  color:#243649;           /* 深藍灰字 */
+  box-shadow:inset 0 0 0 2px rgba(36,54,73,.08);
 }
 
-/* 卡片區塊 */
-.card {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 16px;
-  margin-top: 20px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
+/* 距離膠囊：灰藍底白字風格 */
+.pill--muted{
+  background:#e8eef6;
+  color:#243649;
 }
 
-/* 圖片區 */
-.img-box {
-  width: 100px;
-  height: 145px;
-  background-color: #ccc;
-  border-radius: 6px;
-  flex-shrink: 0;
+/* 關鍵字區 */
+.tags{
+  display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;
+}
+.chip{
+  border:1px solid #cfd6dd;
+  background:#fff;
+  color:#333;
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:13px;
+  white-space:nowrap;
 }
 
-/* 店家資訊區 */
-.info { flex: 1; }
-
-.info h2 {
-  font-size: 16px;
-  margin-bottom: 8px;
+/* ====== 微調：在超小寬度時圖片固定高度避免拉高 ====== */
+@media (max-width:360px){
+  .img-box{ width:96px; height:96px; }
+  .pill{ padding:7px 12px; font-size:13px; }
 }
-
-.rating {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.star-label {
-  background-color: #f9c72b;
-  color: white;
-  font-size: 13px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  margin-right: 6px;
-}
-
-.count {
-  font-size: 12px;
-  color: #666;
-}
-
-/* 關鍵字標籤 */
-.tags {
-  display: flex;
-  flex-wrap: nowrap;        /* 不換行 */
-  overflow-x: auto;         /* 超出時橫向捲動 */
-  gap: 6px;
-  margin-top: 15px;
-  -webkit-overflow-scrolling: touch; /* 行動裝置滑動更順 */
-}
-
-.tags button {
-  padding: 4px 5px;
-  font-size: 13px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background-color: white;
-  color: #333;
-  white-space: nowrap;
-}
+.actions { display:flex; gap:8px; flex-wrap:wrap; }

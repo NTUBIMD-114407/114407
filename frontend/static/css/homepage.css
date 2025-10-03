@@ -91,8 +91,8 @@ body {
   display: flex;
   justify-content: center;           /* 置中排列 */
   align-items: center;
-  gap: 8px;
-  width: 100%;                       /* ⬅️ 由版心控制寬度 */
+  gap: 15px;
+  width: 95%;                       /* ⬅️ 由版心控制寬度 */
   margin: 1rem auto 0 auto;
   padding: 8px;
   background: #A9BBCB;
@@ -145,13 +145,13 @@ body {
 
 /* 圖片區（自適應寬度，移除 360px 卡寬） */
 .station-image {
-  padding: 1.5rem 1rem 1rem 1rem;
+  padding: 10px;
   background-color: #f8f8f8;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 1rem auto 0 auto;
   max-height: 400px;
-  width: 100%;                       /* ⬅️ 關鍵：跟版心走 */
+  width: 95%;                       /* ⬅️ 關鍵：跟版心走 */
   overflow-y: auto;
   font-family: "Noto Sans TC", sans-serif;
   font-size: 15px;
@@ -200,10 +200,12 @@ body {
 .top-shops {
   padding: 15px;
   overflow: hidden;
-  white-space: nowrap;
+  white-space: pre-line;
+  margin: 0px;
 }
 .shop-list {
   display: flex;
+  height: auto;
   overflow-x: auto;
   gap: 10px;
   padding: 10px;
@@ -215,10 +217,11 @@ body {
 .shop-item {
   flex: 0 0 90%;
   max-width: 90%;
-  height: 180px;
+  height: auto;
   background: #D9D9D9;
   border-radius: 10px;
   display: inline-block;
+  line-height: 2.0;
   scroll-snap-align: center;
 }
 
@@ -272,7 +275,7 @@ a.nav-btn { text-decoration: none; }
 
 /* 結果區塊（你的原樣式保留） */
 .result-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 5px;
   background-color: #ffffff;
   padding: 8px;
   border-radius: 8px;
@@ -343,3 +346,89 @@ h3 {
   width: 100%;
 }
 .train-content p { margin: 6px 0; }
+#result .station-line{
+  width:36px;          /* 固定短線 */
+  height:2px;
+  background:#cfd8e3;
+  flex:0 0 36px;
+}
+/* ===== 查詢結果卡片 ===== */
+#result .result-container{
+  background:#fff;border-radius:12px;padding:16px;color:#111;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+#result .result-container h3{
+  margin:0 0 10px;color:#1E3A5F;border-bottom:2px solid #1E3A5F;padding-bottom:6px;
+}
+#result .station-info{ margin:6px 0 12px; line-height:1.7; }
+#result .station-info .value{ font-weight:700; color:#1E3A5F; }
+
+#result .route-section{
+  background:#f6f8fb;border:1px solid #e2e8f0;border-radius:10px;
+  padding:12px;margin:12px 0;
+}
+#result .route-section h4{ margin:0 0 8px; color:#334155; font-size:14px; }
+
+/* 兩欄：手機一欄、>=480px 兩欄 */
+#result .route-path{
+  display:grid; gap:12px 28px;
+  grid-template-columns:1fr;
+}
+@media (min-width:480px){
+  #result .route-path{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+/* 節點：圓點＋站名＋短橫線 */
+#result .station-node{ display:flex; align-items:center; gap:10px; white-space:nowrap; }
+#result .station-dot{ width:10px; height:10px; border-radius:50%; background:#1976d2; flex:0 0 10px; }
+#result .station-node.transfer .station-dot,
+#result .station-node.terminal .station-dot{ background:#2e7d32; } /* 轉乘/起訖 = 綠點 */
+#result .station-name{ font-size:14px; color:#0f172a; }
+#result .station-line{ width:56px; height:2px; background:#cbd5e1; flex:0 0 56px; }
+
+/* 其它文字 */
+#result .transfer-path{ font-weight:600; color:#0f172a; }
+#result .time{ color:#16a34a; font-weight:700; }
+
+/* ===== 修正標題區在小螢幕 Logo/文字會「擠壞」的問題 ===== */
+.title-with-logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;          /* 允許換行（窄螢幕就不會被擠壞） */
+}
+
+.logo{
+  /* 在各種裝置間用 clamp 自動縮放，且固定是圓形 */
+  width: clamp(64px, 22vw, 100px);
+  height: clamp(64px, 22vw, 100px);
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 auto;           /* 不要被壓縮，保持尺寸 */
+}
+
+.title-text{
+  min-width: 0;             /* 允許文字區被壓縮，避免把 logo 擠走 */
+  text-align: center;        /* 置中比較穩定 */
+}
+
+.title-text h1{
+  font-size: clamp(24px, 6.2vw, 40px);
+  line-height: 2;
+  margin: 0;
+}
+
+.title-text span{
+  display: block;
+  font-size: clamp(20px, 5.6vw, 28px);
+  font-weight: 700;
+}
+
+/* 極窄手機時，直接上下堆疊看起來最乾淨 */
+@media (max-width: 420px){
+  .title-with-logo{
+    flex-direction: column;
+    gap: 8px;
+  }
+}

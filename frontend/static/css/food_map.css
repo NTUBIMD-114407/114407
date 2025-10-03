@@ -260,3 +260,20 @@ a.nav-btn { text-decoration: none; }
   transition: background-color 0.3s;
 }
 .load-more-btn:hover { background-color: #ffd633; }
+/* 讓三顆按鈕有相同的形狀、間距 */
+.review-btn, .close-btn, .fav-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  min-width: 64px;         /* 可選：寬度一致 */
+  line-height: 1;
+}
+
+/* 顏色：review 深藍、關閉灰色、收藏跟關閉一樣灰色 */
+.review-btn { background-color: #1E3A5F; color: #fff; }
+.close-btn, .fav-btn { background-color: #aaa; color: #fff; }
+
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-group .fav-btn.active { background: #ffcc00; color: #222; } /* 自訂「已收藏」外觀 */
