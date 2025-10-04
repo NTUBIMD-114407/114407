@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/restaurant-reviews/<int:review_id>/', views.update_restaurant_review, name='update_restaurant_review'),
     path('api/metro-lines/restaurants/', views.get_all_metro_line_restaurants, name='get_all_metro_line_restaurants'),
     path('api/restaurants/', views.get_all_restaurants, name='get_all_restaurants'),
+    path('api/restaurants/top10/', views.get_top10_restaurants, name='get_top10_restaurants'),
     path('restaurants/search/', views.search_restaurants, name='search-restaurants'),
     path('reviews/', views.get_reviews, name='reviews'),
     path('api/top-checkin-restaurants/', views.get_top_checkin_restaurants, name='top_checkin_restaurants'),

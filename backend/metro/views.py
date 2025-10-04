@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
+from django.core.cache import cache
 from .models import Station, Restaurant, MetroLine, TrainInfo, CheckinReview, CheckinReviewLike, CheckinReviewFavorite, Notification, Review, BusinessHours, StationID, MetroFirstLastTrain, MetroLastFiveTrains, Bar, BarReview
 from .serializers import (
     StationSerializer,
@@ -846,15 +847,74 @@ def get_all_metro_line_restaurants(request):
 def get_all_restaurants(request):
     """獲取所有餐廳"""
     try:
-        # 獲取所有餐廳
-        restaurants = Restaurant.objects.all()
+        # 檢查快取
+        cache_key = 'all_restaurants_data'
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            return Response({
+                'status': 'success',
+                'data': cached_data
+            })
+        
+        # 優化查詢：使用 select_related 和 prefetch_related 減少資料庫查詢
+        restaurants = Restaurant.objects.select_related().prefetch_related(
+            'nearby_stations',
+            'reviews'
+        ).all()
        
         # 序列化餐廳數據
         serializer = RestaurantSerializer(restaurants, many=True)
+        serialized_data = serializer.data
+        
+        # 快取資料 10 分鐘
+        cache.set(cache_key, serialized_data, 600)
        
         return Response({
             'status': 'success',
-            'data': serializer.data
+            'data': serialized_data
+        })
+       
+    except Exception as e:
+        return Response({
+            'status': 'error',
+            'message': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_top10_restaurants(request):
+    """獲取評分最高的前10名餐廳"""
+    try:
+        # 檢查快取
+        cache_key = 'top10_restaurants_data'
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            return Response({
+                'status': 'success',
+                'data': cached_data
+            })
+        
+        # 優化查詢：只獲取有評分的餐廳，按評分排序，限制10筆
+        restaurants = Restaurant.objects.select_related().prefetch_related(
+            'nearby_stations',
+            'reviews'
+        ).filter(
+            rating__isnull=False
+        ).order_by('-rating')[:10]
+       
+        # 序列化餐廳數據
+        serializer = RestaurantSerializer(restaurants, many=True)
+        serialized_data = serializer.data
+        
+        # 快取資料 15 分鐘（TOP10 變動較少，可以快取更久）
+        cache.set(cache_key, serialized_data, 900)
+       
+        return Response({
+            'status': 'success',
+            'data': serialized_data
         })
        
     except Exception as e:

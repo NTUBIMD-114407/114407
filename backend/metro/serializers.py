@@ -39,12 +39,14 @@ class RestaurantSerializer(serializers.ModelSerializer):
                  'station_id']
    
     def get_average_rating(self, obj):
+        # 優化：使用 prefetch_related 後的快取資料
         reviews = obj.reviews.all()
         if not reviews:
             return None
-        return sum(review.rating for review in reviews) / len(reviews)
+        return round(sum(review.rating for review in reviews) / len(reviews), 1)
    
     def get_station_id(self, obj):
+        # 優化：使用 prefetch_related 後的快取資料
         nearby_stations = obj.nearby_stations.all()
         if nearby_stations.exists():
             return nearby_stations.first().id
