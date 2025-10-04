@@ -151,64 +151,100 @@ document.addEventListener('DOMContentLoaded', function () {
     placesService = new google.maps.places.PlacesService(map);
   }
 
-  function searchRestaurantPhotoAndRender(shop, container) {
-    const request = {
-      location: new google.maps.LatLng(parseFloat(shop.latitude), parseFloat(shop.longitude)),
-      radius: 1000,
-      query: shop.name
-    };
 
-    placesService.textSearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-        const place = results[0];
-        const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 300 }) || "預設圖片.png";
-        container.innerHTML = `
-          <img src="${photoUrl}" alt="${shop.name}" 
-               style="width:100%; height:auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius:10px;">
-          <p><strong>${shop.name}</strong></p>
-          <p>⭐ 評分：${shop.rating}</p>
-        `;
-      } else {
-        container.innerHTML = `
-          <img src="預設圖片.png" alt="無圖片" style="width:100%; border-radius:10px;">
-          <p><strong>${shop.name}</strong></p>
-          <p>⭐ 評分：${shop.rating}</p>
-          <p>📍 ${shop.address}</p>
-        `;
+  async function loadTop10Restaurants() {
+    const shopList = document.querySelector('.shop-list');
+    
+    // 顯示載入狀態
+    shopList.innerHTML = '<div class="loading-shops">載入中...</div>';
+    
+    try {
+      // 使用新的 TOP10 API，避免載入全部餐廳
+      const response = await fetch('http://140.131.115.112:8000/api/restaurants/top10/');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      const data = await response.json();
+      const top10 = Array.isArray(data) ? data : data.data;
+      
+      if (!Array.isArray(top10)) {
+        console.error("Top10 餐廳資料錯誤格式：", data);
+        shopList.innerHTML = '<p style="color:white">資料格式錯誤，請稍後再試。</p>';
+        return;
+      }
+
+      shopList.innerHTML = '';
+
+      // 使用 food_map 的優化策略：並行處理照片載入
+      const enrichedRestaurants = await enrichWithPhotos(top10);
+      renderRestaurantCards(enrichedRestaurants);
+      
+    } catch (err) {
+      console.error("Top10 餐廳載入失敗：", err);
+      shopList.innerHTML = '<p style="color:white">載入失敗，請稍後再試。</p>';
+    }
+  }
+
+  // 從 food_map 借用的優化函數
+  async function enrichWithPhotos(list) {
+    return await Promise.all(list.map(async item => {
+      let photoUrl = await getPhotoFromGoogle(item.google_place_id);
+      if (!photoUrl && item.name && item.address) {
+        photoUrl = await getPhotoByQuery(`${item.name}, ${item.address}`);
+      }
+      return {
+        ...item,
+        photoUrl: photoUrl || '預設圖片.png'
+      };
+    }));
+  }
+
+  // 從 food_map 借用的照片獲取函數
+  async function getPhotoFromGoogle(placeId) {
+    return new Promise((resolve) => {
+      if (!placesService || !placeId) return resolve(null);
+      const request = { placeId, fields: ['photos'] };
+      placesService.getDetails(request, (place, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && place.photos?.length) {
+          resolve(place.photos[0].getUrl({ maxWidth: 400 }));
+        } else {
+          resolve(null);
+        }
+      });
     });
   }
 
-  function loadTop10Restaurants() {
-    fetch('http://140.131.115.112:8000/api/api/restaurants/')
-      .then(response => response.json())
-      .then(data => {
-        const restaurantList = Array.isArray(data) ? data : data.data;
-        if (!Array.isArray(restaurantList)) {
-          console.error("Top10 餐廳資料錯誤格式：", data);
-          return;
+  async function getPhotoByQuery(query) {
+    return new Promise((resolve) => {
+      if (!placesService || !query) return resolve(null);
+      const request = { query, fields: ['place_id'] };
+      placesService.findPlaceFromQuery(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+          getPhotoFromGoogle(results[0].place_id).then(resolve);
+        } else {
+          resolve(null);
         }
-
-        const top10 = restaurantList
-          .filter(r => !isNaN(parseFloat(r.rating)))
-          .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating))
-          .slice(0, 10);
-
-        const shopList = document.querySelector('.shop-list');
-        shopList.innerHTML = '';
-
-        top10.forEach(shop => {
-          const div = document.createElement('div');
-          div.className = 'shop-item';
-          shopList.appendChild(div);
-          searchRestaurantPhotoAndRender(shop, div);
-        });
-      })
-      .catch(err => {
-        console.error("Top10 餐廳載入失敗：", err);
-        const shopList = document.querySelector('.shop-list');
-        shopList.innerHTML = '<p style="color:white">載入失敗，請稍後再試。</p>';
       });
+    });
+  }
+
+  // 渲染餐廳卡片
+  function renderRestaurantCards(list) {
+    const shopList = document.querySelector('.shop-list');
+    
+    list.forEach(shop => {
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      div.innerHTML = `
+        <img src="${shop.photoUrl}" alt="${shop.name}" 
+             style="width:100%; height:auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius:10px;"
+             onerror="this.src='預設圖片.png'">
+        <p><strong>${shop.name}</strong></p>
+        <p>⭐ 評分：${shop.rating || 'N/A'}</p>
+      `;
+      shopList.appendChild(div);
+    });
   }
 
   // 由 stationData 建立清單

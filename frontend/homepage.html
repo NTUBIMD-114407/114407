@@ -24,10 +24,10 @@
 
     <!-- 搜尋列 -->
     <div class="search-bar">
-      <input id="station-from" class="awesomplete" placeholder="出發站" />
-      <button id="swap-btn" aria-label="交換出發與目的">🔄</button>
-      <input id="station-to" class="awesomplete" placeholder="目的站" />
-      <button id="search-btn">查詢</button>
+      <input id="station-from" class="awesomplete" placeholder="出發站" type="text" autocomplete="off" inputmode="search" enterkeyhint="next" aria-label="出發站" />
+      <button id="swap-btn" aria-label="交換出發與目的" title="交換出發與目的">🔄</button>
+      <input id="station-to" class="awesomplete" placeholder="目的站" type="text" autocomplete="off" inputmode="search" enterkeyhint="search" aria-label="目的站" />
+      <button id="search-btn" type="button" aria-controls="result" aria-label="查詢路線">查詢</button>
     </div>
 
     <!-- 捷運站圖片 -->
