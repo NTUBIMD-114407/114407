@@ -1,0 +1,289 @@
+/* ========= 通用 RWD 版心 ========= */
+:root{
+  --hero-h: 260px;           /* Hero 區最小高度 */
+  --hero-img-ratio: 1.70;    /* 圖片寬高比(寬/高)，1.65~1.75 視你的圖微調 */
+}             /* 可改 400/440/480… */
+
+.rwd-container {
+  width: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  padding: 0 12px;                       /* 邊界留白避免貼邊 */
+}
+
+/* 平板 */
+@media (min-width: 768px) {
+  :root { --app-max: 720px; }
+  .rwd-container { padding: 0 20px; }
+}
+/* 桌機 */
+@media (min-width: 1024px) {
+  :root { --app-max: 960px; }
+  .rwd-container { padding: 0 24px; }
+}
+/* 大桌機 */
+@media (min-width: 1440px) {
+  :root { --app-max: 1200px; }
+}
+
+/* ========= 全域設定 ========= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #e6f0ea;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--app-max);             /* 與 rwd-container 同步 */
+  background-color: #fff;
+  padding-bottom: 30px;
+}
+
+/* 頂部灰色橫條與返回 */
+.banner {
+  background-color: #c3d9e3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+.back-icon {
+  width: 24px;
+  height: auto;
+  margin-left: 10px;
+  border-radius: 50px;
+}
+.personal-btn {
+  background-color: #fff;
+  color: #3a3a3a;
+  font-size: 12px;
+  border-radius: 20px;
+  border: 1px solid #999;
+  padding: 4px 10px;
+}
+
+/* =============================
+   左文右圖 Hero：兩欄（圖不裁切）
+   ============================= */
+/* =============================
+   左文右圖 Hero：整塊用背景圖（checkin.png）
+   ============================= */
+:root { --hero-h: 260px; }
+
+.intro-hero{
+  display:flex;
+  flex-direction: column;                 /* 手機先上下堆疊 */
+  align-items: stretch;
+  gap:0;
+  margin:16px 12px 0;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+  min-height: var(--hero-h);
+
+  /* 使用整塊背景圖 */
+  position: relative;
+  background-image: url("/圖片/food_checkin.png");
+  background-repeat: no-repeat;
+  background-size: cover;                 /* 填滿整塊 */
+  background-position: center;            /* 需要可改 60% center */
+}
+.intro-hero::before{ content:none !important; }
+
+/* 左側文字（可讀性：加一點半透明白底；要純文字浮在圖上就把 background 移除） */
+.intro-card{
+  flex:1 1 54%;
+  padding:22px 22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  color:#1e2f45;
+
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(2px);
+  border-radius: 16px;
+  margin: 16px;                           /* 與外框留距 */
+}
+.intro-card h1{
+  font-size:22px;
+  font-weight:800;
+  margin:0 0 8px;
+}
+.intro-card p{
+  font-size:14px;
+  line-height:1.7;
+  margin:0;
+  color:#2f3b52;
+  opacity:.95;
+}
+.tag-wrapper{ margin-top:14px; }
+.tag{
+  background:#fff;
+  color:#ff6f61;
+  border:none;
+  padding:8px 16px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:700;
+  box-shadow:0 2px 4px rgba(0,0,0,.08);
+  cursor:pointer;
+}
+
+/* 原本右側圖片區停用，避免重複背景 */
+.hero-img{ display:none !important; }
+.hero-img::before{ content:none !important; }
+
+/* 平板以上：維持左右視覺重心（其實背景圖已涵蓋整塊） */
+@media (min-width: 768px){
+  .intro-hero{ flex-direction: row; }
+  .intro-card{ flex: 1 1 50%; padding: 28px; margin: 24px; }
+}
+
+/* 手機：高度略降即可 */
+@media (max-width: 767.98px){
+  .intro-hero{ flex-direction: column; }
+  .intro-card{ margin: 16px; }
+}
+
+
+
+/* =============================
+   任務規則區塊
+   ============================= */
+.rules {
+  background-color: #e0ebef;
+  padding: 20px;
+  border-radius: 20px;
+  margin: 20px;
+}
+.rules h2 {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 10px;
+}
+.rules ul {
+  padding-left: 20px;
+  color: #444;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* =============================
+   表單區
+   ============================= */
+.form {
+  background-color: #b6cfdc;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 15px;
+}
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.form-group label {
+  width: 90px;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.form-group input,
+.form-group textarea {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 14px;
+  background-color: #fff;
+}
+textarea { resize: none; }
+.stars { font-size: 18px; color: gold; }
+.file-wrapper input[type="file"] {
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+}
+
+/* 提交按鈕 */
+.submit-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.submit-btn {
+  background-color: #b6cfdc;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Awesomplete 下拉樣式 */
+.awesomplete > ul {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+  padding: 0;
+  margin: 0;
+  z-index: 9999;
+}
+.awesomplete > ul > li {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+.awesomplete > ul > li:hover,
+.awesomplete > ul > li[aria-selected="true"] {
+  background-color: #e6f5f1;
+}
+
+/* 很窄的螢幕微調 */
+@media (max-width: 360px) {
+  .intro-card { max-width: 60%; }
+  .tag-wrapper { margin-left: 20px; }
+}
+
+/* 舊版背景圖做法的相容設定（若有用到 .intro-with-bg） */
+@media (max-width: 400px){
+  .intro-with-bg{
+    background-size: 240px auto;
+    min-height: 200px;
+  }
+}
+/* 讓 intro-card 靠左（桌機） */
+@media (min-width: 768px){
+  .intro-hero{
+    flex-direction: row;            /* 左右排 */
+  }
+  .intro-card{
+    /* 左邊留白，右側自動推開 → 靠左 */
+    margin: 24px auto 24px 24px;    /* 上 右 下 左 */
+    max-width: 560px;               /* 卡片最大寬，可調 */
+    align-self: center;             /* 垂直置中 */
+    text-align: left;               /* 確保文字靠左 */
+  }
+}
+
+/* 手機維持滿版 */
+@media (max-width: 767.98px){
+  .intro-hero{ flex-direction: column; }
+  .intro-card{
+    margin: 16px;                   /* 手機四周留白 */
+    max-width: none;
+  }
+}

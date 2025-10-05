@@ -1,0 +1,204 @@
+/* ===== 版心（RWD 尺寸可調） ===== */
+:root{
+  --app-max: 480px;           /* 手機版寬 */
+  --page-bg: #2b4d63;         /* 深藍綠底色（和你現有的一致） */
+
+  /* 下面幾個是常調的尺寸 */
+  --thumb-w: 120px;           /* 左側圖片寬 */
+  --thumb-h: 120px;           /* 左側圖片高 */
+  --card-gap: 14px;           /* 圖文間距 */
+  --card-pad-y: 12px;         /* 卡片上下內距 */
+  --collect-size: 24px;       /* 收藏 icon 大小 */
+  --collect-hit: 38px;        /* 點擊範圍（按鈕本體） */
+}
+
+.rwd-container{
+  width:100%;
+  max-width:var(--app-max);
+  margin:0 auto;
+  padding:0 12px;
+}
+
+/* 平板/桌機放大 */
+@media (min-width: 768px){ :root{ --app-max: 720px; } .rwd-container{ padding:0 20px; } }
+@media (min-width:1024px){ :root{ --app-max: 960px; } .rwd-container{ padding:0 24px; } }
+@media (min-width:1440px){ :root{ --app-max:1200px; } }
+
+/* 讓整頁背景一致 */
+html, body{
+  height: 100%;
+  background: #2b4d63;          /* ✅ 改成跟版心一樣的色 */
+}
+
+/* 如果之前有更深的外層底色，改掉 */
+body{
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  color:#fff;
+  display:flex; 
+  justify-content:center;
+  /* background:#1f2737;  <-- 刪掉或註解 */
+}
+
+/* 版心保持透明或同色，兩者擇一 */
+.container{
+  width:100%;
+  max-width:var(--app-max);
+  min-height:100vh;
+  /* background:var(--page-bg);  <-- 改掉 */
+  background: transparent;       /* ✅ 不再覆蓋，跟 body 一樣 */
+  padding:16px 0 36px;
+  position:relative;
+}
+
+
+/* ===== 返回鍵 ===== */
+.back-btn{
+  position:absolute; left:14px; top:12px;
+  width:36px; height:36px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  display:flex; align-items:center; justify-content:center;
+  text-decoration:none; color:#fff; font-size:20px;
+  backdrop-filter: blur(2px);
+}
+
+/* ===== 標題區 ===== */
+.page-head{ text-align:center; margin-top:18px; }
+.brand{
+  font-size:28px; font-weight:800; letter-spacing:2px; margin-top:10px;
+}
+.subtitle{
+  font-size:20px; letter-spacing:6px; margin-top:6px; opacity:.95;
+}
+
+/* ===== 清單與卡片 ===== */
+.list{ margin-top:18px; }
+
+.card{
+  position:relative;
+  display:flex; gap:var(--card-gap);
+  padding:var(--card-pad-y) 10px;
+  border-bottom:1px solid rgba(255,255,255,.25);
+}
+
+.thumb{
+  flex:0 0 var(--thumb-w);
+  width:var(--thumb-w); height:var(--thumb-h);
+  border-radius:8px; background:#d6d7da;
+}
+
+/* 右側內容 */
+.content{ flex:1; min-width:0; }
+.row{ display:flex; align-items:center; gap:10px; }
+
+.title-row{ margin-bottom:6px; }
+.store{ font-size:18px; font-weight:700; }
+.review-count{ font-size:14px; opacity:.9; }
+
+.rating-row{ margin-bottom:6px; }
+.badge{
+  background:#f0b90b; color:#fff;
+  padding:6px 12px; border-radius:16px; font-size:13px; font-weight:700;
+}
+
+.meta{ font-size:14px; opacity:.95; margin-bottom:6px; }
+
+/* 行動按鈕與標籤 */
+.actions{ gap:8px; margin-top:6px; flex-wrap:wrap; }
+.pill{
+  appearance:none; border:none; cursor:pointer;
+  font-size:13px; line-height:1;
+  padding:8px 14px; border-radius:18px;
+  background:#e6eef6; color:#2f3a4a;
+}
+.pill.tag{ background:#dfe7f1; }
+.nav-pill{
+  position:relative; padding-left:36px;
+}
+.nav-pill::before{
+  content:""; position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  width:18px; height:18px; border-radius:50%;
+  background:#fff; box-shadow:0 0 0 2px rgba(0,0,0,.1) inset;
+}
+.nav-pill::after{
+  content:"▶"; position:absolute; left:13px; top:50%; transform:translateY(-55%) scale(.8);
+  color:#0c1e3a; font-size:12px; font-weight:700;
+}
+
+/* ===== 收藏按鈕（右上角） ===== */
+.collect-btn{
+  position:absolute; top:8px; right:8px;
+  width:var(--collect-hit); height:var(--collect-hit);
+  border:none; background:transparent; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:10px;
+}
+.collect-btn img{
+  width:var(--collect-size); height:var(--collect-size); object-fit:contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
+}
+
+/* 如果將來有「已收藏」狀態，可加上 is-active 變色（可配合 JS 切換） */
+.collect-btn.is-active img{
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)) saturate(1.3);
+}
+
+/* 左上角返回鍵 */
+.back-btn{
+  position: absolute;     /* 相對 .container 定位；若想永遠固定在視窗左上，改用 fixed */
+  top: 14px;
+  left: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  z-index: 1000;
+  transition: background-color .2s ease;
+}
+.back-btn:hover{ background: #fff; }
+
+.back-btn img{
+  width: 20px;            /* 這兩個大小可自行微調 */
+  height: 20px;
+  display: block;
+}
+:root{
+  --thumb-w: 120px;   /* 左側圖片寬 */
+  --thumb-h: 180px;   /* 左側圖片高（想再長就調這裡）*/
+}
+
+/* 讓卡片左右兩欄撐滿同高 */
+.card{ display:flex; align-items:stretch; }
+
+/* 左側圖片區 */
+.card .img-box{
+  flex: 0 0 var(--thumb-w);
+  width: var(--thumb-w);
+  height: var(--thumb-h);
+  border-radius: 8px;
+  background:#d9d9d9;
+  overflow: hidden;
+}
+
+/* 真正圖片（若有 <img>） */
+.card .img-box img{
+  width:100%;
+  height:100%;
+  object-fit: cover;   /* 不變形，裁切填滿 */
+}
+/* 收藏美食頁專用：標題靠右 */
+.fav-header {
+  padding: 12px 16px 0;
+}
+.fav-header .title,
+.fav-header .subtitle{
+  text-align: right;
+  display: block;
+  margin-left: auto;          /* 讓區塊靠右 */
+  width: fit-content;
+}

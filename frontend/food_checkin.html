@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>北捷美食打卡任務</title>
+  <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="static/css/food_checkin.css">
+</head>
+<body>
+  <div class="container rwd-container">
+    <div class="banner">
+      <img src="圖片/arrows.jpg" alt="返回" class="back-icon">      
+    </div>
+ 
+    <!-- 任務說明（文字區） -->
+    <!-- 任務說明（左右兩欄：左文右圖） -->
+   
+    <section class="intro-hero">
+  <div class="intro-card">
+    <h1>北捷美食打卡任務</h1>
+    <p>
+      歡迎參加我們的捷運美食打卡任務！這是一個探索台北捷運周邊美食的有趣活動。
+      無論你是美食愛好者還是想要發掘新口味的朋友，這個任務都將帶你走遍城市的美味角落。
+      透過打卡的方式，分享你的美食體驗，與其他參與者一起交流和討論，讓我們一起享受這段美食之旅！
+    </p>
+    <div class="tag-wrapper">
+      <button class="tag">美食任務版</button>
+    </div>
+  </div>
+
+  <!-- 右側整塊用背景圖鋪滿 -->
+  <div class="hero-img" role="img" aria-label="美食示意圖"></div>
+</section>
+
+
+
+    
+
+    <!-- 圖片區塊 -->
+    <!-- <div class="intro-img-banner">
+    </div> -->
+
+    <section class="rules">
+      <h2>打卡任務規則：</h2>
+      <ul>
+        <li>1. 挑選北捷任一站的店家分享美食</li>
+        <li>2. 需拍攝至少一張包含美食或店家的照片</li>
+        <li>3. 將你的照片和心得分享至我們的評論區</li>
+        <li>4. 完成打卡後，以便大家能夠欣賞這些美食體驗</li>
+      </ul>
+    </section>
+
+      <section class="form">
+    <form>
+      <div class="form-group">
+        <label for="store">店家名稱：</label>
+        <input type="text" id="store" class="awesomplete" placeholder="請輸入餐廳名稱">
+      </div>
+
+      <div class="form-group">
+        <label for="station">捷運站名：</label>
+        <div id="station" class="station-display">請選擇餐廳後自動顯示</div>
+      </div>
+
+      <div class="form-group">
+        <label>推薦指數：</label>
+        <div class="stars" id="star-container">
+          <!-- 星星會用 JS 產生 -->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="upload">上傳圖片或影片</label>
+        <div class="file-wrapper">
+          <input type="file" id="upload" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="comment">評論區：</label>
+        <textarea id="comment" placeholder="分享一下好吃的美食"></textarea>
+      </div>
+    </form>
+  </section>
+
+  <!-- 🔽 按鈕放外面 -->
+  <div class="submit-wrapper">
+    <button type="button" id="export-btn" class="submit-btn">送出</button>
+
+  </div>
+<script src="static/js/food_mission/checkin.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      if (isLoggedIn !== 'true') {
+          alert('請先登入！');
+          window.location.href = 'login.html'; // 跳回登入頁
+      }
+  });
+  </script>
+  
+
+</body>
+</html>

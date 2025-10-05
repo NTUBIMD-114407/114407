@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>修改會員資料</title>
+  <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="static/css/edit_profile.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="topbar">
+      <a href="Member_center.html" class="back-btn" aria-label="返回">
+        <img src="/frontend/圖片/arrow001.png" alt="返回">
+      </a>
+      <div class="title">修改會員資料</div>
+      <button class="save-btn" id="btnSave">儲存</button>
+    </div>
+
+    <div class="avatar-area">
+    <!-- 新增一層 holder，讓相機以它為基準定位 -->
+        <div class="avatar-holder">
+            <div class="avatar-wrap" id="avatarPreview">
+            <img src="/frontend/圖片/user.png" alt="頭像">
+            </div>
+
+            <!-- 相機固定在頭像外側右下角（以 holder 為基準） -->
+            <button class="camera-btn" id="btnPickAvatar" title="上傳頭像">
+            <img src="/frontend/圖片/camera.png" alt="上傳頭像">
+            </button>
+        </div>
+
+        <input type="file" id="avatarFile" accept="image/*">
+    </div>
+
+
+    <form class="form" id="profileForm" onsubmit="return false;">
+      <div class="field">
+        <label class="label">姓名</label>
+        <div class="control"><input class="input" id="displayName" placeholder="請輸入姓名"></div>
+      </div>
+      <div class="field">
+        <label class="label">性別</label>
+        <div class="control"><input class="input" id="gender" placeholder="請輸入性別"></div>
+      </div>
+      <div class="field">
+        <label class="label">生日</label>
+        <div class="control"><input class="input" id="birthday" placeholder="YYYY/MM/DD"></div>
+      </div>
+      <div class="field">
+        <label class="label">手機號碼</label>
+        <div class="control"><input class="input" id="phoneNumber" placeholder="09XX-XXX-XXX"></div>
+      </div>
+      <div class="field">
+        <label class="label">Email</label>
+        <div class="control"><input type="email" class="input" id="email" placeholder="example@mail.com"></div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // 點相機 => 觸發選檔
+    document.getElementById('btnPickAvatar').addEventListener('click', () => {
+      document.getElementById('avatarFile').click();
+    });
+
+    // 頭像預覽
+    const fileInput = document.getElementById('avatarFile');
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      const url = URL.createObjectURL(f);
+      document.getElementById('avatarPreview').innerHTML =
+        `<img src="${url}" alt="頭像預覽">`;
+    });
+
+    // 儲存示範
+    document.getElementById('btnSave').addEventListener('click', () => {
+      const data = {
+        display_name: document.getElementById('displayName').value.trim(),
+        gender:       document.getElementById('gender').value.trim(),
+        birthday:     document.getElementById('birthday').value.trim(),
+        phone:        document.getElementById('phoneNumber').value.trim(),
+        email:        document.getElementById('email').value.trim(),
+      };
+      console.log('欲送出的資料：', data);
+      alert('已送出（示範）');
+    });
+  </script>
+</body>
+</html>

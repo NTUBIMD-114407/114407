@@ -1,0 +1,133 @@
+/* ========= 通用 RWD 版心 ========= */
+:root { --app-max: 480px; }              /* 可改 400/440/480… */
+
+.rwd-container {
+  width: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  padding: 0 12px;                       /* 邊界留白避免貼邊 */
+}
+
+/* 平板 */
+@media (min-width: 768px) {
+  :root { --app-max: 720px; }
+  .rwd-container { padding: 0 20px; }
+}
+/* 桌機 */
+@media (min-width: 1024px) {
+  :root { --app-max: 960px; }
+  .rwd-container { padding: 0 24px; }
+}
+/* 大桌機 */
+@media (min-width: 1440px) {
+  :root { --app-max: 1200px; }
+}
+
+/* ========= 全域設定 ========= */
+body {
+  background-color: #262245;
+  font-family: Arial, sans-serif;
+  color: white;
+  display: flex;                 /* 置中版心 */
+  justify-content: center;
+  margin: 0;
+}
+
+/* 版心容器 */
+.container {
+  width: 100%;
+  max-width: var(--app-max);     /* 與 rwd-container 同步 */
+  padding: 20px 20px 60px;
+  box-sizing: border-box;
+}
+
+/* 返回列（頂部） */
+.top-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+.back-icon {
+  width: 24px;
+  height: auto;
+  cursor: pointer;
+}
+
+/* 標題膠囊 */
+.night-title {
+  background: #A9BBCB;
+  border-radius: 100px;
+  text-align: center;
+  padding: 10px 20px;
+  margin: 20px auto;
+  width: 80%;
+}
+.night-title h1 {
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
+}
+.night-title p {
+  font-size: 14px;
+  color: white;
+  margin: 0;
+}
+
+/* 結果容器 - 兩欄網格排版 */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 10px 0;              /* 已有 rwd-container padding，這裡不再內縮 */
+}
+
+/* 每張卡片 */
+.card {
+  background: #D9D9D9;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  color: #333;
+}
+
+/* 店家圖片區塊 */
+.card .image-box {
+  background: #99A3BA;
+  height: 60px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* 星星 */
+.card .stars {
+  margin: 6px 0;
+  color: gold;
+}
+
+/* 按鈕 */
+.card .more-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+/* ======（以下為舊樣式的清理：已整合至上方，不再需要）======
+.back-arrow {}
+.header {}
+.header h1 {}
+.header p {}
+.result-section {}
+.food-card {}
+.image-box {}  // 已改為 .card .image-box
+============================================================= */

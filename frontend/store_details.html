@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>店家詳細資料</title>
+  <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="static/css/store_details.css" />
+  <style>
+    .map-box {
+      background-color: #f0f0f0;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 16px;
+      overflow: hidden;
+    }
+    #map {
+      width: 100%;
+      height: 300px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="rwd-container">
+    <header class="top-bar">
+      <a href="food_mission.html" class="back-link">
+        <span class="back-icon">🔙</span> 返回
+      </a>
+    </header>
+
+    <main class="store-container">
+      <section class="store-info">
+        <div class="store-image"></div>
+        <div class="store-text">
+          <h2 class="store-name">店家</h2>
+          <div class="rating-line">
+            <span class="star-tag">評論星數</span>
+            <span class="review-count">(評論則數)</span>
+          </div>
+          <div class="tags">
+            <button>均消$XX</button>
+            <button>關鍵字1</button>
+            <button>關鍵字2</button>
+            <button>關鍵字3</button>
+          </div>
+          <p class="address">店家地址｜</p>
+        </div>
+      </section>
+
+      <div class="action-buttons">
+        <button class="google-btn">🔍 Google評論</button>
+        <button class="book-btn">📅 線上訂位</button>
+        <button class="share-btn">🔗 分享餐廳</button>
+      </div>
+
+      <div class="map-box">
+        <div id="map"></div>
+      </div>
+
+      <section class="review-title">
+        <h3>美食打卡任務版｜評論區</h3>
+      </section>
+    </main>
+  </div>
+
+  <!-- 放在 </body> 前 -->
+  <script src="static/js/food_mission/detail.js" defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w&libraries=places&loading=async&callback=initMap" async></script>
+
+  <script>
+    // 簡單登入檢查（保留）
+    document.addEventListener('DOMContentLoaded', function() {
+      if (localStorage.getItem('isLoggedIn') !== 'true') {
+        alert('請先登入！');
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+</body>
+</html>
+
+</body>
+
+</html>

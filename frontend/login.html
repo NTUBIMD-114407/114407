@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEI食不打烊 - 登入</title>
+    <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="static/css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>MEI食不打烊</h1>
+            <div class="tabs">
+                <button class="tab active" onclick="showForm('login')">登入</button>
+                <button class="tab" onclick="showForm('register')">註冊</button>
+            </div>
+           
+            <!-- 登入表單 -->
+            <form id="loginForm" class="form" onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">電子郵件</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密碼</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="submit-btn">登入</button>
+            </form>
+
+
+            <!-- 註冊表單 -->
+            <form id="registerForm" class="form hidden" onsubmit="return handleRegister(event)">
+                <div class="form-group">
+                    <label for="registerEmail">電子郵件</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密碼</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">確認密碼</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <button type="submit" class="submit-btn">註冊</button>
+            </form>
+        </div>
+    </div>
+
+    </div>
+   
+    <script>
+        // 切換表單顯示
+        function showForm(formType) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginTab = document.querySelector('.tab:first-child');
+            const registerTab = document.querySelector('.tab:last-child');
+
+
+            if (formType === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+            }
+        }
+
+
+        // 處理登入
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+
+            try {
+                const response = await fetch('http://140.131.115.112:8000/api/accounts/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // 包含 cookies
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+
+                if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('accessToken', data.access || data.token);   // ⬅️存起來
+                window.location.href = 'homepage.html';
+                } else {
+                const error = await response.json();
+                alert(error.message || '登入失敗，請檢查您的電子郵件和密碼');
+                }
+
+            } catch (error) {
+               // console.error('登入錯誤:', error);
+               // alert('登入時發生錯誤，請稍後再試');
+            }
+           
+            return false;
+        }
+
+
+        // 處理註冊
+        async function handleRegister(event) {
+            event.preventDefault();
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+
+            if (password !== confirmPassword) {
+                alert('密碼不一致！');
+                return false;
+            }
+
+
+            try {
+                const response = await fetch('http://140.131.115.112:8000/api/accounts/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+
+                if (response.ok) {
+                    alert('註冊成功！請登入。');
+                    showForm('login');
+                } else {
+                    const error = await response.json();
+                    alert(error.message || '註冊失敗，請稍後再試');
+                }
+            } catch (error) {
+                console.error('註冊錯誤:', error);
+                alert('註冊時發生錯誤，請稍後再試');
+            }
+           
+            return false;
+        }
+    </script>
+    <script src="static/js/main.js"></script>
+    <script src="/static/js/clickable.js"></script>
+</body>
+</html>
+
+

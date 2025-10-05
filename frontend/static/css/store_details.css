@@ -1,0 +1,185 @@
+/* ========= 通用 RWD 版心 ========= */
+:root { --app-max: 480px; }              /* 可調 400/440/480… */
+
+.rwd-container {
+  width: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  padding: 0 12px;                       /* 邊界留白避免貼邊 */
+}
+
+/* 平板 */
+@media (min-width: 768px) {
+  :root { --app-max: 720px; }
+  .rwd-container { padding: 0 20px; }
+}
+/* 桌機 */
+@media (min-width: 1024px) {
+  :root { --app-max: 960px; }
+  .rwd-container { padding: 0 24px; }
+}
+/* 大桌機 */
+@media (min-width: 1440px) {
+  :root { --app-max: 1200px; }
+}
+
+/* ========= 全域設定 ========= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  background-color: #f5f5f5;
+  display: flex;                 /* 置中版心 */
+  justify-content: center;
+}
+
+/* 頂部列 */
+.top-bar {
+  background-color: #c3d9e3;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;            /* 視覺更柔和，可移除 */
+}
+
+.back-link {
+  color: #1e2f45;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back-icon { width: 20px; }
+
+/* 主要容器 */
+.store-container {
+  width: 100%;
+  max-width: var(--app-max);     /* 與版心同步 */
+  margin: 0 auto;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* 店家資訊 */
+.store-info {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.store-image {
+  width: 100px;
+  height: 100px;
+  background-color: #d9d9d9;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.store-text h2 {
+  font-size: 16px;
+  margin: 0 0 5px;
+}
+
+.rating-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.star-tag {
+  background-color: #ffc107;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.review-count { font-size: 12px; color: #777; }
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.tags button {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: default;
+}
+
+.store-text p { font-size: 13px; margin: 2px 0; }
+
+/* 動作按鈕 */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  gap: 10px;
+}
+.action-buttons button {
+  flex: 1;
+  margin: 0;
+  font-size: 13px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+.google-btn { background-color: #999; }
+.book-btn   { background-color: #ffa800; }
+.share-btn  { background-color: #999; }
+
+/* 地圖區 */
+.map-box {
+  background-color: #f0f0f0;     /* 與 HTML 內 style 一致，避免衝突 */
+  padding: 12px;
+  border-radius: 12px;
+  margin: 16px 0;
+  overflow: hidden;
+}
+#map {
+  width: 100%;
+  height: 300px;
+  border-radius: 12px;
+  background: #e0e0e0;           /* API 未載入時的底色 */
+}
+
+/* 標題 */
+.review-title h3 {
+  font-size: 14px;
+  color: #3c4a60;
+  margin: 10px 0;
+}
+
+/* （若你之後要放評論卡片可沿用這些） */
+.review { margin-bottom: 20px; }
+.user-pic {
+  width: 30px; height: 30px;
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+.review-meta p { font-size: 12px; color: #444; margin: 0 0 2px; }
+.review-box {
+  background-color: #eee;
+  min-height: 60px;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 13px;
+  color: #333;
+  margin-top: 5px;
+}
+
+/* 平板以上，加大地圖高度一點 */
+@media (min-width: 768px) {
+  #map { height: 360px; }
+}

@@ -1,0 +1,116 @@
+/* =============== 可調整參數：只改這裡就好 =============== */
+.drinks-page{
+  --app-max: 480px;          /* 版心寬（手機） */
+  --pad-x: 12px;             /* 左右內距 */
+
+  /* ⭐ 圖片與頂端距離（也就是整個內容 .content 往下多少） */
+  --content-gap-top: 16px;   /* 想再下就改 24 / 32 / 40 / 48 px */
+
+  /* 上方大圖高度（以< img >不裁切為主，這裡只是參考比例） */
+  --hero-radius: 16px;
+
+  /* 兩顆白卡片外觀 */
+  --tile-min-h: 80px;       /* 想更長就加大 */
+  --tile-icon:  30px;
+
+  /* 返回鍵大小（這顆不會跟著內容下移） */
+  --back-btn:   36px;
+  --back-icon:  20px;
+
+  /* 字級 */
+  --title-font:   20px;      /* 「捷運末 5 班車」 */
+  --station-font: 18px;      /* 「00 站」 */
+  --train-font:   16px;      /* 「末班車 n」 */
+}
+
+/* =============== Reset（只影響本頁） =============== */
+.drinks-page, .drinks-page *{ box-sizing:border-box; }
+.drinks-page img, .drinks-page svg{ max-width:100%; height:auto; display:block; }
+.drinks-page a{ color:inherit; text-decoration:none; }
+
+body{
+  margin:0; background:#262245; color:#fff; font-family:Arial, sans-serif;
+  display:flex; justify-content:center;
+}
+
+/* =============== 版心 & 返回鍵 =============== */
+.rwd-container{ width:100%; max-width:var(--app-max); margin:0 auto; padding:0 var(--pad-x); position:relative; }
+@media (min-width:768px){ .rwd-container{ --app-max:720px; --pad-x:20px; } }
+@media (min-width:1024px){ .rwd-container{ --app-max:960px; --pad-x:24px; } }
+
+/* 左上角返回鍵（不動） */
+.back-button{
+  position:absolute; top:12px; left:12px; z-index:10;
+  width:var(--back-btn); height:var(--back-btn);
+  border-radius:50%; background:rgba(255,255,255,.95);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+.back-button img{ width:var(--back-icon); height:var(--back-icon); }
+
+/* =============== 整體內容區：要往下就改 --content-gap-top =============== */
+.content{ margin-top: var(--content-gap-top); }
+
+/* =============== 上方大圖（用<img>不裁切） =============== */
+.hero-box{
+  border-radius:var(--hero-radius);
+  overflow:hidden;
+  background:#2f3657;                 /* 比例不同時的留白顏色 */
+  box-shadow:0 6px 18px rgba(0,0,0,.25);
+}
+.hero-box img{ width:100%; height:auto; display:block; }
+
+/* =============== 兩顆白卡片 =============== */
+.options-panel{
+  margin-top:12px;
+  background:#2f3657;
+  border-radius:18px;
+  padding:14px;
+}
+.tiles{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap: 6px;
+}
+.tile{
+  background:#fff; color:#1e2f45; border-radius:16px;
+  padding: 20px 14px;
+  min-height:var(--tile-min-h);
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+}
+.tile-icon{ width:var(--tile-icon); height:var(--tile-icon); object-fit:contain; margin-bottom:8px; }
+.tile h2{ font-size:18px; font-weight:800; margin-bottom:6px; }
+.tile p { font-size:14px; color:#4a5b70; }
+
+/* =============== 捷運末 5 班車 =============== */
+.last5{ padding:16px 2px 28px; }
+.section-title{ font-size:var(--title-font); font-weight:800; margin:8px 2px 10px; }
+
+/* 下拉 + 自訂箭頭 */
+.select-row{
+  background:#A9BBCB; border-radius:28px; padding:6px 12px; position:relative;
+}
+.select-row select{
+  width:100%; background:transparent; border:none; color:#fff; font-size:14px;
+  outline:none; appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  padding-right:40px;                 /* 右側留給箭頭 */
+}
+.select-row::after{
+  content:""; position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  width:18px; height:18px; opacity:.9; pointer-events:none;
+  background:url("/frontend/圖片/arrow-down.png") no-repeat center/contain;
+}
+
+.btn-row{ display:flex; justify-content:center; }
+.btn-confirm{
+  margin-top:12px; padding:8px 22px; background:#8CB4FF; color:#1e2f45;
+  border:none; border-radius:999px; font-weight:700; cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+
+/* 結果區字級 */
+.result{ margin-top:14px; }
+.station-name{ font-size:var(--station-font); letter-spacing:1px; margin:6px 0 10px 2px; }
+.train-list{ display:flex; flex-wrap:wrap; gap:10px 22px; padding-left:2px; }
+.train-list span{ font-size:var(--train-font); }

@@ -1,0 +1,257 @@
+/* ========= 通用 RWD 版心 ========= */
+:root{
+  --app-max: 480px;       /* 版心寬：手機 */
+  /* ====== 會員中心（可依喜好調） ====== */
+  --mc-pad-x: 24px;       /* 個資區左右間距 */
+  --mc-pad-y: 12px;       /* 個資區上下間距 */
+  --mc-gap: 18px;         /* 頭像與文字間距 */
+  --mc-avatar: 112px;     /* 頭像大小 */
+  --mc-avatar-shift: 10px;/* 頭像下移（越大越往下） */
+  --mc-name-size: 26px;   /* 使用者名稱字級 */
+  --mc-meta-size: 15px;   /* 生日/電話/Email 字級 */
+  --mc-menu-pad-x: 24px;  /* 清單左右內距 */
+  --mc-menu-item-vpad: 18px; /* 清單每列上下 padding */
+}
+
+.rwd-container{
+  width: 100%;
+  max-width: var(--app-max);
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+@media (min-width: 768px){
+  :root{ --app-max: 720px; }
+  .rwd-container{ padding: 0 20px; }
+}
+@media (min-width: 1024px){
+  :root{ --app-max: 960px; }
+  .rwd-container{ padding: 0 24px; }
+}
+@media (min-width: 1440px){
+  :root{ --app-max: 1200px; }
+}
+
+/* ========= 全域 ========= */
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+  font-family: Arial, sans-serif;
+  background:#f0f0f0;
+  display:flex; justify-content:center;
+}
+.container{
+  width:100%;
+  max-width:var(--app-max);
+  min-height:100vh;
+  background:#2b4d63;     /* 深藍綠 */
+  color:#fff;
+  position:relative;
+  padding-bottom:90px;     /* 預留底欄 */
+}
+
+/* 標題 */
+.member-title{
+  font-size:34px;
+  font-weight:800;
+  letter-spacing:2px;
+  padding:20px var(--mc-pad-x) 10px; /* 對齊個資區左右內距 */
+}
+
+/* 個人資料卡 */
+.profile-card{
+  display:flex;
+  gap:var(--mc-gap);
+  align-items:flex-start;
+  padding:var(--mc-pad-y) var(--mc-pad-x) 20px;
+}
+
+.avatar-wrap{
+  position:relative;
+  width:var(--mc-avatar); height:var(--mc-avatar);
+  border-radius:50%;
+  background:#e1e1e1;
+  overflow:hidden;
+  flex-shrink:0;
+  margin-top: var(--mc-avatar-shift);  /* ✅ 往下移 */
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.2);
+}
+.avatar{ width:100%; height:100%; object-fit:cover; }
+.avatar-edit{
+  position:absolute; right:4px; bottom:4px;
+  width:26px; height:26px; border-radius:50%;
+  border:none; background:#fff; color:#2b4d63;
+  font-weight:700; cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+
+.profile-info{ flex:1; min-width:0; }
+.name-row{
+  display:flex; align-items:center; gap:12px; margin-top:6px;
+}
+.name{
+  font-size:var(--mc-name-size);  /* ✅ 名稱放大 */
+  font-weight:700; letter-spacing:1px;
+}
+.edit-link{
+  font-size:13px; color:#d9edf7; text-decoration:none; opacity:.9;
+}
+.edit-link:hover{ opacity:1; text-decoration:underline; }
+
+.meta{
+  list-style:none; margin-top:8px;
+}
+.meta li{
+  font-size:var(--mc-meta-size); /* ✅ 內文放大 */
+  line-height:1.9; opacity:.95;
+}
+.meta li span{ opacity:.9; }
+
+/* 功能清單 */
+.menu{
+  margin-top:8px;
+  display:flex; flex-direction:column;
+  padding:0 var(--mc-menu-pad-x) 12px;   /* ✅ 左右更寬 */
+  gap:0; /* 用分隔線就不用 gap */
+}
+.menu-item{
+  display:block; width:100%; text-align:left;
+  padding:var(--mc-menu-item-vpad) 0;
+  color:#fff; background:transparent; border:none;
+  font-size:16px; letter-spacing:2px;
+  cursor:pointer;
+  border-bottom:1.6px solid rgba(255,255,255,.6);
+  text-decoration: none;          /* ← 把底線關掉 */
+}
+/* 保險起見，也可加上這三行確保各狀態都無底線 */
+.menu-item:link,
+.menu-item:visited,
+.menu-item:hover { text-decoration: none; }
+
+
+/* 底部導覽列（與版心同寬） */
+.footer{
+  position:fixed; bottom:0; left:50%;
+  transform:translateX(-50%);
+  width:100%; max-width:var(--app-max);
+  display:flex; justify-content:space-around; align-items:center;
+  padding:12px; background:#A9BBCB; box-shadow:0 -2px 5px rgba(0,0,0,.2);
+  z-index:10;
+}
+.nav-btn{
+  background:none; border:none; color:#fff; text-decoration:none;
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  font-size:14px; padding:5px 10px; border-radius:20px;
+}
+.nav-btn img{ width:24px; height:24px; margin-bottom:4px; }
+.nav-btn.active{ background:#fff; color:#1E3A5F; }
+
+/* 小螢幕微調 */
+@media (max-width: 360px){
+  .member-title{ font-size:30px; }
+}
+/* 可調整的尺寸變數 */
+:root{
+  --avatar-edit-size: 44px;      /* 相機按鈕外框大小 */
+  --avatar-edit-icon: 24px;      /* 相機圖示大小 */
+  --avatar-edit-offset: -8px;    /* 讓按鈕往外溢出一點（越負越靠外） */
+}
+
+/* 相機按鈕（覆蓋原本的 ✎ 樣式） */
+.avatar-edit{
+  position: absolute;
+  right: var(--avatar-edit-offset);
+  bottom: var(--avatar-edit-offset);
+  width: var(--avatar-edit-size);
+  height: var(--avatar-edit-size);
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+/* 相機圖示大小 */
+.avatar-edit img{
+  width: var(--avatar-edit-icon);
+  height: var(--avatar-edit-icon);
+  display: block;
+}
+
+/* 視窗較小時，按鈕跟著縮一點（可留可拿掉） */
+@media (max-width: 360px){
+  :root{
+    --avatar-edit-size: 38px;
+    --avatar-edit-icon: 20px;
+    --avatar-edit-offset: -6px;
+  }
+}
+/* 如果你前面有自訂變數，可以順便加這兩個變數方便微調 */
+:root{
+  --camera-size: 44px;      /* 相機按鈕本體大小 */
+  --camera-offset: -12px;   /* 往外推的距離（負值=溢出到外面） */
+}
+
+/* 讓相機能「跑到外面」：把 hidden 改 visible */
+/* 圓形頭像容器（允許按鈕跑到外圍） */
+.avatar-wrap{
+  position: relative;
+  width: var(--mc-avatar);
+  height: var(--mc-avatar);
+  flex-shrink: 0;
+
+  /* 圓形視覺：外框+底色 */
+  border-radius: 50%;
+  background: #e1e1e1;
+
+  /* 讓相機按鈕可以超出圓外 */
+  overflow: visible;                  /* 原本 hidden → visible */
+  margin-top: var(--mc-avatar-shift);
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.2);
+}
+
+/* 讓圖片本體就是圓形，並等比填滿 */
+.avatar{
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;                 /* 關鍵：裁成圓形 */
+  object-fit: cover;                  /* 填滿不變形，超出裁掉 */
+}
+
+/* 相機按鈕：右下、圓形，微微懸浮在外側 */
+.avatar-edit{
+  position: absolute;
+  right: var(--camera-offset);
+  bottom: var(--camera-offset);
+  width: var(--camera-size);
+  height: var(--camera-size);
+  border: none;
+  border-radius: 12px;          /* ← 保持方形的圓角，不是 50% */
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,.25);
+  transform: none;              /* ← 移除推出去的位移（需要再外推再加） */
+}
+
+/* 相機圖示大小 */
+.avatar-edit img{
+  width: calc(var(--camera-size) * 0.5);
+  height: calc(var(--camera-size) * 0.5);
+  object-fit: contain;
+}
+
+
+/* 若你在很小裝置想縮一點，可以加個微調（可選） */
+@media (max-width: 360px){
+  :root{
+    --camera-size: 38px;
+    --camera-offset: -10px;
+  }
+}
+
