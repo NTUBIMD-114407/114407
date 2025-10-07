@@ -48,9 +48,22 @@ function toggleFav(item){
 }
 function setFavState(btn, saved){
   btn.textContent = saved ? "已收藏" : "收藏";
-  btn.classList.toggle("active", saved); // 需要的話在 CSS 設計 .btn-group .fav-btn.active
+  btn.classList.toggle("active", saved);
 }
 /* ========================================= */
+
+/* ===== 站點對照／距離工具 ===== */
+const codeToIdMap = {};
+const codeToNameMap = {};
+const codeToCoordMap = {}; // 新增：站碼 → {lat,lng}
+const WALK_M_PER_MIN = 80;
+const haversine = (aLat,aLng,bLat,bLng) => {
+  const R=6371000, rad=d=>d*Math.PI/180;
+  const dLat=rad(bLat-aLat), dLng=rad(bLng-aLng);
+  const s=Math.sin(dLat/2)**2 + Math.cos(rad(aLat))*Math.cos(rad(bLat))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+};
+const gmapsDir = (lat,lng)=>`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(lat+','+lng)}`;
 
 window.addEventListener('load', async () => {
   const stationSelect = document.getElementById('station-select');
@@ -58,9 +71,6 @@ window.addEventListener('load', async () => {
   const foodList = document.querySelector('.food-list');
   const confirmBtn = document.querySelector('.confirm-btn');
   const loadMoreBtn = document.querySelector('.load-more-btn');
-
-  const codeToIdMap = {};
-  const codeToNameMap = {};
 
   const dummyMap = new google.maps.Map(document.createElement('div'));
   placesService = new google.maps.places.PlacesService(dummyMap);
@@ -76,6 +86,12 @@ window.addEventListener('load', async () => {
       stations.forEach(station => {
         codeToIdMap[station.station_code] = station.id;
         codeToNameMap[station.station_code] = station.name;
+        // 盡量抓經緯度常見欄位
+        const lat = parseFloat(station.latitude ?? station.lat);
+        const lng = parseFloat(station.longitude ?? station.lng ?? station.lon);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          codeToCoordMap[station.station_code] = { lat, lng };
+        }
 
         const option = document.createElement('option');
         option.value = station.station_code;
@@ -90,16 +106,9 @@ window.addEventListener('load', async () => {
 
     const userRes = await fetch('http://140.131.115.112:8000/api/accounts/user/', {
       credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+      headers: { 'Accept': 'application/json','Content-Type': 'application/json' }
     });
-   
-    if (!userRes.ok) {
-      throw new Error(`HTTP error! status: ${userRes.status}`);
-    }
-   
+    if (!userRes.ok) throw new Error(`HTTP error! status: ${userRes.status}`);
     const user = await userRes.json();
     if (user.isAuthenticated && user.user) {
       localStorage.setItem('isLoggedIn', 'true');
@@ -146,11 +155,9 @@ window.addEventListener('load', async () => {
 
       const preview = data.slice(0, 3);
       const results = await enrichWithPhotos(preview);
-      renderRestaurantCards(results);
+      renderRestaurantCards(results);   // ✅ 下面已內建「導航 + 距離」
 
-      if (data.length > 3) {
-        loadMoreBtn.style.display = 'block';
-      }
+      if (data.length > 3) loadMoreBtn.style.display = 'block';
     } catch (err) {
       foodList.innerHTML = '<p>⚠️ 餐廳資料載入失敗</p>';
       console.error('🚨 取得餐廳資料失敗：', err);
@@ -160,7 +167,7 @@ window.addEventListener('load', async () => {
   loadMoreBtn.addEventListener('click', async () => {
     const more = allRestaurants.slice(3);
     const results = await enrichWithPhotos(more);
-    renderRestaurantCards(results);
+    renderRestaurantCards(results);     // ✅ 依然會帶導航 + 距離
     loadMoreBtn.style.display = 'none';
   });
 });
@@ -171,34 +178,50 @@ async function enrichWithPhotos(list) {
     if (!photoUrl && item.name && item.address) {
       photoUrl = await getPhotoByQuery(`${item.name}, ${item.address}`);
     }
-    return {
-      ...item,
-      photoUrl: photoUrl || 'https://via.placeholder.com/400x200?text=No+Image'
-    };
+    return { ...item, photoUrl: photoUrl || 'https://via.placeholder.com/400x200?text=No+Image' };
   }));
 }
 
 function renderRestaurantCards(list) {
   const foodList = document.querySelector('.food-list');
+  const stationSelect = document.getElementById('station-select');
+  const selectedCode = stationSelect?.value || null;
+  const selectedStationName = (selectedCode && codeToNameMap[selectedCode]) || "";
+  const selectedCoord = (selectedCode && codeToCoordMap[selectedCode]) || null;
 
   list.forEach(item => {
     const card = document.createElement('div');
     card.className = 'food-item';
 
-    // 收藏要存的 payload（與其他頁一致）— 名稱保底
+    // 收藏要存的 payload
     const payload = {
       name: item.name || item.restaurant_name || "未命名餐廳",
       address: item.address || "",
       rating: item.rating ?? null,
       review_count: item.user_ratings_total ?? null,
-      opening_text: "",                  // 此頁暫無營業時間來源
-      price_text: item.price_text || "", // 若有可帶進來
+      opening_text: "",
+      price_text: item.price_text || "",
       lat: item.latitude ?? null,
       lng: item.longitude ?? null,
       website: item.website || "",
       image: item.photoUrl || "",
       place_id: item.place_id || null
     };
+
+    // 計算距離（若站點或餐廳缺座標就不顯示）
+    let distanceLine = "";
+    const rlat = parseFloat(item.latitude), rlng = parseFloat(item.longitude);
+    if (selectedCoord && Number.isFinite(rlat) && Number.isFinite(rlng)) {
+      const d = Math.round(haversine(selectedCoord.lat, selectedCoord.lng, rlat, rlng)); // 公尺
+      const m = Math.max(1, Math.round(d / WALK_M_PER_MIN)); // 步行分鐘（80m/分）
+      distanceLine = `
+        <p class="distance-line" style="margin:6px 0 0; color:#475569;">
+          🚶 距離${selectedStationName}站約 <b>${d}</b> 公尺（步行約 <b>${m}</b> 分鐘）
+        </p>`;
+    }
+
+    // 導航連結（開啟 Google Maps 導航）
+    const navHref = (Number.isFinite(rlat) && Number.isFinite(rlng)) ? gmapsDir(rlat, rlng) : "#";
 
     card.innerHTML = `
       <h4 class="section-title">🏢 商家資訊</h4>
@@ -210,14 +233,18 @@ function renderRestaurantCards(list) {
       </h4>
       <p class="rating">⭐ 評分：${item.rating || '無評分'}</p>
       <p class="address">${item.address || '地址未知'}</p>
+
       <div class="btn-group">
         <button class="review-btn" onclick="fetchReviews('${item.id}', '${safeName(item)}')">查看評論</button>
         <button class="fav-btn">收藏</button>
+        <a class="nav-btn" href="${navHref}" target="_blank" rel="noopener">導航</a>
         <button class="close-btn" onclick="this.closest('.food-item').remove()">關閉</button>
       </div>
+
+      ${distanceLine}
     `;
 
-    // 綁定收藏鈕 + 初始化狀態（⚠️ 不要重新宣告 payload）
+    // 收藏鈕
     const favBtn = card.querySelector('.fav-btn');
     setFavState(favBtn, isFav(payload));
     favBtn.addEventListener('click', () => {

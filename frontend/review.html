@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>美食評論</title>
-  <link rel="icon" href="/圖片/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="static/css/review.css">
+  <link rel="icon" href="/圖片/logo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="static/css/review.css" />
 </head>
 <body>
   <div class="rwd-container">
-    <header>
+    <header class="page-header">
       <h1 id="restaurant-name">00 美食</h1>
-      <a href="food_map.html">回上頁</a>
+      <a class="back-link" href="food_map.html">回上頁</a>
     </header>
 
-    <div id="map">Google Map 載入中...</div>
+    <div id="map" aria-label="Google Map">Google Map 載入中...</div>
 
     <h3>🖋 評論 | REVIEW</h3>
-    <div class="review-list" id="review-list">
-      <!-- 留給 JS 塞評論 -->
-    </div>
+    <div class="review-list" id="review-list"></div>
   </div>
 
-  <script src="/static/js/food_map/review.js"></script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w">
-  </script>
-</body>
+  <!-- 先載你的腳本：用 defer，確保先定義 window.initMap -->
+  <script src="/static/js/reviews.js" defer></script>
 
-</html> 
+  <!-- 再載 Google Maps：只用 defer，避免 async 造成順序問題 -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSjgDp4YRLipBUWzKnY0-jPkQSsriAu1w&libraries=places&callback=initMap"
+    defer>
+  </script>
+
+  <noscript>此頁需要啟用 JavaScript 才能顯示地圖與評論。</noscript>
+</body>
+</html>

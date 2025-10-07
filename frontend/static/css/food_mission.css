@@ -146,3 +146,5 @@ body{
   .pill{ padding:7px 12px; font-size:13px; }
 }
 .actions { display:flex; gap:8px; flex-wrap:wrap; }
+/* 任務卡片：距離捷運站文字 */
+.card .dist-row .dist-text { color:#475569; }
