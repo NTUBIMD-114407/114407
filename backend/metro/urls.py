@@ -29,6 +29,11 @@ urlpatterns = [
     path('api/station-by-name/<str:station_name>/first-last-trains/', views.get_station_by_name_first_last_trains, name='station-by-name-first-last-trains'),
     path('api/station-last-five-trains/', views.get_station_last_five_trains, name='station-last-five-trains'),
 
+    # Category-based restaurant filters
+    path('api/restaurants/by-station-and-category/', views.get_restaurants_by_station_and_category, name='restaurants_by_station_and_category'),
+    path('api/restaurants/by-line-and-category/', views.get_restaurants_by_line_and_category, name='restaurants_by_line_and_category'),
+    path('api/restaurants/by-station-line-and-category/', views.get_restaurants_by_station_line_and_category, name='restaurants_by_station_line_and_category'),
+
     # Bars
     path('bars/', views.BarViewSet.as_view({'get': 'list'}), name='bars-list'),
     path('bars/<int:pk>/', views.BarViewSet.as_view({'get': 'retrieve'}), name='bars-detail'),
