@@ -277,3 +277,31 @@ a.nav-btn { text-decoration: none; }
 
 .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
 .btn-group .fav-btn.active { background: #ffcc00; color: #222; } /* 自訂「已收藏」外觀 */
+/* === 卡片內「導航」按鈕，樣式與收藏一致（不影響底部導覽） === */
+.food-list .btn-group a.nav-btn{
+  background-color: #aaa;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1;
+  min-width: 64px;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* 滑過與收藏同色 */
+.food-list .btn-group a.nav-btn:hover{
+  background-color: #ffd633;
+  color: #222;
+}
+
+/* 無座標時的禁用狀態（可選） */
+.food-list .btn-group a.nav-btn[href="#"]{
+  opacity: .45;
+  pointer-events: none;
+}

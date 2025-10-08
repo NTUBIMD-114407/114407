@@ -111,7 +111,6 @@
 
 const API_BASE = "http://140.131.115.112:8000";
 
-// 取得 CSRF
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -119,7 +118,6 @@ function getCookie(name) {
   return "";
 }
 
-// 頂部提示條（未登入時）
 function showAuthBanner(msg = "尚未登入（可能 Cookie 沒帶到）") {
   let bar = document.getElementById("authBanner");
   if (!bar) {
@@ -137,7 +135,6 @@ function hideAuthBanner() {
   if (bar) bar.style.display = "none";
 }
 
-// 訊息顯示（彈窗內用）
 function showResult(id, msg, type="success"){
   const box = document.getElementById(id);
   if(!box) return;
@@ -145,7 +142,13 @@ function showResult(id, msg, type="success"){
   box.textContent = msg;
 }
 
-// 登入檢查（不再 alert/跳轉；回傳布林並印除錯）
+// 加上 cache-buster，避免舊圖被快取
+function withBust(url){
+  if (!url) return url;
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}v=${Date.now()}`;
+}
+
 async function checkLogin() {
   try {
     const res = await fetch(`${API_BASE}/api/accounts/user/`, {
@@ -154,13 +157,10 @@ async function checkLogin() {
     });
     let data = {};
     try { data = await res.json(); } catch {}
-    console.log("[checkLogin]", res.status, data);
-
     if (res.ok && data?.isAuthenticated) {
       hideAuthBanner();
       return true;
     }
-    // 非 200 或 isAuthenticated=false
     showAuthBanner("尚未登入或登入已過期");
     return false;
   } catch(e){
@@ -170,11 +170,9 @@ async function checkLogin() {
   }
 }
 
-// 載入個資
 async function loadProfile() {
   const ok = await checkLogin();
   if (!ok) {
-    // 不跳轉：顯示提示即可
     showResult('profileResult', '尚未登入（請點上方連結重新登入）', 'error');
     return;
   }
@@ -186,7 +184,8 @@ async function loadProfile() {
     const data = await res.json();
     if (!res.ok) { showResult('profileResult', JSON.stringify(data,null,2), 'error'); return; }
 
-    // 卡片顯示
+    // 文字欄位
+    document.getElementById('displayNameText')?.appendChild(document.createTextNode(""));
     document.getElementById('displayNameText').textContent = data.display_name || '—';
     document.getElementById('emailText').textContent       = data.email || '—';
     document.getElementById('birthdayText').textContent    = data.birthday || '—';
@@ -194,9 +193,19 @@ async function loadProfile() {
     document.getElementById('genderText').textContent      =
       data.gender === 'male' ? '男' : data.gender === 'female' ? '女' :
       data.gender ? data.gender : '—';
-    if (data.avatar_url) document.getElementById('avatarImg').src = data.avatar_url;
 
-    // 表單預填
+    // 同步頭像到畫面與 localStorage（加 bust）
+    const avatarEl = document.getElementById('avatarImg');
+    if (data.avatar_url && avatarEl) {
+      const u = withBust(data.avatar_url);
+      avatarEl.src = u;
+      localStorage.setItem('avatar_url', u);
+      window.dispatchEvent(new CustomEvent('profile:avatar-updated', { detail: { avatar_url: u }}));
+    } else {
+      localStorage.removeItem('avatar_url');
+    }
+
+    // 預填表單
     document.getElementById('profileEmail').value = data.email || '';
     document.getElementById('displayName').value  = data.display_name || '';
     document.getElementById('gender').value       = data.gender || '';
@@ -209,7 +218,6 @@ async function loadProfile() {
   }
 }
 
-// 更新個資
 async function updateProfile() {
   const ok = await checkLogin();
   if (!ok) { showResult('profileResult', '尚未登入，無法更新資料', 'error'); return; }
@@ -226,7 +234,6 @@ async function updateProfile() {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        // 跨網域通常讀不到 CSRF Cookie；後端若要求 CSRF，需設置跨站 CSRF 策略
         'X-CSRFToken': getCookie('csrftoken') || ''
       },
       credentials: 'include',
@@ -235,6 +242,16 @@ async function updateProfile() {
     const data = await res.json();
     if (res.ok) {
       showResult('profileResult', '✅ 更新成功', 'success');
+
+      // 若後端回傳新頭像網址（有些系統會一起回），同步一下
+      if (data.avatar_url) {
+        const u = withBust(data.avatar_url);
+        const avatarEl = document.getElementById('avatarImg');
+        if (avatarEl) avatarEl.src = u;
+        localStorage.setItem('avatar_url', u);
+        window.dispatchEvent(new CustomEvent('profile:avatar-updated', { detail: { avatar_url: u }}));
+      }
+
       await loadProfile();
       closeModal();
     } else {
@@ -245,7 +262,6 @@ async function updateProfile() {
   }
 }
 
-// 上傳頭像
 async function uploadAvatar(file) {
   const ok = await checkLogin();
   if (!ok) { showResult('profileResult', '尚未登入，無法上傳頭像', 'error'); return; }
@@ -262,7 +278,13 @@ async function uploadAvatar(file) {
     const data = await res.json();
     if (res.ok) {
       showResult('profileResult', '✅ 大頭貼上傳成功', 'success');
-      if (data.avatar_url) document.getElementById('avatarImg').src = data.avatar_url;
+      if (data.avatar_url) {
+        const u = withBust(data.avatar_url);
+        const avatarEl = document.getElementById('avatarImg');
+        if (avatarEl) avatarEl.src = u;
+        localStorage.setItem('avatar_url', u);
+        window.dispatchEvent(new CustomEvent('profile:avatar-updated', { detail: { avatar_url: u }}));
+      }
     } else {
       showResult('profileResult', JSON.stringify(data, null, 2), 'error');
     }
@@ -278,26 +300,31 @@ function closeModal(){ modal.style.display = 'none'; }
 
 // 綁定事件
 document.addEventListener('DOMContentLoaded', async () => {
+  const avatarEl = document.getElementById('avatarImg');
+
+  // 1) 先用快取避免閃爍
+  const cachedAvatar = localStorage.getItem('avatar_url');
+  if (avatarEl && cachedAvatar) avatarEl.src = cachedAvatar;
+
+  // 2) 再取最新資料
   await loadProfile();
 
-  document.getElementById('openEdit').addEventListener('click', openModal);
-  document.getElementById('cancelEdit').addEventListener('click', closeModal);
-  document.getElementById('saveEdit').addEventListener('click', updateProfile);
+  // 3) 綁事件（加防呆）
+  document.getElementById('openEdit')?.addEventListener('click', openModal);
+  document.getElementById('cancelEdit')?.addEventListener('click', closeModal);
+  document.getElementById('saveEdit')?.addEventListener('click', updateProfile);
 
-  // 點彈窗外側關閉（可選）
-  modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+  modal?.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
 
-  // 頭像按鈕
-  document.getElementById('avatarEditBtn').addEventListener('click', ()=> {
-    document.getElementById('avatarFile').click();
+  document.getElementById('avatarEditBtn')?.addEventListener('click', ()=> {
+    document.getElementById('avatarFile')?.click();
   });
-  document.getElementById('avatarFile').addEventListener('change', (e)=>{
+  document.getElementById('avatarFile')?.addEventListener('change', (e)=>{
     const f = e.target.files && e.target.files[0];
     if (f) uploadAvatar(f);
   });
 
-  // 登出
-  document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+  document.getElementById('logoutBtn')?.addEventListener('click', async ()=>{
     try {
       await fetch(`${API_BASE}/api/accounts/logout/`, {
         method:'POST',
@@ -308,7 +335,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('username');
+    localStorage.removeItem('avatar_url');
     window.location.href = 'login.html';
+  });
+
+  // 4) 即時同步（同分頁）
+  window.addEventListener('profile:avatar-updated', (e) => {
+    if (avatarEl && e.detail?.avatar_url) avatarEl.src = e.detail.avatar_url;
+  });
+  // 5) 分頁同步（不同分頁）
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'avatar_url' && avatarEl) {
+      avatarEl.src = e.newValue || '圖片/user.png';
+    }
   });
 });
 </script>

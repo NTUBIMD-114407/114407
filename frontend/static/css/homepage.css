@@ -34,30 +34,6 @@
   box-sizing: border-box;
 }
 
-/* 載入狀態樣式 */
-.loading-shops, .shop-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  color: #ccc;
-  font-size: 14px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  margin: 10px 0;
-}
-
-.loading-shops::before, .shop-loading::before {
-  content: "⏳";
-  margin-right: 8px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
@@ -113,25 +89,23 @@ body {
 /* 搜尋列（整合成自適應寬度） */
 .search-bar {
   display: flex;
-  justify-content: center;          /* 置中對齊，元素緊密排列 */
+  justify-content: center;           /* 置中排列 */
   align-items: center;
-  gap: 4px;                         /* 最小間距 */
+  gap: 15px;
   width: 95%;                       /* ⬅️ 由版心控制寬度 */
   margin: 1rem auto 0 auto;
-  padding: 8px;                     /* 適中內邊距 */
+  padding: 8px;
   background: #A9BBCB;
   border-radius: 25px;
-  flex-wrap: nowrap;                /* 一律同一行，不換行 */
 }
 .search-bar input {
-  flex: 0 1 auto;                    /* 不強制伸縮，保持緊湊 */
-  min-width: 80px;                   /* 適中最小寬度 */
-  max-width: 120px;                  /* 限制最大寬度 */
-  padding: 6px 10px;                 /* 縮小內邊距 */
+  width: 40%;
+  min-width: 120px;                  /* 避免太窄 */
+  padding: 8px 15px;
   border: 1px solid #ccc;
   border-radius: 25px;
   text-align: center;
-  font-size: 13px;                   /* 稍小字體 */
+  font-size: 14px;
   background: #fff;
   color: #333;
 }
@@ -143,24 +117,12 @@ body {
   height: 32px;
   font-size: 16px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  line-height: 1;
-  appearance: none;
-  -webkit-appearance: none;
-}
-.search-bar button:focus,
-.search-bar button:focus-visible {
-  outline: 2px solid #8ca3b5;
-  outline-offset: 2px;
 }
 #search-btn {
-  padding: 6px 12px;
+  padding: 8px 15px;
   border-radius: 25px;
   border: 1px solid #ccc;
-  background-color: #fff;
+  background-color: #f2f2f2;
   font-size: 11px;
   color: #333;
   cursor: pointer;
@@ -172,22 +134,6 @@ body {
   transition: background-color 0.3s;
 }
 #search-btn:hover { background-color: #e0e0e0; }
-
-/* 極小螢幕：縮小間距與字級，仍保持單行 */
-@media (max-width: 420px) {
-  .search-bar { gap: 4px; padding: 4px; }
-  .search-bar input { font-size: 12px; padding: 4px 8px; }
-  .search-bar button { width: 24px; height: 24px; font-size: 12px; }
-  #search-btn { font-size: 9px; padding: 4px 8px; }
-}
-
-/* 中等螢幕：適中間距 */
-@media (max-width: 600px) and (min-width: 421px) {
-  .search-bar { gap: 8px; padding: 6px; }
-  .search-bar input { font-size: 13px; padding: 6px 10px; }
-  .search-bar button { width: 28px; height: 28px; font-size: 14px; }
-  #search-btn { font-size: 10px; padding: 6px 10px; }
-}
 
 /* Awesomplete 下拉 */
 .awesomplete ul { max-height: 250px; overflow-y: auto; }
@@ -229,8 +175,6 @@ body {
   width: 90%;
   margin-left: auto;
   margin-right: auto;
-  flex-wrap: wrap;                   /* ⬅️ 小螢幕允許換行 */
-  gap: 10px;                         /* 換行後的間距 */
 }
 .feature-btn {
   background: #A9BBCB;
@@ -251,11 +195,6 @@ body {
   overflow: hidden;
 }
 .feature-btn img { width: 20px; height: 20px; }
-
-/* 小螢幕：功能按鈕自適應寬度，避免擠出容器 */
-@media (max-width: 420px) {
-  .feature-btn { flex: 1 1 100%; max-width: 100%; }
-}
 
 /* TOP 10 店家 */
 .top-shops {

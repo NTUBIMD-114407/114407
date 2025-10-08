@@ -18,11 +18,7 @@ function pushFavoriteNotify(item, action="add"){
     message: action === "add" ? `將「${name}」加入收藏` : `已取消「${name}」收藏`,
     time: new Date().toISOString(),
     read: false,
-    item: {
-      name,
-      address: item.address || "",
-      place_id: item.place_id || null
-    }
+    item: { name, address: item.address || "", place_id: item.place_id || null }
   };
   const list = loadNoti();
   list.unshift(noti);
@@ -56,6 +52,50 @@ function extractBgUrl(el){
   return m ? m[1] : "";
 }
 
+/* ========== 站點資料 & 距離工具 ========== */
+const WALK_M_PER_MIN = 80;
+const haversine = (aLat,aLng,bLat,bLng) => {
+  const R=6371000, rad=d=>d*Math.PI/180;
+  const dLat=rad(bLat-aLat), dLng=rad(bLng-aLng);
+  const s=Math.sin(dLat/2)**2 + Math.cos(rad(aLat))*Math.cos(rad(bLat))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+};
+
+let MRT_STATIONS = []; // [{name, lat, lng}]
+async function loadStationsOnce(){
+  if (MRT_STATIONS.length) return MRT_STATIONS;
+  try{
+    const linesRes = await fetch('http://140.131.115.112:8000/api/lines/');
+    const lines = await linesRes.json();
+    const all = [];
+    for (const line of lines) {
+      const stRes = await fetch(`http://140.131.115.112:8000/api/lines/${line.id}/stations/`);
+      const stations = await stRes.json();
+      stations.forEach(s=>{
+        const lat = parseFloat(s.latitude ?? s.lat);
+        const lng = parseFloat(s.longitude ?? s.lng ?? s.lon);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          all.push({ name: s.name, lat, lng });
+        }
+      });
+    }
+    MRT_STATIONS = all;
+  }catch(e){
+    console.warn("讀取捷運站資料失敗：", e);
+    MRT_STATIONS = [];
+  }
+  return MRT_STATIONS;
+}
+function nearestStation(lat,lng){
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || MRT_STATIONS.length===0) return null;
+  let best=null, bestD=Infinity;
+  for (const s of MRT_STATIONS){
+    const d = haversine(lat,lng,s.lat,s.lng);
+    if (d < bestD){ bestD = d; best = s; }
+  }
+  return best ? { ...best, meters: bestD } : null;
+}
+
 /* ========== 初始化 ========== */
 document.addEventListener("DOMContentLoaded", init);
 
@@ -63,6 +103,9 @@ async function init() {
   const container = document.querySelector(".cards");
   if (!container) return;
   container.innerHTML = "";
+
+  // 先把捷運站座標抓好
+  await loadStationsOnce();
 
   try {
     const res = await fetch("http://140.131.115.112:8000/api/api/top-checkin-restaurants/");
@@ -168,7 +211,24 @@ async function buildCard(d) {
   addrVal.textContent = d.address || "—";
   addrRow.appendChild(addrVal);
 
-  // 動作：導航 + 收藏（距離已移除）
+  // 🚶 距離（顯示在地址下一行）
+  const distRow = el("div", "meta-row dist-row"); // 只有文字，不加左邊標籤
+  function renderDistance(){
+    if (Number.isFinite(d.lat) && Number.isFinite(d.lng)) {
+      const near = nearestStation(d.lat, d.lng);
+      if (near) {
+        const meters = Math.round(near.meters);
+        const mins = Math.max(1, Math.round(meters / WALK_M_PER_MIN));
+        distRow.innerHTML = `<span class="dist-text">🚶 距離${near.name}站約 <b>${meters}</b> 公尺（步行約 <b>${mins}</b> 分鐘）</span>`;
+        distRow.style.display = "";
+        return;
+      }
+    }
+    distRow.style.display = "none";
+  }
+  renderDistance();
+
+  // 動作：導航 + 收藏
   const actions = el("div", "actions");
 
   const navBtn = el("button", "pill pill--primary");
@@ -219,7 +279,7 @@ async function buildCard(d) {
   site.innerHTML = `<button>🌐 官方網站</button>`;
   tags.append(detail, priceBtn, site);
 
-  info.append(title, ratingDiv, timeRow, addrRow, actions, tags);
+  info.append(title, ratingDiv, timeRow, addrRow, distRow, actions, tags);
   card.append(imgBox, info);
 
   // 用 Google Places 補：照片 / 地址 / 營業時間 / 價位等級→均消
@@ -244,7 +304,7 @@ async function buildCard(d) {
             const idx = new Date().getDay(); // 0(日)~6(六)
             const line = weekday[idx] || weekday[0];
             timeVal.textContent = line.replace(/^[^:]+:\s?/, "");
-            d.opening_text = timeVal.textContent; // 寫回 d，收藏時帶到
+            d.opening_text = timeVal.textContent;
           } else if (det?.opening_hours?.isOpen && typeof det.opening_hours.isOpen === "function") {
             timeVal.textContent = det.opening_hours.isOpen() ? "營業中" : "休息中";
             d.opening_text = timeVal.textContent;
@@ -254,7 +314,17 @@ async function buildCard(d) {
             d.price_text = priceLevelToRange(det.price_level);
             if (d.price_text) priceBtn.textContent = `均消 ${d.price_text}`;
           }
-          // 可能地址/時間改了 → 依新資料更新收藏按鈕狀態
+          // 若拿到更精準座標 → 更新距離
+          const loc = det?.geometry?.location;
+          if (loc && typeof loc.lat === "function" && typeof loc.lng === "function") {
+            d.lat = loc.lat();
+            d.lng = loc.lng();
+            renderDistance();
+          } else {
+            renderDistance(); // 以原本座標再刷新一次
+          }
+
+          // 可能資料改了 → 依新資料更新收藏按鈕狀態
           setFavState(favBtn, isFav(buildPayload()));
         }
       });

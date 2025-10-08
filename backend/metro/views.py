@@ -1377,18 +1377,15 @@ def get_restaurants_by_station_and_category(request):
     if not station_id or not category:
         return Response({'error': '請提供捷運站編號和餐廳類別'}, status=400)
 
-
-
-
     try:
         # 獲取指定捷運站
         station = Station.objects.get(id=station_id)
        
-        # 獲取該站點附近且符合類別的所有餐廳
+        # 獲取該站點附近且符合類別的所有餐廳（多對多關聯）
         restaurants = Restaurant.objects.filter(
             nearby_stations=station,
-            category=category
-        )
+            categories__name=category
+        ).distinct()
        
         serializer = RestaurantSerializer(restaurants, many=True)
         return Response(serializer.data)
@@ -1410,18 +1407,15 @@ def get_restaurants_by_line_and_category(request):
     if not line_id or not category:
         return Response({'error': '請提供捷運線編號和餐廳類別'}, status=400)
 
-
-
-
     try:
         # 獲取指定捷運線的所有站點
         line = MetroLine.objects.get(id=line_id)
         stations = Station.objects.filter(metro_line=line)
        
-        # 獲取這些站點附近且符合類別的所有餐廳
+        # 獲取這些站點附近且符合類別的所有餐廳（多對多關聯）
         restaurants = Restaurant.objects.filter(
             nearby_stations__in=stations,
-            category=category
+            categories__name=category
         ).distinct()
        
         serializer = RestaurantSerializer(restaurants, many=True)
@@ -1445,18 +1439,15 @@ def get_restaurants_by_station_line_and_category(request):
     if not station_id or not line_id or not category:
         return Response({'error': '請提供捷運站編號、捷運線編號和餐廳類別'}, status=400)
 
-
-
-
     try:
         # 獲取指定捷運站和捷運線
         station = Station.objects.get(id=station_id, metro_line_id=line_id)
        
-        # 獲取該站點附近且符合類別的所有餐廳
+        # 獲取該站點附近且符合類別的所有餐廳（多對多關聯）
         restaurants = Restaurant.objects.filter(
             nearby_stations=station,
-            category=category
-        )
+            categories__name=category
+        ).distinct()
        
         serializer = RestaurantSerializer(restaurants, many=True)
         return Response(serializer.data)
